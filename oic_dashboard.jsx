@@ -1,11 +1,5 @@
 import { useState, useMemo } from "react";
 import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  ZoomableGroup,
-} from "react-simple-maps";
-import {
   BarChart,
   Bar,
   RadarChart,
@@ -78,8 +72,8 @@ const PILLARS = [
   {
     id: "6",
     key: "p6",
-    name: "Tech Readiness",
-    short: "Tech Ready",
+    name: "Future Tech",
+    short: "Future Tech",
     weight: 15,
     color: "#06B6D4",
     dim: "Digital Readiness",
@@ -170,829 +164,854 @@ const REGIONS = {
   Guyana: "Americas",
   Suriname: "Americas",
   Afghanistan: "Central Asia",
+  Chad: "West Africa",
 };
 
 const COUNTRIES = [
   {
     name: "United Arab Emirates",
     rank: 1,
-    adei: 76.84,
-    p1: 79.3,
-    p2: 99.2,
-    p3: 58.3,
-    p4: 95.3,
-    p5: 61.1,
-    p6: 93.4,
-    p7: 64.7,
-    p8: 53.1,
-    p9: 78.2,
-  },
-  {
-    name: "Saudi Arabia",
-    rank: 2,
-    adei: 67.77,
-    p1: 67.3,
-    p2: 82.1,
-    p3: 30.4,
-    p4: 96.0,
-    p5: 37.2,
-    p6: 86.3,
-    p7: 54.7,
-    p8: 67.1,
-    p9: 62.4,
+    adei: 76.8384,
+    p1: 77.69,
+    p2: 88.51,
+    p3: 57.74,
+    p4: 95.33,
+    p5: 60.56,
+    p6: 92.88,
+    p7: 65.44,
+    p8: 52.54,
+    p9: 78.44,
   },
   {
     name: "Malaysia",
-    rank: 3,
-    adei: 66.98,
-    p1: 79.4,
-    p2: 82.3,
-    p3: 44.1,
-    p4: 81.1,
-    p5: 46.4,
-    p6: 50.3,
-    p7: 73.9,
-    p8: 52.5,
-    p9: 78.0,
+    rank: 2,
+    adei: 71.9811,
+    p1: 78.77,
+    p2: 81.99,
+    p3: 44.05,
+    p4: 81.11,
+    p5: 46.02,
+    p6: 83.5,
+    p7: 74.36,
+    p8: 53.35,
+    p9: 77.53,
   },
   {
-    name: "Indonesia",
-    rank: 4,
-    adei: 61.57,
-    p1: 65.1,
-    p2: 65.7,
-    p3: 37.0,
-    p4: 79.9,
-    p5: 39.3,
-    p6: 81.6,
-    p7: 62.2,
-    p8: 25.8,
-    p9: 71.4,
+    name: "Saudi Arabia",
+    rank: 3,
+    adei: 67.7707,
+    p1: 66.6,
+    p2: 81.56,
+    p3: 29.52,
+    p4: 96.02,
+    p5: 36.77,
+    p6: 85.63,
+    p7: 54.57,
+    p8: 66.75,
+    p9: 61.76,
   },
   {
     name: "Qatar",
+    rank: 4,
+    adei: 66.4413,
+    p1: 76.54,
+    p2: 75.02,
+    p3: 47.61,
+    p4: 82.44,
+    p5: 36.15,
+    p6: 84.7,
+    p7: 52.51,
+    p8: 31.47,
+    p9: 77.93,
+  },
+  {
+    name: "Indonesia",
     rank: 5,
-    adei: 55.14,
-    p1: 77.3,
-    p2: 75.5,
-    p3: 48.0,
-    p4: 82.4,
-    p5: 36.4,
-    p6: 51.4,
-    p7: 53.3,
-    p8: 30.8,
-    p9: 78.0,
+    adei: 61.5662,
+    p1: 65.37,
+    p2: 66.13,
+    p3: 36.86,
+    p4: 79.91,
+    p5: 39.14,
+    p6: 82.23,
+    p7: 61.73,
+    p8: 25.56,
+    p9: 71.44,
   },
   {
     name: "Türkiye",
     rank: 6,
-    adei: 60.99,
-    p1: 55.4,
-    p2: 75.7,
-    p3: 41.2,
-    p4: 89.1,
-    p5: 42.6,
-    p6: 60.0,
-    p7: 38.4,
-    p8: 39.8,
-    p9: 73.9,
+    adei: 60.7098,
+    p1: 55.35,
+    p2: 75.98,
+    p3: 31.38,
+    p4: 89.13,
+    p5: 42.95,
+    p6: 64.36,
+    p7: 56.57,
+    p8: 36.5,
+    p9: 78.5,
   },
   {
     name: "Kazakhstan",
     rank: 7,
-    adei: 57.86,
-    p1: 57.3,
-    p2: 70.1,
-    p3: 40.9,
-    p4: 90.1,
-    p5: 30.5,
-    p6: 40.0,
-    p7: 57.1,
-    p8: 24.3,
-    p9: 72.3,
+    adei: 57.779,
+    p1: 57.22,
+    p2: 69.8,
+    p3: 40.98,
+    p4: 90.09,
+    p5: 30.89,
+    p6: 59.59,
+    p7: 37.79,
+    p8: 39.66,
+    p9: 73.9,
   },
   {
     name: "Jordan",
     rank: 8,
-    adei: 52.94,
-    p1: 61.7,
-    p2: 44.1,
-    p3: 51.7,
-    p4: 68.5,
-    p5: 22.0,
-    p6: 65.2,
-    p7: 45.4,
-    p8: 15.9,
-    p9: 72.6,
+    adei: 52.9428,
+    p1: 61.9,
+    p2: 61.82,
+    p3: 45.48,
+    p4: 68.49,
+    p5: 27.92,
+    p6: 42.03,
+    p7: 56.84,
+    p8: 24.18,
+    p9: 71.85,
   },
   {
     name: "Tunisia",
     rank: 9,
-    adei: 50.26,
-    p1: 56.3,
-    p2: 54.7,
-    p3: 43.4,
-    p4: 69.4,
-    p5: 24.4,
-    p6: 63.2,
-    p7: 42.8,
-    p8: 22.7,
-    p9: 72.6,
+    adei: 52.5912,
+    p1: 56.47,
+    p2: 51.1,
+    p3: 52.24,
+    p4: 69.35,
+    p5: 22.22,
+    p6: 65.32,
+    p7: 45.17,
+    p8: 16.02,
+    p9: 72.7,
   },
   {
     name: "Morocco",
     rank: 10,
-    adei: 47.74,
-    p1: 58.3,
-    p2: 55.0,
-    p3: 44.7,
-    p4: 68.4,
-    p5: 20.8,
-    p6: 39.5,
-    p7: 48.1,
-    p8: 4.5,
-    p9: 62.7,
+    adei: 52.4301,
+    p1: 57.6,
+    p2: 55.2,
+    p3: 42.62,
+    p4: 68.41,
+    p5: 20.12,
+    p6: 63.24,
+    p7: 43.05,
+    p8: 22.81,
+    p9: 73.29,
   },
   {
     name: "Oman",
     rank: 11,
-    adei: 46.42,
-    p1: 64.7,
-    p2: 59.5,
-    p3: 26.8,
-    p4: 85.8,
-    p5: 41.2,
-    p6: 24.5,
-    p7: 38.2,
-    p8: 12.6,
-    p9: 62.7,
+    adei: 52.4029,
+    p1: 65.48,
+    p2: 67.32,
+    p3: 45.47,
+    p4: 85.76,
+    p5: 35.0,
+    p6: 39.99,
+    p7: 47.71,
+    p8: 5.18,
+    p9: 63.24,
   },
   {
     name: "Uzbekistan",
     rank: 12,
-    adei: 45.34,
-    p1: 42.7,
-    p2: 43.9,
-    p3: 40.0,
-    p4: 80.0,
-    p5: 27.3,
-    p6: 27.2,
-    p7: 31.9,
-    p8: 9.5,
-    p9: 48.7,
+    adei: 51.7231,
+    p1: 40.13,
+    p2: 60.39,
+    p3: 34.0,
+    p4: 79.99,
+    p5: 41.01,
+    p6: 55.1,
+    p7: 54.86,
+    p8: 21.2,
+    p9: 73.24,
   },
   {
     name: "Bahrain",
     rank: 13,
-    adei: 44.17,
-    p1: 66.6,
-    p2: 81.5,
-    p3: 38.7,
-    p4: 92.0,
-    p5: 27.0,
-    p6: 24.0,
-    p7: 31.6,
-    p8: 10.1,
-    p9: 63.3,
+    adei: 50.8067,
+    p1: 66.91,
+    p2: 81.74,
+    p3: 38.64,
+    p4: 91.96,
+    p5: 27.34,
+    p6: 23.67,
+    p7: 31.57,
+    p8: 10.33,
+    p9: 63.43,
   },
   {
     name: "Egypt",
     rank: 14,
-    adei: 40.9,
-    p1: 47.4,
-    p2: 63.7,
-    p3: 25.3,
-    p4: 67.0,
-    p5: 16.5,
-    p6: 25.4,
-    p7: 37.8,
-    p8: 13.3,
-    p9: 62.1,
+    adei: 50.6077,
+    p1: 46.75,
+    p2: 63.69,
+    p3: 40.16,
+    p4: 66.99,
+    p5: 25.2,
+    p6: 66.44,
+    p7: 49.26,
+    p8: 4.07,
+    p9: 67.69,
   },
   {
     name: "Kuwait",
     rank: 15,
-    adei: 39.42,
-    p1: 65.8,
-    p2: 59.0,
-    p3: 26.6,
-    p4: 78.1,
-    p5: 25.2,
-    p6: 12.3,
-    p7: 38.6,
-    p8: 18.4,
-    p9: 73.2,
+    adei: 47.465,
+    p1: 65.26,
+    p2: 76.35,
+    p3: 24.85,
+    p4: 78.12,
+    p5: 16.59,
+    p6: 25.35,
+    p7: 38.46,
+    p8: 12.89,
+    p9: 61.59,
   },
   {
     name: "Albania",
     rank: 16,
-    adei: 45.34,
-    p1: 60.7,
-    p2: 44.0,
-    p3: 40.4,
+    adei: 45.3359,
+    p1: 65.94,
+    p2: 58.91,
+    p3: 26.64,
     p4: 80.0,
-    p5: 29.0,
-    p6: 30.2,
-    p7: 43.1,
-    p8: 20.0,
-    p9: 58.0,
+    p5: 24.53,
+    p6: 11.77,
+    p7: 39.26,
+    p8: 17.64,
+    p9: 72.63,
   },
   {
     name: "Senegal",
     rank: 17,
-    adei: 33.35,
-    p1: 41.5,
-    p2: 57.9,
-    p3: 52.3,
-    p4: 51.6,
-    p5: 16.0,
-    p6: 18.6,
-    p7: 16.0,
-    p8: 19.0,
-    p9: 73.0,
+    adei: 43.0662,
+    p1: 60.67,
+    p2: 44.01,
+    p3: 40.45,
+    p4: 51.63,
+    p5: 29.25,
+    p6: 30.43,
+    p7: 42.97,
+    p8: 20.37,
+    p9: 57.95,
   },
   {
     name: "Kyrgyz Republic",
     rank: 18,
-    adei: 35.84,
-    p1: 43.9,
-    p2: 54.3,
-    p3: 27.0,
-    p4: 73.2,
-    p5: 34.7,
-    p6: 27.4,
-    p7: 33.8,
-    p8: 3.0,
-    p9: 73.0,
+    adei: 41.8435,
+    p1: 42.16,
+    p2: 57.67,
+    p3: 52.18,
+    p4: 73.16,
+    p5: 15.52,
+    p6: 18.5,
+    p7: 16.07,
+    p8: 18.83,
+    p9: 72.92,
   },
   {
     name: "Azerbaijan",
     rank: 19,
-    adei: 35.91,
-    p1: 43.6,
-    p2: 56.2,
-    p3: 48.6,
-    p4: 76.1,
-    p5: 21.9,
-    p6: 27.7,
-    p7: 11.9,
-    p8: 16.9,
-    p9: 69.8,
+    adei: 41.7776,
+    p1: 44.41,
+    p2: 53.57,
+    p3: 27.01,
+    p4: 76.08,
+    p5: 34.67,
+    p6: 26.85,
+    p7: 33.7,
+    p8: 3.3,
+    p9: 73.1,
   },
   {
     name: "Algeria",
     rank: 20,
-    adei: 34.31,
-    p1: 42.0,
-    p2: 52.4,
-    p3: 20.5,
-    p4: 59.6,
-    p5: 22.2,
-    p6: 6.6,
-    p7: 43.7,
-    p8: 93.0,
-    p9: 73.0,
+    adei: 40.7712,
+    p1: 41.61,
+    p2: 55.99,
+    p3: 49.37,
+    p4: 59.56,
+    p5: 22.43,
+    p6: 27.92,
+    p7: 12.01,
+    p8: 16.94,
+    p9: 70.34,
   },
   {
     name: "Iran, Islamic Rep.",
     rank: 21,
-    adei: 33.91,
-    p1: 19.3,
-    p2: 42.9,
-    p3: 15.0,
-    p4: 65.6,
-    p5: 21.2,
-    p6: 7.4,
-    p7: 43.7,
-    p8: 93.0,
-    p9: 73.0,
+    adei: 40.3936,
+    p1: 18.57,
+    p2: 43.03,
+    p3: 14.95,
+    p4: 65.64,
+    p5: 20.53,
+    p6: 6.97,
+    p7: 44.01,
+    p8: 92.89,
+    p9: 73.32,
   },
   {
     name: "Bangladesh",
     rank: 22,
-    adei: 21.64,
-    p1: 43.8,
-    p2: 38.1,
-    p3: 24.3,
+    adei: 39.0052,
+    p1: 43.48,
+    p2: 51.74,
+    p3: 20.25,
     p4: 65.7,
-    p5: 15.7,
-    p6: 6.7,
-    p7: 13.4,
-    p8: 2.8,
-    p9: 61.5,
+    p5: 15.89,
+    p6: 25.96,
+    p7: 31.82,
+    p8: 19.19,
+    p9: 63.37,
   },
   {
     name: "Brunei Darussalam",
     rank: 23,
-    adei: 36.61,
-    p1: 64.4,
-    p2: 52.6,
-    p3: 22.4,
-    p4: 75.5,
-    p5: 20.9,
-    p6: 7.4,
-    p7: 62.3,
-    p8: 11.4,
-    p9: 73.0,
+    adei: 37.0481,
+    p1: 63.52,
+    p2: 52.5,
+    p3: 22.41,
+    p4: 75.54,
+    p5: 20.93,
+    p6: 6.97,
+    p7: 13.14,
+    p8: 3.04,
+    p9: 61.39,
   },
   {
     name: "Pakistan",
     rank: 24,
-    adei: 30.05,
-    p1: 40.7,
-    p2: 28.6,
-    p3: 34.6,
-    p4: 51.0,
-    p5: 12.7,
-    p6: 55.5,
-    p7: 11.3,
-    p8: 20.5,
-    p9: 46.4,
+    adei: 35.7656,
+    p1: 39.32,
+    p2: 35.18,
+    p3: 23.7,
+    p4: 50.96,
+    p5: 27.85,
+    p6: 39.9,
+    p7: 39.55,
+    p8: 8.97,
+    p9: 48.97,
   },
   {
     name: "Nigeria",
     rank: 25,
-    adei: 26.76,
-    p1: 57.9,
-    p2: 32.4,
-    p3: 27.0,
-    p4: 48.1,
-    p5: 22.1,
-    p6: 28.8,
-    p7: 11.0,
-    p8: 16.3,
-    p9: 55.1,
+    adei: 35.6966,
+    p1: 41.35,
+    p2: 28.85,
+    p3: 35.18,
+    p4: 48.14,
+    p5: 13.3,
+    p6: 55.51,
+    p7: 10.86,
+    p8: 21.38,
+    p9: 46.19,
   },
   {
     name: "Benin",
     rank: 26,
-    adei: 25.42,
-    p1: 47.4,
-    p2: 18.3,
-    p3: 15.2,
-    p4: 45.8,
-    p5: 18.9,
-    p6: 49.6,
-    p7: 10.7,
-    p8: 25.1,
-    p9: 48.3,
+    adei: 34.5709,
+    p1: 58.25,
+    p2: 32.05,
+    p3: 27.26,
+    p4: 45.78,
+    p5: 22.19,
+    p6: 29.02,
+    p7: 11.25,
+    p8: 16.43,
+    p9: 54.9,
   },
   {
     name: "Uganda",
     rank: 27,
-    adei: 23.5,
-    p1: 54.2,
-    p2: 17.2,
-    p3: 26.7,
-    p4: 44.6,
-    p5: 7.9,
-    p6: 31.2,
-    p7: 9.8,
-    p8: 17.8,
-    p9: 56.8,
+    adei: 32.6323,
+    p1: 47.48,
+    p2: 18.49,
+    p3: 15.35,
+    p4: 44.64,
+    p5: 18.67,
+    p6: 49.85,
+    p7: 10.95,
+    p8: 24.51,
+    p9: 47.8,
   },
   {
     name: "Cote d'Ivoire",
     rank: 28,
-    adei: 27.64,
-    p1: 22.6,
-    p2: 38.7,
-    p3: 24.0,
-    p4: 53.7,
-    p5: 14.2,
-    p6: 6.7,
-    p7: 61.8,
-    p8: 11.2,
-    p9: 52.2,
+    adei: 32.4507,
+    p1: 54.26,
+    p2: 16.92,
+    p3: 26.81,
+    p4: 55.87,
+    p5: 7.57,
+    p6: 30.75,
+    p7: 10.39,
+    p8: 17.8,
+    p9: 56.95,
   },
   {
     name: "Lebanon",
     rank: 29,
-    adei: 24.3,
-    p1: 37.0,
-    p2: 24.1,
-    p3: 27.0,
-    p4: 43.0,
-    p5: 22.4,
-    p6: 28.3,
-    p7: 23.1,
-    p8: 17.8,
-    p9: 50.1,
+    adei: 31.5292,
+    p1: 23.34,
+    p2: 39.49,
+    p3: 24.09,
+    p4: 54.49,
+    p5: 14.24,
+    p6: 6.97,
+    p7: 61.95,
+    p8: 11.3,
+    p9: 51.65,
   },
   {
     name: "Cameroon",
     rank: 30,
-    adei: 22.17,
-    p1: 31.4,
-    p2: 19.8,
-    p3: 27.0,
-    p4: 42.9,
-    p5: 17.4,
-    p6: 7.1,
-    p7: 28.8,
-    p8: 15.0,
-    p9: 62.2,
+    adei: 30.7031,
+    p1: 36.74,
+    p2: 23.77,
+    p3: 27.43,
+    p4: 42.94,
+    p5: 22.42,
+    p6: 28.43,
+    p7: 23.49,
+    p8: 18.25,
+    p9: 50.31,
   },
   {
     name: "Tajikistan",
     rank: 31,
-    adei: 21.88,
-    p1: 21.6,
-    p2: 20.3,
-    p3: 27.0,
-    p4: 56.1,
-    p5: 19.5,
-    p6: 27.6,
-    p7: 13.3,
-    p8: 16.4,
-    p9: 43.1,
+    adei: 27.0826,
+    p1: 22.26,
+    p2: 20.05,
+    p3: 26.75,
+    p4: 56.05,
+    p5: 17.38,
+    p6: 6.97,
+    p7: 28.52,
+    p8: 14.76,
+    p9: 62.12,
   },
   {
     name: "Mali",
     rank: 32,
-    adei: 20.26,
-    p1: 44.0,
-    p2: 7.7,
-    p3: 10.7,
-    p4: 30.1,
-    p5: 8.4,
-    p6: 6.7,
-    p7: 10.0,
-    p8: 2.7,
-    p9: 76.8,
+    adei: 27.0186,
+    p1: 32.19,
+    p2: 23.91,
+    p3: 32.12,
+    p4: 30.05,
+    p5: 19.81,
+    p6: 27.85,
+    p7: 12.89,
+    p8: 16.03,
+    p9: 43.26,
   },
   {
     name: "Maldives",
     rank: 33,
-    adei: 21.71,
-    p1: 33.6,
-    p2: 26.8,
-    p3: 19.7,
-    p4: 39.2,
-    p5: 13.3,
-    p6: 6.7,
-    p7: 13.4,
-    p8: 17.2,
-    p9: 53.8,
+    adei: 26.0918,
+    p1: 44.03,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 67.45,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 76.89,
   },
   {
     name: "Togo",
     rank: 34,
-    adei: 20.55,
-    p1: 43.5,
-    p2: 8.0,
-    p3: 11.0,
-    p4: 64.0,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 68.2,
+    adei: 25.1569,
+    p1: 33.65,
+    p2: 27.4,
+    p3: 19.75,
+    p4: 39.2,
+    p5: 13.12,
+    p6: 6.97,
+    p7: 12.91,
+    p8: 16.81,
+    p9: 54.31,
   },
   {
     name: "Suriname",
     rank: 35,
-    adei: 22.83,
-    p1: 37.8,
-    p2: 16.3,
-    p3: 34.1,
-    p4: 28.0,
-    p5: 14.8,
-    p6: 13.3,
-    p7: 12.0,
-    p8: 19.1,
-    p9: 44.4,
+    adei: 24.6809,
+    p1: 43.38,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 63.65,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 67.54,
   },
   {
     name: "Mozambique",
     rank: 36,
-    adei: 18.7,
-    p1: 38.7,
-    p2: 22.8,
-    p3: 12.7,
-    p4: 35.0,
-    p5: 22.8,
-    p6: 18.2,
-    p7: 12.2,
-    p8: 2.9,
-    p9: 51.0,
+    adei: 24.6482,
+    p1: 38.49,
+    p2: 16.38,
+    p3: 34.01,
+    p4: 28.48,
+    p5: 14.89,
+    p6: 13.18,
+    p7: 11.8,
+    p8: 18.95,
+    p9: 43.72,
   },
   {
     name: "Mauritania",
     rank: 37,
-    adei: 19.18,
-    p1: 41.0,
-    p2: 14.2,
-    p3: 31.7,
-    p4: 29.1,
-    p5: 13.5,
-    p6: 12.6,
-    p7: 15.3,
-    p8: 13.5,
-    p9: 44.1,
+    adei: 24.5964,
+    p1: 39.02,
+    p2: 22.86,
+    p3: 13.33,
+    p4: 34.91,
+    p5: 23.01,
+    p6: 18.27,
+    p7: 11.99,
+    p8: 3.04,
+    p9: 50.97,
   },
   {
     name: "Burkina Faso",
     rank: 38,
-    adei: 17.64,
-    p1: 31.3,
-    p2: 8.2,
-    p3: 11.0,
-    p4: 29.0,
-    p5: 8.4,
-    p6: 6.7,
-    p7: 9.5,
-    p8: 24.0,
-    p9: 57.4,
+    adei: 24.005,
+    p1: 41.09,
+    p2: 13.69,
+    p3: 31.69,
+    p4: 28.95,
+    p5: 14.0,
+    p6: 12.52,
+    p7: 14.75,
+    p8: 13.17,
+    p9: 43.57,
   },
   {
     name: "Gabon",
     rank: 39,
-    adei: 20.05,
-    p1: 43.4,
-    p2: 8.1,
+    adei: 23.1937,
+    p1: 30.6,
+    p2: 8.17,
     p3: 10.6,
-    p4: 54.3,
-    p5: 8.4,
-    p6: 7.1,
-    p7: 9.8,
-    p8: 2.9,
-    p9: 55.6,
+    p4: 57.41,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 24.29,
+    p9: 56.84,
   },
   {
     name: "Guyana",
     rank: 40,
-    adei: 19.24,
-    p1: 41.5,
-    p2: 10.9,
-    p3: 11.3,
-    p4: 30.2,
-    p5: 8.4,
-    p6: 14.2,
-    p7: 10.2,
-    p8: 10.0,
-    p9: 53.7,
+    adei: 22.4837,
+    p1: 42.86,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 54.43,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 55.59,
   },
   {
     name: "Sierra Leone",
     rank: 41,
-    adei: 17.04,
-    p1: 15.8,
-    p2: 8.4,
-    p3: 11.0,
-    p4: 46.4,
-    p5: 8.4,
-    p6: 6.7,
-    p7: 9.5,
-    p8: 6.8,
-    p9: 64.0,
+    adei: 21.8553,
+    p1: 41.7,
+    p2: 10.77,
+    p3: 10.6,
+    p4: 30.42,
+    p5: 7.57,
+    p6: 13.84,
+    p7: 10.39,
+    p8: 9.59,
+    p9: 54.3,
   },
   {
     name: "Iraq",
     rank: 42,
-    adei: 18.05,
-    p1: 26.4,
-    p2: 8.2,
-    p3: 12.5,
-    p4: 40.4,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 10.0,
-    p9: 48.0,
+    adei: 18.8718,
+    p1: 16.3,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 45.72,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 7.1,
+    p9: 63.95,
   },
   {
     name: "Guinea",
     rank: 43,
-    adei: 16.12,
-    p1: 41.3,
-    p2: 8.0,
-    p3: 10.5,
-    p4: 26.2,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 10.0,
-    p8: 2.9,
-    p9: 49.2,
+    adei: 18.7678,
+    p1: 25.88,
+    p2: 8.17,
+    p3: 13.08,
+    p4: 40.06,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 10.34,
+    p9: 48.49,
   },
   {
     name: "Gambia, The",
     rank: 44,
-    adei: 16.51,
-    p1: 30.0,
-    p2: 10.4,
-    p3: 20.8,
-    p4: 21.5,
-    p5: 17.1,
-    p6: 7.0,
-    p7: 21.3,
-    p8: 2.9,
-    p9: 37.3,
+    adei: 18.6569,
+    p1: 41.11,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 25.52,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 48.86,
   },
   {
     name: "Niger",
     rank: 45,
-    adei: 14.19,
-    p1: 53.5,
-    p2: 9.3,
-    p3: 10.6,
-    p4: 7.0,
-    p5: 8.4,
-    p6: 7.6,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 35.4,
+    adei: 18.264,
+    p1: 30.38,
+    p2: 9.66,
+    p3: 21.03,
+    p4: 21.16,
+    p5: 17.12,
+    p6: 6.97,
+    p7: 21.45,
+    p8: 3.04,
+    p9: 36.87,
   },
   {
     name: "Yemen",
     rank: 46,
-    adei: 16.03,
-    p1: 17.4,
-    p2: 8.4,
-    p3: 10.7,
-    p4: 48.5,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 52.1,
+    adei: 17.689,
+    p1: 54.12,
+    p2: 9.33,
+    p3: 11.06,
+    p4: 6.69,
+    p5: 7.57,
+    p6: 7.99,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 34.76,
   },
   {
     name: "Turkmenistan",
     rank: 47,
-    adei: 15.91,
-    p1: 24.0,
-    p2: 14.5,
-    p3: 20.4,
-    p4: 18.7,
-    p5: 8.4,
-    p6: 14.2,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 35.4,
+    adei: 17.5372,
+    p1: 16.61,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 47.57,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 52.35,
   },
   {
     name: "Chad",
     rank: 48,
-    adei: 13.95,
-    p1: 28.5,
-    p2: 8.1,
-    p3: 10.5,
-    p4: 29.2,
-    p5: 8.4,
-    p6: 6.7,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 45.8,
+    adei: 16.886,
+    p1: 24.43,
+    p2: 13.95,
+    p3: 19.7,
+    p4: 17.85,
+    p5: 7.57,
+    p6: 14.14,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 35.3,
   },
   {
     name: "Djibouti",
     rank: 49,
-    adei: 13.91,
-    p1: 26.0,
-    p2: 8.0,
-    p3: 10.5,
-    p4: 48.4,
-    p5: 8.4,
-    p6: 7.1,
-    p7: 10.0,
-    p8: 2.9,
-    p9: 48.4,
+    adei: 16.7077,
+    p1: 27.66,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 29.1,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 45.95,
   },
   {
     name: "Comoros",
     rank: 50,
-    adei: 13.23,
-    p1: 26.5,
-    p2: 8.0,
-    p3: 10.5,
-    p4: 31.1,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 10.0,
-    p8: 2.9,
-    p9: 41.0,
+    adei: 16.3068,
+    p1: 25.66,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 25.86,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 48.18,
   },
   {
     name: "Guinea-Bissau",
     rank: 51,
-    adei: 12.96,
-    p1: 50.1,
-    p2: 8.0,
-    p3: 10.5,
-    p4: 7.0,
-    p5: 8.4,
-    p6: 6.7,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 19.5,
+    adei: 16.1988,
+    p1: 26.48,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 30.83,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 40.9,
   },
   {
     name: "Palestine",
     rank: 52,
-    adei: 14.8,
-    p1: 6.0,
-    p2: 8.1,
-    p3: 10.5,
-    p4: 39.5,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 46.5,
+    adei: 15.1582,
+    p1: 49.94,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 6.69,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 19.45,
   },
   {
     name: "Syrian Arab Republic",
     rank: 53,
-    adei: 11.53,
-    p1: 11.0,
-    p2: 8.1,
-    p3: 10.5,
-    p4: 55.3,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 19.5,
+    adei: 14.4342,
+    p1: 5.61,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 38.87,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 46.52,
   },
   {
     name: "Libya",
     rank: 54,
-    adei: 11.08,
-    p1: 10.2,
-    p2: 8.2,
-    p3: 10.8,
-    p4: 28.2,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 35.5,
+    adei: 14.1504,
+    p1: 11.24,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 54.66,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 19.45,
   },
   {
     name: "Sudan",
     rank: 55,
-    adei: 10.95,
-    p1: 11.2,
-    p2: 8.1,
-    p3: 10.5,
-    p4: 21.3,
-    p5: 8.4,
-    p6: 6.7,
-    p7: 9.5,
-    p8: 3.2,
-    p9: 34.3,
+    adei: 12.7881,
+    p1: 9.95,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 27.59,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 34.83,
   },
   {
     name: "Afghanistan",
     rank: 56,
-    adei: 12.28,
-    p1: 6.0,
-    p2: 8.2,
-    p3: 10.8,
-    p4: 19.0,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 33.4,
+    adei: 12.2767,
+    p1: 11.19,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 20.83,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.36,
+    p9: 34.31,
   },
   {
     name: "Somalia",
     rank: 57,
-    adei: 10.91,
-    p1: 6.4,
-    p2: 8.1,
-    p3: 10.5,
-    p4: 18.6,
-    p5: 8.4,
-    p6: 7.0,
-    p7: 9.5,
-    p8: 2.9,
-    p9: 24.0,
+    adei: 11.124,
+    p1: 6.17,
+    p2: 8.17,
+    p3: 10.6,
+    p4: 18.64,
+    p5: 7.57,
+    p6: 6.97,
+    p7: 10.39,
+    p8: 3.04,
+    p9: 32.82,
   },
 ];
 
 const TREND_DATA = {
-  "United Arab Emirates": [63.5, 67.2, 71.0, 73.7, 76.84],
-  "Saudi Arabia": [56.9, 60.0, 62.5, 65.5, 67.77],
-  Malaysia: [60.1, 63.0, 65.0, 67.0, 66.98],
-  Indonesia: [50.2, 53.0, 56.0, 58.6, 61.57],
-  Qatar: [49.0, 51.0, 52.5, 53.0, 55.14],
-  Türkiye: [52.0, 55.0, 57.5, 59.0, 60.99],
-  Kazakhstan: [48.0, 51.0, 54.0, 56.0, 57.86],
-  Jordan: [44.0, 47.0, 49.5, 51.0, 52.94],
-  "OIC Average": [29.0, 31.0, 33.0, 35.0, 37.2],
+  "United Arab Emirates": [70.22, 71.05, 73.71, 75.24, 76.84],
+  Malaysia: [71.08, 71.61, 70.68, 72.92, 71.98],
+  "Saudi Arabia": [56.98, 61.0, 68.42, 66.7, 67.77],
+  Qatar: [null, null, null, null, 66.44],
+  Indonesia: [51.46, 55.93, 58.6, 60.08, 61.57],
+  Türkiye: [54.96, 55.86, 48.44, 59.07, 60.71],
+  Kazakhstan: [50.07, 53.58, 57.16, 57.07, 57.78],
+  Jordan: [47.0, 46.57, 48.94, 49.46, 52.94],
+  Tunisia: [48.44, 55.3, 51.41, 51.04, 52.59],
+  Morocco: [49.69, 48.12, 51.22, 49.76, 52.43],
+  Oman: [48.23, 52.36, 50.9, 51.38, 52.4],
+  Uzbekistan: [32.66, 43.13, 41.45, 47.24, 51.72],
+  Bahrain: [52.7, 51.69, 48.48, 50.26, 50.81],
+  Egypt: [35.31, 43.48, 47.42, 48.96, 50.61],
+  Kuwait: [51.15, 47.91, 49.67, 48.8, 47.47],
+  Albania: [38.38, 43.68, 44.27, 43.6, 45.34],
+  Senegal: [33.66, 39.91, 39.2, 41.17, 43.07],
+  "Kyrgyz Republic": [29.94, 26.27, 25.96, 25.63, 41.84],
+  Azerbaijan: [39.64, 43.07, 44.37, 43.35, 41.78],
+  Algeria: [33.6, 35.21, 39.12, 38.27, 40.77],
+  "OIC Average": [30.66, 32.96, 33.03, 33.13, 34.44],
 };
 
 const YEARS = [2021, 2022, 2023, 2024, 2025];
 
 const getCluster = (adei) => {
   if (adei >= 60)
-    return { label: "Digital Leaders", color: "#10B981", bg: "#064E3B" };
+    return {
+      label: "Advanced Digital Economies",
+      color: "#10B981",
+      bg: "#064E3B",
+    };
   if (adei >= 40)
-    return { label: "Digital Adopters", color: "#F59E0B", bg: "#451A03" };
-  return { label: "Emerging Digital", color: "#EF4444", bg: "#450A0A" };
+    return {
+      label: "Emerging Digital Economies",
+      color: "#F59E0B",
+      bg: "#451A03",
+    };
+  return {
+    label: "Foundational Digital Economies",
+    color: "#EF4444",
+    bg: "#450A0A",
+  };
 };
 
 const OIC_AVERAGE =
@@ -1158,19 +1177,19 @@ function GlobalOverview() {
 
   const clusterData = [
     {
-      name: "Digital Leaders",
+      name: "Advanced Digital Economies",
       count: leaders.length,
       score: leaders.reduce((s, c) => s + c.adei, 0) / leaders.length,
       color: "#10B981",
     },
     {
-      name: "Digital Adopters",
+      name: "Emerging Digital Economies",
       count: adopters.length,
       score: adopters.reduce((s, c) => s + c.adei, 0) / adopters.length,
       color: "#F59E0B",
     },
     {
-      name: "Emerging Digital",
+      name: "Foundational Digital Economies",
       count: emerging.length,
       score: emerging.reduce((s, c) => s + c.adei, 0) / emerging.length,
       color: "#EF4444",
@@ -1195,7 +1214,7 @@ function GlobalOverview() {
             icon: "📊",
           },
           {
-            label: "Digital Leaders",
+            label: "Advanced Digital Economies",
             value: leaders.length,
             sub: "Score ≥ 60",
             icon: "🏆",
@@ -1599,7 +1618,7 @@ function CountryProfiles() {
       <div style={styles.grid4}>
         {[
           {
-            label: "ADEI Score",
+            label: "ODEI Score",
             value: country.adei.toFixed(1),
             color: cluster.color,
           },
@@ -1878,7 +1897,7 @@ function CompareCountries() {
         <>
           {/* Overall Score Comparison */}
           <div style={styles.card}>
-            <div style={styles.cardTitle}>🏅 Overall ADEI Score Comparison</div>
+            <div style={styles.cardTitle}>🏅 Overall ODEI Score Comparison</div>
             <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
               {countries
                 .sort((a, b) => b.adei - a.adei)
@@ -2256,227 +2275,6 @@ function PillarAnalysis() {
 }
 
 // ─── GEOGRAPHIC ANALYSIS TAB ─────────────────────────────────────────────────
-// ISO numeric → country lookup for OIC members (world-atlas numeric codes)
-const OIC_ISO_MAP = {
-  784: "United Arab Emirates",
-  682: "Saudi Arabia",
-  458: "Malaysia",
-  360: "Indonesia",
-  634: "Qatar",
-  792: "Türkiye",
-  398: "Kazakhstan",
-  400: "Jordan",
-  788: "Tunisia",
-  504: "Morocco",
-  512: "Oman",
-  414: "Kuwait",
-  48: "Bahrain",
-  586: "Pakistan",
-  50: "Bangladesh",
-  818: "Egypt",
-  12: "Algeria",
-  434: "Libya",
-  729: "Sudan",
-  686: "Senegal",
-  566: "Nigeria",
-  204: "Benin",
-  384: "Cote d'Ivoire",
-  324: "Guinea",
-  624: "Guinea-Bissau",
-  466: "Mali",
-  854: "Burkina Faso",
-  562: "Niger",
-  270: "Gambia, The",
-  768: "Togo",
-  478: "Mauritania",
-  694: "Sierra Leone",
-  120: "Cameroon",
-  266: "Gabon",
-  800: "Uganda",
-  706: "Somalia",
-  262: "Djibouti",
-  174: "Comoros",
-  508: "Mozambique",
-  8: "Albania",
-  328: "Guyana",
-  740: "Suriname",
-  4: "Afghanistan",
-  31: "Azerbaijan",
-  860: "Uzbekistan",
-  417: "Kyrgyz Republic",
-  762: "Tajikistan",
-  795: "Turkmenistan",
-  96: "Brunei Darussalam",
-  462: "Maldives",
-  760: "Syrian Arab Republic",
-  887: "Yemen",
-  275: "Palestine",
-  364: "Iran, Islamic Rep.",
-  368: "Iraq",
-  422: "Lebanon",
-};
-
-const COUNTRY_BY_NAME = Object.fromEntries(COUNTRIES.map((c) => [c.name, c]));
-
-function OICWorldMap() {
-  const [tooltip, setTooltip] = useState(null);
-  const geoUrl =
-    "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
-
-  const getColor = (adei) => {
-    if (adei === undefined) return "#1E3A5F";
-    if (adei >= 60) return "#10B981";
-    if (adei >= 40) return "#F59E0B";
-    return "#EF4444";
-  };
-
-  return (
-    <div style={{ ...styles.card, position: "relative" }}>
-      <div style={styles.cardTitle}>🗺 OIC Member Countries — World Map</div>
-      <div
-        style={{
-          display: "flex",
-          gap: "16px",
-          marginBottom: "8px",
-          flexWrap: "wrap",
-        }}
-      >
-        {[
-          { label: "Leaders (≥60)", color: "#10B981" },
-          { label: "Adopters (40–59)", color: "#F59E0B" },
-          { label: "Emerging (<40)", color: "#EF4444" },
-          { label: "Non-indexed member", color: "#1E3A5F" },
-          { label: "Non-member", color: "#0A1628" },
-        ].map((l) => (
-          <div
-            key={l.label}
-            style={{ display: "flex", alignItems: "center", gap: "6px" }}
-          >
-            <div
-              style={{
-                width: 12,
-                height: 12,
-                borderRadius: 2,
-                background: l.color,
-                border: "1px solid #1E3A5F",
-              }}
-            />
-            <span style={{ fontSize: "11px", color: "#94A3B8" }}>
-              {l.label}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div
-        style={{
-          background: "#050E1E",
-          borderRadius: "8px",
-          overflow: "hidden",
-          border: "1px solid #1E3A5F",
-        }}
-      >
-        <ComposableMap
-          projectionConfig={{ scale: 140, center: [20, 15] }}
-          style={{ width: "100%", height: "420px" }}
-        >
-          <ZoomableGroup>
-            <Geographies geography={geoUrl}>
-              {({ geographies }) =>
-                geographies.map((geo) => {
-                  const numId = parseInt(geo.id, 10);
-                  const countryName = OIC_ISO_MAP[numId];
-                  const countryData = countryName
-                    ? COUNTRY_BY_NAME[countryName]
-                    : null;
-                  const isOIC = !!countryName;
-                  const fillColor = isOIC
-                    ? getColor(countryData?.adei)
-                    : "#0A1628";
-                  return (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      fill={fillColor}
-                      stroke="#0D2137"
-                      strokeWidth={0.5}
-                      style={{
-                        default: { outline: "none" },
-                        hover: {
-                          outline: "none",
-                          fill: isOIC ? "#C9A227" : "#162032",
-                          cursor: isOIC ? "pointer" : "default",
-                        },
-                        pressed: { outline: "none" },
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isOIC) return;
-                        setTooltip({
-                          name: countryName,
-                          adei: countryData?.adei,
-                          rank: countryData?.rank,
-                          x: e.clientX,
-                          y: e.clientY,
-                        });
-                      }}
-                      onMouseMove={(e) => {
-                        if (!isOIC) return;
-                        setTooltip((t) =>
-                          t ? { ...t, x: e.clientX, y: e.clientY } : t,
-                        );
-                      }}
-                      onMouseLeave={() => setTooltip(null)}
-                    />
-                  );
-                })
-              }
-            </Geographies>
-          </ZoomableGroup>
-        </ComposableMap>
-      </div>
-      {tooltip && (
-        <div
-          style={{
-            position: "fixed",
-            left: tooltip.x + 12,
-            top: tooltip.y - 10,
-            background: "#0A2040",
-            border: "1px solid #C9A22740",
-            borderRadius: "8px",
-            padding: "8px 12px",
-            pointerEvents: "none",
-            zIndex: 9999,
-            minWidth: "150px",
-          }}
-        >
-          <div style={{ fontSize: "12px", fontWeight: 700, color: "#E2E8F0" }}>
-            {tooltip.name}
-          </div>
-          {tooltip.adei !== undefined ? (
-            <>
-              <div
-                style={{
-                  fontSize: "18px",
-                  fontWeight: 900,
-                  color: getColor(tooltip.adei),
-                }}
-              >
-                {tooltip.adei.toFixed(1)}
-              </div>
-              <div style={{ fontSize: "11px", color: "#64748B" }}>
-                Rank #{tooltip.rank}
-              </div>
-            </>
-          ) : (
-            <div style={{ fontSize: "11px", color: "#64748B" }}>
-              OIC Member (not indexed)
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 function GeographicAnalysis() {
   const regionGroups = {};
   COUNTRIES.forEach((c) => {
@@ -2518,8 +2316,6 @@ function GeographicAnalysis() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      {/* World Map */}
-      <OICWorldMap />
       {/* Region Summary Cards */}
       <div
         style={{
@@ -2538,12 +2334,11 @@ function GeographicAnalysis() {
           >
             <div
               style={{
-                fontSize: "11px",
+                fontSize: "10px",
                 color: REGION_COLORS[r.region] || "#C9A227",
                 fontWeight: 700,
                 marginBottom: "8px",
                 textTransform: "uppercase",
-                fontSize: "10px",
               }}
             >
               {r.region}
@@ -2571,7 +2366,7 @@ function GeographicAnalysis() {
 
       {/* Regional Average Chart */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>📊 Regional Average ADEI Scores</div>
+        <div style={styles.cardTitle}>📊 Regional Average ODEI Scores</div>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart
             data={regionStats.map((r) => ({
@@ -2723,7 +2518,7 @@ function TrendsProgress() {
       {/* Trend Lines */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          📈 ADEI Score Trends 2021–2025 (Top Countries + OIC Avg)
+          📈 ODEI Score Trends 2021–2025 (Top Countries + OIC Avg)
         </div>
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={lineData}>
@@ -2911,7 +2706,7 @@ function RankingsExplorer() {
   });
 
   const exportCSV = () => {
-    const headers = ["Rank", "Country", "ADEI", ...PILLARS.map((p) => p.name)];
+    const headers = ["Rank", "Country", "ODEI", ...PILLARS.map((p) => p.name)];
     const rows = sorted.map((c) => [
       c.rank,
       c.name,
@@ -2923,7 +2718,7 @@ function RankingsExplorer() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "OIC_ADEI_Rankings.csv";
+    a.download = "OIC_ODEI_Rankings.csv";
     a.click();
   };
 
@@ -2979,7 +2774,7 @@ function RankingsExplorer() {
                 {[
                   ["rank", "#"],
                   ["name", "Country"],
-                  ["adei", "ADEI"],
+                  ["adei", "ODEI"],
                   ...PILLARS.map((p) => [p.key, p.short]),
                 ].map(([key, label]) => (
                   <th
@@ -3148,7 +2943,7 @@ function PolicyRecommendations() {
       });
     if (p.p6 < 40)
       recs.push({
-        pillar: "Tech Readiness",
+        pillar: "Future Tech",
         priority: "MEDIUM",
         action:
           "Create a national AI strategy and invest in cloud infrastructure. Attract foreign tech FDI through special economic zones and tax incentives for tech firms.",
@@ -3232,7 +3027,7 @@ function PolicyRecommendations() {
         >
           {country.name} is classified as a{" "}
           <strong style={{ color: cluster.color }}>{cluster.label}</strong> with
-          an ADEI score of{" "}
+          an ODEI score of{" "}
           <strong style={{ color: "#C9A227" }}>
             {country.adei.toFixed(1)}
           </strong>{" "}
@@ -3333,7 +3128,7 @@ function PolicyRecommendations() {
           {
             icon: "📶",
             title: "Bridging the Digital Divide",
-            desc: "The 66-point gap between UAE (77) and Somalia (11) demands urgent intra-OIC knowledge transfer. Establish OIC Digital Solidarity Fund modeled on Islamic Development Bank frameworks.",
+            desc: "The 65-point gap between UAE (77) and Somalia (11) demands urgent intra-OIC knowledge transfer. Establish OIC Digital Solidarity Fund modeled on Islamic Development Bank frameworks.",
           },
           {
             icon: "🕌",
@@ -3615,7 +3410,7 @@ function IslamicDigitalSpecial() {
                     </div>
                     <div>Innovation: {d.x.toFixed(1)}</div>
                     <div>Fin. Markets: {d.y.toFixed(1)}</div>
-                    <div>ADEI: {d.z.toFixed(1)}</div>
+                    <div>ODEI: {d.z.toFixed(1)}</div>
                   </div>
                 );
               }}
@@ -3756,7 +3551,7 @@ function CustomIndexBuilder() {
     return out;
   };
 
-  const computeCustomADEI = (country) => {
+  const computeCustomODEI = (country) => {
     const norm = normalize(weights);
     return PILLARS.reduce((s, p) => s + country[p.key] * norm[p.key], 0);
   };
@@ -3764,14 +3559,14 @@ function CustomIndexBuilder() {
   const customRanked = [...COUNTRIES]
     .map((c) => ({
       ...c,
-      customScore: parseFloat(computeCustomADEI(c).toFixed(2)),
+      customScore: parseFloat(computeCustomODEI(c).toFixed(2)),
     }))
     .sort((a, b) => b.customScore - a.customScore)
     .map((c, i) => ({ ...c, customRank: i + 1, rankChange: c.rank - (i + 1) }));
 
   const PRESETS = {
     official: {
-      label: "Official ADEI Weights",
+      label: "Official ODEI Weights",
       w: {
         p1: 15,
         p2: 15,
@@ -4297,7 +4092,7 @@ function PriorityMatrix() {
             ))}
         </select>
         <div style={{ fontSize: "13px", color: "#64748B" }}>
-          ADEI:{" "}
+          ODEI:{" "}
           <span style={{ color: "#C9A227", fontWeight: 700 }}>
             {country.adei.toFixed(1)}
           </span>{" "}
@@ -4632,8 +4427,8 @@ function PeerLearning() {
             }}
           >
             {[
-              { label: "ADEI Rank", value: `#${country.rank}` },
-              { label: "ADEI Score", value: country.adei.toFixed(1) },
+              { label: "ODEI Rank", value: `#${country.rank}` },
+              { label: "ODEI Score", value: country.adei.toFixed(1) },
               {
                 label: `${focusPillar.name} Score`,
                 value: country[pillarFocus].toFixed(1),
@@ -4704,7 +4499,7 @@ function PeerLearning() {
         <>
           <div style={styles.card}>
             <div style={styles.cardTitle}>
-              🤝 Best Peer Learners — Similar ADEI, Stronger in{" "}
+              🤝 Best Peer Learners — Similar ODEI, Stronger in{" "}
               {focusPillar.name}
             </div>
             <div
@@ -4757,7 +4552,7 @@ function PeerLearning() {
                     }}
                   >
                     <span style={{ fontSize: "12px", color: "#64748B" }}>
-                      ADEI Score
+                      ODEI Score
                     </span>
                     <span style={{ fontSize: "12px", color: "#C9A227" }}>
                       {peer.adei.toFixed(1)}
@@ -4846,7 +4641,7 @@ function PeerLearning() {
           </div>
           <div style={{ fontSize: "13px", color: "#64748B", marginTop: "8px" }}>
             {country.name} is among the top performers in {focusPillar.name}{" "}
-            relative to similar ADEI countries.
+            relative to similar ODEI countries.
           </div>
         </div>
       )}
@@ -4871,12 +4666,12 @@ function ExecutiveSummary() {
   );
   const regionRank = regionPeers.findIndex((c) => c.name === selected) + 1;
   const HEADLINE_REC = {
-    "Digital Leaders":
+    "Advanced Digital Economies":
       "Transition from digital follower to global standard-setter. Lead OIC in AI governance, digital export frameworks, and Islamic Fintech international standards.",
-    "Digital Adopters":
-      "Bridge the gap to Digital Leadership by targeting private-sector digital adoption, R&D investment, and advanced skills development.",
-    "Emerging Digital":
-      "Establish foundational digital infrastructure and implement nationwide digital literacy programs as the immediate national priority.",
+    "Emerging Digital Economies":
+      "Bridge the gap to Advanced Digital Economies status by targeting private-sector digital adoption, R&D investment, and advanced skills development.",
+    "Foundational Digital Economies":
+      "Establish core digital infrastructure and implement nationwide digital literacy programs as the immediate national priority.",
   };
 
   return (
@@ -4958,7 +4753,7 @@ function ExecutiveSummary() {
             >
               {country.adei.toFixed(1)}
             </div>
-            <div style={{ fontSize: "13px", color: "#64748B" }}>ADEI Score</div>
+            <div style={{ fontSize: "13px", color: "#64748B" }}>ODEI Score</div>
           </div>
         </div>
         <div
@@ -5710,7 +5505,7 @@ function StatisticalAnalysis() {
         <div
           style={{ marginBottom: "12px", fontSize: "12px", color: "#64748B" }}
         >
-          Regression: ADEI = {intercept.toFixed(1)} + {slope.toFixed(2)} ×{" "}
+          Regression: ODEI = {intercept.toFixed(1)} + {slope.toFixed(2)} ×{" "}
           {PILLARS.find((p) => p.key === selPillar)?.name}. Residuals show
           countries punching above/below predicted performance.
         </div>
@@ -5853,7 +5648,7 @@ function Methodology() {
       content: (
         <div>
           <p style={{ color: "#94A3B8", fontSize: "13px", lineHeight: 1.8 }}>
-            The ADEI, developed by Al-Khouri (2024), measures digital economy
+            The ODEI, developed by Al-Khouri (2024), measures digital economy
             maturity of OIC member states through{" "}
             <strong style={{ color: "#C9A227" }}>
               9 pillars, 32 indicators, and 21 sub-indicators
@@ -5935,7 +5730,7 @@ function Methodology() {
               border: "1px solid #1E3A5F",
             }}
           >
-            ADEI = Σ (Pillar_Score_i × Weight_i) for i = 1 to 9
+            ODEI = Σ (Pillar_Score_i × Weight_i) for i = 1 to 9
           </div>
         </div>
       ),
@@ -5949,13 +5744,13 @@ function Methodology() {
           </p>
           {[
             {
-              label: "Digital Leaders",
+              label: "Advanced Digital Economies",
               range: "Score ≥ 60",
               color: "#10B981",
               desc: "Top 6 states with global competitiveness in AI, E-Government, and digital infrastructure. Strategic priority: global innovation leadership.",
             },
             {
-              label: "Digital Adopters",
+              label: "Emerging Digital Economies",
               range: "Score 40–59",
               color: "#F59E0B",
               desc: "15 member states with solid digital foundations but bottlenecked by limited R&D, advanced skills, and venture capital. Priority: scaling private-sector digital adoption.",
@@ -6009,6 +5804,72 @@ function Methodology() {
               </p>
             </div>
           ))}
+        </div>
+      ),
+    },
+    sources: {
+      title: "📚 Data Sources",
+      content: (
+        <div>
+          <p style={{ color: "#94A3B8", fontSize: "13px", lineHeight: 1.8 }}>
+            All data sourced from internationally recognized, publicly available
+            datasets. The 2025 edition uses lagged data primarily from 2023–2024
+            reporting periods.
+          </p>
+          <table
+            style={{
+              width: "100%",
+              borderCollapse: "collapse",
+              fontSize: "12px",
+              marginTop: "12px",
+            }}
+          >
+            <thead>
+              <tr style={{ borderBottom: "1px solid #C9A22740" }}>
+                {["Indicator", "Code", "Source"].map((h) => (
+                  <th
+                    key={h}
+                    style={{
+                      padding: "8px",
+                      color: "#C9A227",
+                      textAlign: "left",
+                      fontFamily: "'Cinzel',serif",
+                      fontSize: "11px",
+                    }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {SOURCES.map((s, i) => (
+                <tr
+                  key={i}
+                  style={{
+                    borderBottom: "1px solid #050E1E",
+                    background: i % 2 === 0 ? "transparent" : "#050E1E10",
+                  }}
+                >
+                  <td style={{ padding: "7px 8px", color: "#E2E8F0" }}>
+                    {s.indicator}
+                  </td>
+                  <td
+                    style={{
+                      padding: "7px 8px",
+                      color: "#C9A227",
+                      fontFamily: "monospace",
+                    }}
+                  >
+                    {s.code}
+                  </td>
+                  <td style={{ padding: "7px 8px", color: "#94A3B8" }}>
+                    {s.source}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ),
     },
@@ -6119,7 +5980,7 @@ export default function App() {
         <div style={styles.headerPattern} />
         <div style={{ position: "relative" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <div style={{ fontSize: "36px" }}></div>
+            <div style={{ fontSize: "36px" }}>🌙</div>
             <div>
               <h1
                 style={{
@@ -6142,7 +6003,7 @@ export default function App() {
                   fontStyle: "italic",
                 }}
               >
-                Asian Digital Economy Index (ADEI) · 57 Member States · 2025
+                OIC Digital Economy Index (ODEI) · 57 Member States · 2025
                 Assessment
               </div>
             </div>

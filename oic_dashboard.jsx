@@ -117,7 +117,7 @@ const REGIONS = {
   Malaysia: "Southeast Asia",
   Indonesia: "Southeast Asia",
   "Brunei Darussalam": "Southeast Asia",
-  Maldives: "Southeast Asia",
+  Maldives: "South Asia",
   Kazakhstan: "Central Asia",
   Uzbekistan: "Central Asia",
   "Kyrgyz Republic": "Central Asia",
@@ -999,18 +999,18 @@ const getCluster = (adei) => {
     return {
       label: "Advanced Digital Economies",
       color: "#10B981",
-      bg: "#064E3B",
+      bg: "#D1FAE5",
     };
   if (adei >= 40)
     return {
       label: "Emerging Digital Economies",
       color: "#F59E0B",
-      bg: "#451A03",
+      bg: "#FEF3C7",
     };
   return {
     label: "Foundational Digital Economies",
     color: "#EF4444",
-    bg: "#450A0A",
+    bg: "#FEE2E2",
   };
 };
 
@@ -1021,13 +1021,13 @@ const OIC_AVERAGE =
 const styles = {
   app: {
     fontFamily: "'Cinzel', 'Georgia', serif",
-    background: "#030B1A",
+    background: "#F8FAFC",
     minHeight: "100vh",
-    color: "#E2E8F0",
+    color: "#1E293B",
   },
   header: {
     background:
-      "linear-gradient(135deg, #030B1A 0%, #0A1628 50%, #020810 100%)",
+      "linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 50%, #EFF6FF 100%)",
     borderBottom: "1px solid #C9A22740",
     padding: "24px 32px",
     position: "relative",
@@ -1046,8 +1046,8 @@ const styles = {
     display: "flex",
     overflowX: "auto",
     gap: "2px",
-    background: "#050E1E",
-    borderBottom: "1px solid #1E3A5F",
+    background: "#F1F5F9",
+    borderBottom: "1px solid #CBD5E1",
     padding: "0 16px",
   },
   tab: (active) => ({
@@ -1061,7 +1061,7 @@ const styles = {
     fontFamily: "'Cinzel', serif",
     letterSpacing: "0.03em",
     background: active
-      ? "linear-gradient(180deg, #0A2040 0%, #0D2B52 100%)"
+      ? "linear-gradient(180deg, #EEF2FF 0%, #DBEAFE 100%)"
       : "transparent",
     color: active ? "#C9A227" : "#64748B",
     borderBottom: active ? "2px solid #C9A227" : "2px solid transparent",
@@ -1069,8 +1069,8 @@ const styles = {
   }),
   content: { padding: "24px 32px", maxWidth: "1400px", margin: "0 auto" },
   card: {
-    background: "linear-gradient(135deg, #0A1628 0%, #0D1F3C 100%)",
-    border: "1px solid #1E3A5F",
+    background: "linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%)",
+    border: "1px solid #CBD5E1",
     borderRadius: "12px",
     padding: "20px",
   },
@@ -1092,7 +1092,7 @@ const styles = {
   scoreBar: (val, color) => ({
     height: "6px",
     borderRadius: "3px",
-    background: `linear-gradient(90deg, ${color} ${val}%, #1E3A5F ${val}%)`,
+    background: `linear-gradient(90deg, ${color} ${val}%, #CBD5E1 ${val}%)`,
     marginTop: "4px",
   }),
   badge: (color, bg) => ({
@@ -1112,14 +1112,14 @@ const styles = {
     height: "28px",
     borderRadius: "50%",
     background: "linear-gradient(135deg, #C9A227, #A07810)",
-    color: "#030B1A",
+    color: "#F8FAFC",
     fontSize: "12px",
     fontWeight: 900,
   },
   select: {
-    background: "#0A1628",
-    border: "1px solid #1E3A5F",
-    color: "#E2E8F0",
+    background: "#FFFFFF",
+    border: "1px solid #CBD5E1",
+    color: "#1E293B",
     borderRadius: "8px",
     padding: "8px 12px",
     fontSize: "13px",
@@ -1128,13 +1128,13 @@ const styles = {
     outline: "none",
   },
   tooltip: {
-    background: "#0A1628",
+    background: "#FFFFFF",
     border: "1px solid #C9A22740",
     borderRadius: "8px",
     padding: "10px 14px",
     fontSize: "12px",
     fontFamily: "'Cinzel', serif",
-    color: "#E2E8F0",
+    color: "#1E293B",
   },
 };
 
@@ -1147,7 +1147,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         {label}
       </div>
       {payload.map((p, i) => (
-        <div key={i} style={{ color: p.color || "#E2E8F0" }}>
+        <div key={i} style={{ color: p.color || "#1E293B" }}>
           {p.name}:{" "}
           <span style={{ fontWeight: 700 }}>
             {typeof p.value === "number" ? p.value.toFixed(1) : p.value}
@@ -1241,7 +1241,7 @@ function GlobalOverview() {
               {kpi.value}
             </div>
             <div
-              style={{ fontSize: "12px", color: "#94A3B8", marginTop: "4px" }}
+              style={{ fontSize: "12px", color: "#475569", marginTop: "4px" }}
             >
               {kpi.sub}
             </div>
@@ -1286,8 +1286,8 @@ function GlobalOverview() {
                           ? "linear-gradient(135deg,#C0C0C0,#A0A0A0)"
                           : i === 2
                             ? "linear-gradient(135deg,#CD7F32,#A05A00)"
-                            : "linear-gradient(135deg,#2D4A6B,#1E3A5F)",
-                    color: i < 3 ? "#030B1A" : "#94A3B8",
+                            : "linear-gradient(135deg,#475569,#CBD5E1)",
+                    color: i < 3 ? "#F8FAFC" : "#475569",
                     fontSize: "11px",
                   }}
                 >
@@ -1305,7 +1305,7 @@ function GlobalOverview() {
                       style={{
                         fontSize: "13px",
                         fontWeight: 600,
-                        color: "#E2E8F0",
+                        color: "#1E293B",
                       }}
                     >
                       {c.name}
@@ -1345,7 +1345,7 @@ function GlobalOverview() {
               <div
                 style={{
                   ...styles.rankBadge,
-                  background: "#2D1515",
+                  background: "#FEE2E2",
                   color: "#EF4444",
                   fontSize: "10px",
                 }}
@@ -1364,7 +1364,7 @@ function GlobalOverview() {
                     style={{
                       fontSize: "13px",
                       fontWeight: 600,
-                      color: "#E2E8F0",
+                      color: "#1E293B",
                     }}
                   >
                     {c.name}
@@ -1401,7 +1401,7 @@ function GlobalOverview() {
             <div
               key={cl.name}
               style={{
-                background: "#050E1E",
+                background: "#F1F5F9",
                 borderRadius: "10px",
                 padding: "16px",
                 border: `1px solid ${cl.color}40`,
@@ -1417,7 +1417,7 @@ function GlobalOverview() {
                 style={{
                   fontSize: "14px",
                   fontWeight: 700,
-                  color: "#E2E8F0",
+                  color: "#1E293B",
                   margin: "4px 0",
                 }}
               >
@@ -1440,9 +1440,9 @@ function GlobalOverview() {
         </div>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={pillarAvgs} barSize={30}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
-            <XAxis dataKey="name" tick={{ fill: "#94A3B8", fontSize: 11 }} />
-            <YAxis domain={[0, 100]} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <XAxis dataKey="name" tick={{ fill: "#475569", fontSize: 11 }} />
+            <YAxis domain={[0, 100]} tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="avg" name="OIC Average Score">
               {pillarAvgs.map((p, i) => (
@@ -1479,7 +1479,7 @@ function GlobalOverview() {
                     textAlign: "left",
                     padding: "6px 8px",
                     color: "#C9A227",
-                    borderBottom: "1px solid #1E3A5F",
+                    borderBottom: "1px solid #CBD5E1",
                   }}
                 >
                   Country
@@ -1490,7 +1490,7 @@ function GlobalOverview() {
                     style={{
                       padding: "6px 4px",
                       color: p.color,
-                      borderBottom: "1px solid #1E3A5F",
+                      borderBottom: "1px solid #CBD5E1",
                       textAlign: "center",
                       fontSize: "10px",
                     }}
@@ -1502,11 +1502,11 @@ function GlobalOverview() {
             </thead>
             <tbody>
               {sorted.slice(0, 20).map((c) => (
-                <tr key={c.name} style={{ borderBottom: "1px solid #0A1628" }}>
+                <tr key={c.name} style={{ borderBottom: "1px solid #FFFFFF" }}>
                   <td
                     style={{
                       padding: "5px 8px",
-                      color: "#E2E8F0",
+                      color: "#1E293B",
                       fontWeight: 600,
                       whiteSpace: "nowrap",
                     }}
@@ -1529,7 +1529,7 @@ function GlobalOverview() {
                             background: `rgba(${Math.round(intensity * 16)}, ${Math.round(intensity * 185)}, ${Math.round(intensity * 129)}, ${0.2 + intensity * 0.8})`,
                             borderRadius: "4px",
                             padding: "3px",
-                            color: intensity > 0.5 ? "#E2E8F0" : "#64748B",
+                            color: intensity > 0.5 ? "#1E293B" : "#64748B",
                             fontWeight: 600,
                             fontSize: "10px",
                           }}
@@ -1581,7 +1581,7 @@ function CountryProfiles() {
   const peerCompData = [country, ...peers].map((c) => ({
     name: c.name.length > 12 ? c.name.slice(0, 12) + "…" : c.name,
     Score: parseFloat(c.adei.toFixed(1)),
-    fill: c.name === selected ? "#C9A227" : "#1E3A5F",
+    fill: c.name === selected ? "#C9A227" : "#CBD5E1",
   }));
 
   return (
@@ -1610,7 +1610,7 @@ function CountryProfiles() {
           {cluster.label}
         </div>
         <div style={{ color: "#64748B", fontSize: "13px" }}>
-          Region: <span style={{ color: "#94A3B8" }}>{region}</span>
+          Region: <span style={{ color: "#475569" }}>{region}</span>
         </div>
       </div>
 
@@ -1672,10 +1672,10 @@ function CountryProfiles() {
           <div style={styles.cardTitle}>📡 Pillar Radar Profile</div>
           <ResponsiveContainer width="100%" height={280}>
             <RadarChart data={pillarData}>
-              <PolarGrid stroke="#1E3A5F" />
+              <PolarGrid stroke="#CBD5E1" />
               <PolarAngleAxis
                 dataKey="subject"
-                tick={{ fill: "#94A3B8", fontSize: 11 }}
+                tick={{ fill: "#475569", fontSize: 11 }}
               />
               <PolarRadiusAxis
                 domain={[0, 100]}
@@ -1705,7 +1705,7 @@ function CountryProfiles() {
                   marginBottom: "4px",
                 }}
               >
-                <span style={{ fontSize: "12px", color: "#94A3B8" }}>
+                <span style={{ fontSize: "12px", color: "#475569" }}>
                   {p.name}
                 </span>
                 <span
@@ -1718,7 +1718,7 @@ function CountryProfiles() {
                 style={{
                   height: "8px",
                   borderRadius: "4px",
-                  background: "#050E1E",
+                  background: "#F1F5F9",
                   overflow: "hidden",
                 }}
               >
@@ -1751,9 +1751,9 @@ function CountryProfiles() {
                 key={s}
                 style={{
                   fontSize: "13px",
-                  color: "#94A3B8",
+                  color: "#475569",
                   padding: "4px 0",
-                  borderBottom: "1px solid #0A1628",
+                  borderBottom: "1px solid #FFFFFF",
                 }}
               >
                 ✓ {s}
@@ -1775,9 +1775,9 @@ function CountryProfiles() {
                 key={w}
                 style={{
                   fontSize: "13px",
-                  color: "#94A3B8",
+                  color: "#475569",
                   padding: "4px 0",
-                  borderBottom: "1px solid #0A1628",
+                  borderBottom: "1px solid #FFFFFF",
                 }}
               >
                 ✗ {w}
@@ -1798,13 +1798,13 @@ function CountryProfiles() {
         </div>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={peerCompData} barSize={40}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
-            <XAxis dataKey="name" tick={{ fill: "#94A3B8", fontSize: 11 }} />
-            <YAxis domain={[0, 100]} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <XAxis dataKey="name" tick={{ fill: "#475569", fontSize: 11 }} />
+            <YAxis domain={[0, 100]} tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="Score">
               {peerCompData.map((d, i) => (
-                <Cell key={i} fill={i === 0 ? "#C9A227" : "#1E3A5F"} />
+                <Cell key={i} fill={i === 0 ? "#C9A227" : "#CBD5E1"} />
               ))}
             </Bar>
           </BarChart>
@@ -1878,11 +1878,11 @@ function CompareCountries() {
                   cursor: "pointer",
                   fontSize: "12px",
                   background: selected.includes(c.name)
-                    ? "#0A2040"
+                    ? "#EEF2FF"
                     : "transparent",
                   borderColor: selected.includes(c.name)
                     ? "#C9A227"
-                    : "#1E3A5F",
+                    : "#CBD5E1",
                   color: selected.includes(c.name) ? "#C9A227" : "#64748B",
                   fontFamily: "'Cinzel', serif",
                 }}
@@ -1924,7 +1924,7 @@ function CompareCountries() {
                     <div
                       style={{
                         fontSize: "11px",
-                        color: "#94A3B8",
+                        color: "#475569",
                         marginTop: "4px",
                       }}
                     >
@@ -1946,18 +1946,18 @@ function CompareCountries() {
                 <BarChart data={barData} layout="vertical" barSize={8}>
                   <CartesianGrid
                     strokeDasharray="3 3"
-                    stroke="#1E3A5F"
+                    stroke="#CBD5E1"
                     horizontal={false}
                   />
                   <XAxis
                     type="number"
                     domain={[0, 100]}
-                    tick={{ fill: "#94A3B8", fontSize: 10 }}
+                    tick={{ fill: "#475569", fontSize: 10 }}
                   />
                   <YAxis
                     type="category"
                     dataKey="name"
-                    tick={{ fill: "#94A3B8", fontSize: 10 }}
+                    tick={{ fill: "#475569", fontSize: 10 }}
                     width={70}
                   />
                   <Tooltip content={<CustomTooltip />} />
@@ -1983,10 +1983,10 @@ function CompareCountries() {
               <div style={styles.cardTitle}>📡 Radar Overlay</div>
               <ResponsiveContainer width="100%" height={320}>
                 <RadarChart data={radarData}>
-                  <PolarGrid stroke="#1E3A5F" />
+                  <PolarGrid stroke="#CBD5E1" />
                   <PolarAngleAxis
                     dataKey="subject"
-                    tick={{ fill: "#94A3B8", fontSize: 10 }}
+                    tick={{ fill: "#475569", fontSize: 10 }}
                   />
                   <PolarRadiusAxis
                     domain={[0, 100]}
@@ -2052,7 +2052,7 @@ function PillarAnalysis() {
               style={{
                 padding: "8px 16px",
                 borderRadius: "8px",
-                border: `1px solid ${i === pillarIdx ? p.color : "#1E3A5F"}`,
+                border: `1px solid ${i === pillarIdx ? p.color : "#CBD5E1"}`,
                 cursor: "pointer",
                 fontSize: "12px",
                 background: i === pillarIdx ? `${p.color}20` : "transparent",
@@ -2105,7 +2105,7 @@ function PillarAnalysis() {
         style={{
           ...styles.card,
           borderColor: `${pillar.color}40`,
-          background: `linear-gradient(135deg, #0A1628 0%, ${pillar.color}08 100%)`,
+          background: `linear-gradient(135deg, #FFFFFF 0%, ${pillar.color}08 100%)`,
         }}
       >
         <div style={{ ...styles.cardTitle, color: pillar.color }}>
@@ -2113,7 +2113,7 @@ function PillarAnalysis() {
         </div>
         <p
           style={{
-            color: "#94A3B8",
+            color: "#475569",
             fontSize: "14px",
             lineHeight: 1.7,
             margin: 0,
@@ -2136,15 +2136,15 @@ function PillarAnalysis() {
             }))}
             barSize={12}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#94A3B8", fontSize: 9 }}
+              tick={{ fill: "#475569", fontSize: 9 }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
-            <YAxis domain={[0, 100]} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <YAxis domain={[0, 100]} tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Bar
               dataKey="score"
@@ -2189,8 +2189,8 @@ function PillarAnalysis() {
                   background:
                     i < 3
                       ? "linear-gradient(135deg,#C9A227,#A07810)"
-                      : "#0A1628",
-                  color: i < 3 ? "#030B1A" : "#94A3B8",
+                      : "#FFFFFF",
+                  color: i < 3 ? "#F8FAFC" : "#475569",
                   fontSize: "10px",
                 }}
               >
@@ -2200,7 +2200,7 @@ function PillarAnalysis() {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <span style={{ fontSize: "12px", color: "#E2E8F0" }}>
+                  <span style={{ fontSize: "12px", color: "#1E293B" }}>
                     {c.name}
                   </span>
                   <span
@@ -2240,7 +2240,7 @@ function PillarAnalysis() {
                 <div
                   style={{
                     ...styles.rankBadge,
-                    background: "#2D1515",
+                    background: "#FEE2E2",
                     color: "#EF4444",
                     fontSize: "10px",
                   }}
@@ -2251,7 +2251,7 @@ function PillarAnalysis() {
                   <div
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
-                    <span style={{ fontSize: "12px", color: "#E2E8F0" }}>
+                    <span style={{ fontSize: "12px", color: "#1E293B" }}>
                       {c.name}
                     </span>
                     <span
@@ -2329,7 +2329,7 @@ function GeographicAnalysis() {
             key={r.region}
             style={{
               ...styles.card,
-              borderColor: `${REGION_COLORS[r.region] || "#1E3A5F"}40`,
+              borderColor: `${REGION_COLORS[r.region] || "#CBD5E1"}40`,
             }}
           >
             <div
@@ -2347,7 +2347,7 @@ function GeographicAnalysis() {
               style={{
                 fontSize: "24px",
                 fontWeight: 900,
-                color: REGION_COLORS[r.region] || "#E2E8F0",
+                color: REGION_COLORS[r.region] || "#1E293B",
               }}
             >
               {r.avg.toFixed(1)}
@@ -2375,19 +2375,19 @@ function GeographicAnalysis() {
             }))}
             barSize={35}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#94A3B8", fontSize: 10 }}
+              tick={{ fill: "#475569", fontSize: 10 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
-            <YAxis domain={[0, 80]} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <YAxis domain={[0, 80]} tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="avg" name="Regional Average">
               {regionStats.map((r, i) => (
-                <Cell key={i} fill={REGION_COLORS[r.region] || "#1E3A5F"} />
+                <Cell key={i} fill={REGION_COLORS[r.region] || "#CBD5E1"} />
               ))}
             </Bar>
             <ReferenceLine
@@ -2405,15 +2405,15 @@ function GeographicAnalysis() {
         <div style={styles.cardTitle}>🗺 Cluster Distribution by Region</div>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={clusterByRegion} barSize={20}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#94A3B8", fontSize: 10 }}
+              tick={{ fill: "#475569", fontSize: 10 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
-            <YAxis tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <YAxis tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: "11px" }} />
             <Bar dataKey="Leaders" fill="#10B981" stackId="a" />
@@ -2443,7 +2443,7 @@ function GeographicAnalysis() {
                   <div
                     key={c.name}
                     style={{
-                      background: "#050E1E",
+                      background: "#F1F5F9",
                       borderRadius: "8px",
                       padding: "8px 12px",
                       border: `1px solid ${cl.color}30`,
@@ -2454,7 +2454,7 @@ function GeographicAnalysis() {
                       style={{
                         fontSize: "12px",
                         fontWeight: 700,
-                        color: "#E2E8F0",
+                        color: "#1E293B",
                       }}
                     >
                       {c.name}
@@ -2492,7 +2492,7 @@ function TrendsProgress() {
     Türkiye: "#06B6D4",
     Kazakhstan: "#EF4444",
     Jordan: "#F97316",
-    "OIC Average": "#94A3B8",
+    "OIC Average": "#475569",
   };
 
   const lineData = YEARS.map((year, yi) => {
@@ -2522,9 +2522,9 @@ function TrendsProgress() {
         </div>
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={lineData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
-            <XAxis dataKey="year" tick={{ fill: "#94A3B8", fontSize: 11 }} />
-            <YAxis domain={[25, 80]} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <XAxis dataKey="year" tick={{ fill: "#475569", fontSize: 11 }} />
+            <YAxis domain={[25, 80]} tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{ fontSize: "11px", fontFamily: "'Cinzel', serif" }}
@@ -2550,9 +2550,9 @@ function TrendsProgress() {
           <div style={styles.cardTitle}>📊 Score Distribution (2025)</div>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={bins} barSize={28}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
-              <XAxis dataKey="range" tick={{ fill: "#94A3B8", fontSize: 10 }} />
-              <YAxis tick={{ fill: "#94A3B8", fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+              <XAxis dataKey="range" tick={{ fill: "#475569", fontSize: 10 }} />
+              <YAxis tick={{ fill: "#475569", fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} />
               <Bar
                 dataKey="count"
@@ -2566,7 +2566,7 @@ function TrendsProgress() {
             style={{
               marginTop: "12px",
               padding: "12px",
-              background: "#050E1E",
+              background: "#F1F5F9",
               borderRadius: "8px",
             }}
           >
@@ -2624,7 +2624,7 @@ function TrendsProgress() {
                     alignItems: "center",
                     gap: "8px",
                     padding: "5px 0",
-                    borderBottom: "1px solid #050E1E",
+                    borderBottom: "1px solid #F1F5F9",
                   }}
                 >
                   <div
@@ -2637,7 +2637,7 @@ function TrendsProgress() {
                   >
                     {i + 1}
                   </div>
-                  <div style={{ flex: 1, fontSize: "12px", color: "#E2E8F0" }}>
+                  <div style={{ flex: 1, fontSize: "12px", color: "#1E293B" }}>
                     {c.name}
                   </div>
                   <div
@@ -2654,7 +2654,7 @@ function TrendsProgress() {
                       width: "60px",
                       height: "4px",
                       borderRadius: "2px",
-                      background: "#050E1E",
+                      background: "#F1F5F9",
                       overflow: "hidden",
                     }}
                   >
@@ -2725,7 +2725,7 @@ function RankingsExplorer() {
   const SortIcon = ({ col }) => (
     <span
       style={{
-        color: sortBy === col ? "#C9A227" : "#1E3A5F",
+        color: sortBy === col ? "#C9A227" : "#CBD5E1",
         marginLeft: "4px",
       }}
     >
@@ -2746,7 +2746,7 @@ function RankingsExplorer() {
           onClick={exportCSV}
           style={{
             ...styles.select,
-            background: "#0A2040",
+            background: "#EEF2FF",
             color: "#C9A227",
             borderColor: "#C9A22740",
             cursor: "pointer",
@@ -2803,15 +2803,15 @@ function RankingsExplorer() {
                   <tr
                     key={c.name}
                     style={{
-                      borderBottom: "1px solid #050E1E",
-                      background: i % 2 === 0 ? "transparent" : "#050E1E10",
+                      borderBottom: "1px solid #F1F5F9",
+                      background: i % 2 === 0 ? "transparent" : "#64748B10",
                     }}
                   >
                     <td
                       style={{
                         padding: "8px",
                         textAlign: "center",
-                        color: "#94A3B8",
+                        color: "#475569",
                         fontWeight: 700,
                       }}
                     >
@@ -2820,7 +2820,7 @@ function RankingsExplorer() {
                     <td
                       style={{
                         padding: "8px",
-                        color: "#E2E8F0",
+                        color: "#1E293B",
                         fontWeight: 600,
                         whiteSpace: "nowrap",
                       }}
@@ -2859,7 +2859,7 @@ function RankingsExplorer() {
                               background: `rgba(${Math.round(intensity * 200)}, ${Math.round(intensity * 185)}, ${Math.round(30)}, ${0.15 + intensity * 0.5})`,
                               borderRadius: "4px",
                               padding: "2px 4px",
-                              color: "#E2E8F0",
+                              color: "#1E293B",
                               fontSize: "11px",
                               fontWeight: 600,
                             }}
@@ -2973,10 +2973,10 @@ function PolicyRecommendations() {
   const recs = generateRecommendations(country);
 
   const PRIORITY_STYLES = {
-    CRITICAL: { color: "#EF4444", bg: "#2D1515", border: "#EF4444" },
-    HIGH: { color: "#F59E0B", bg: "#1C1206", border: "#F59E0B" },
-    MEDIUM: { color: "#3B82F6", bg: "#0C1A2E", border: "#3B82F6" },
-    STRATEGIC: { color: "#10B981", bg: "#063122", border: "#10B981" },
+    CRITICAL: { color: "#EF4444", bg: "#FEE2E2", border: "#EF4444" },
+    HIGH: { color: "#F59E0B", bg: "#FEF3C7", border: "#F59E0B" },
+    MEDIUM: { color: "#3B82F6", bg: "#DBEAFE", border: "#3B82F6" },
+    STRATEGIC: { color: "#10B981", bg: "#D1FAE5", border: "#10B981" },
   };
 
   return (
@@ -3011,7 +3011,7 @@ function PolicyRecommendations() {
         style={{
           ...styles.card,
           borderColor: `${cluster.color}40`,
-          background: `linear-gradient(135deg, #0A1628, ${cluster.color}08)`,
+          background: `linear-gradient(135deg, #FFFFFF, ${cluster.color}08)`,
         }}
       >
         <div style={{ ...styles.cardTitle, color: cluster.color }}>
@@ -3019,7 +3019,7 @@ function PolicyRecommendations() {
         </div>
         <p
           style={{
-            color: "#94A3B8",
+            color: "#475569",
             fontSize: "13px",
             lineHeight: 1.8,
             margin: 0,
@@ -3086,7 +3086,7 @@ function PolicyRecommendations() {
                       style={{
                         fontSize: "14px",
                         fontWeight: 700,
-                        color: "#E2E8F0",
+                        color: "#1E293B",
                         fontFamily: "'Cinzel', serif",
                       }}
                     >
@@ -3106,7 +3106,7 @@ function PolicyRecommendations() {
                   </div>
                   <p
                     style={{
-                      color: "#94A3B8",
+                      color: "#475569",
                       fontSize: "13px",
                       lineHeight: 1.7,
                       margin: 0,
@@ -3152,7 +3152,7 @@ function PolicyRecommendations() {
               display: "flex",
               gap: "12px",
               padding: "12px 0",
-              borderBottom: "1px solid #0A1628",
+              borderBottom: "1px solid #FFFFFF",
             }}
           >
             <span style={{ fontSize: "20px" }}>{r.icon}</span>
@@ -3161,7 +3161,7 @@ function PolicyRecommendations() {
                 style={{
                   fontSize: "13px",
                   fontWeight: 700,
-                  color: "#E2E8F0",
+                  color: "#1E293B",
                   marginBottom: "4px",
                   fontFamily: "'Cinzel', serif",
                 }}
@@ -3243,15 +3243,15 @@ function DigitalDivide() {
         </div>
         <ResponsiveContainer width="100%" height={360}>
           <BarChart data={gapData} barSize={10}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#94A3B8", fontSize: 9 }}
+              tick={{ fill: "#475569", fontSize: 9 }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
-            <YAxis tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <YAxis tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
               y={0}
@@ -3280,11 +3280,11 @@ function DigitalDivide() {
                 display: "flex",
                 justifyContent: "space-between",
                 padding: "5px 0",
-                borderBottom: "1px solid #050E1E",
+                borderBottom: "1px solid #F1F5F9",
                 fontSize: "12px",
               }}
             >
-              <span style={{ color: "#E2E8F0" }}>{c.name}</span>
+              <span style={{ color: "#1E293B" }}>{c.name}</span>
               <span style={{ color: "#10B981", fontWeight: 700 }}>
                 +{(c.adei - oicAvg).toFixed(1)}
               </span>
@@ -3302,11 +3302,11 @@ function DigitalDivide() {
                 display: "flex",
                 justifyContent: "space-between",
                 padding: "5px 0",
-                borderBottom: "1px solid #050E1E",
+                borderBottom: "1px solid #F1F5F9",
                 fontSize: "12px",
               }}
             >
-              <span style={{ color: "#E2E8F0" }}>{c.name}</span>
+              <span style={{ color: "#1E293B" }}>{c.name}</span>
               <span style={{ color: "#EF4444", fontWeight: 700 }}>
                 {(c.adei - oicAvg).toFixed(1)}
               </span>
@@ -3337,7 +3337,7 @@ function IslamicDigitalSpecial() {
         style={{
           ...styles.card,
           borderColor: "#C9A22740",
-          background: "linear-gradient(135deg, #0A1628 0%, #C9A22708 100%)",
+          background: "linear-gradient(135deg, #FFFFFF 0%, #C9A22708 100%)",
         }}
       >
         <div style={styles.cardTitle}>
@@ -3345,7 +3345,7 @@ function IslamicDigitalSpecial() {
         </div>
         <p
           style={{
-            color: "#94A3B8",
+            color: "#475569",
             fontSize: "14px",
             lineHeight: 1.8,
             margin: 0,
@@ -3369,13 +3369,13 @@ function IslamicDigitalSpecial() {
         </div>
         <ResponsiveContainer width="100%" height={320}>
           <ScatterChart>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               type="number"
               dataKey="x"
               name="Innovation Score"
               domain={[0, 100]}
-              tick={{ fill: "#94A3B8", fontSize: 11 }}
+              tick={{ fill: "#475569", fontSize: 11 }}
               label={{
                 value: "Innovation →",
                 fill: "#64748B",
@@ -3389,7 +3389,7 @@ function IslamicDigitalSpecial() {
               dataKey="y"
               name="Financial Market Score"
               domain={[0, 100]}
-              tick={{ fill: "#94A3B8", fontSize: 11 }}
+              tick={{ fill: "#475569", fontSize: 11 }}
               label={{
                 value: "Financial Markets →",
                 fill: "#64748B",
@@ -3446,8 +3446,8 @@ function IslamicDigitalSpecial() {
                   background:
                     i < 3
                       ? "linear-gradient(135deg,#EC4899,#9D174D)"
-                      : "#0A1628",
-                  color: "#E2E8F0",
+                      : "#FFFFFF",
+                  color: "#1E293B",
                   fontSize: "10px",
                 }}
               >
@@ -3457,7 +3457,7 @@ function IslamicDigitalSpecial() {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <span style={{ fontSize: "12px", color: "#E2E8F0" }}>
+                  <span style={{ fontSize: "12px", color: "#1E293B" }}>
                     {c.name}
                   </span>
                   <span
@@ -3497,8 +3497,8 @@ function IslamicDigitalSpecial() {
                   background:
                     i < 3
                       ? "linear-gradient(135deg,#EF4444,#7F1D1D)"
-                      : "#0A1628",
-                  color: "#E2E8F0",
+                      : "#FFFFFF",
+                  color: "#1E293B",
                   fontSize: "10px",
                 }}
               >
@@ -3508,7 +3508,7 @@ function IslamicDigitalSpecial() {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <span style={{ fontSize: "12px", color: "#E2E8F0" }}>
+                  <span style={{ fontSize: "12px", color: "#1E293B" }}>
                     {c.name}
                   </span>
                   <span
@@ -3651,7 +3651,7 @@ function CustomIndexBuilder() {
         style={{
           ...styles.card,
           borderColor: "#8B5CF640",
-          background: "linear-gradient(135deg,#0A1628,#8B5CF608)",
+          background: "linear-gradient(135deg,#FFFFFF,#8B5CF608)",
         }}
       >
         <div style={{ ...styles.cardTitle, color: "#8B5CF6" }}>
@@ -3659,7 +3659,7 @@ function CustomIndexBuilder() {
         </div>
         <p
           style={{
-            color: "#94A3B8",
+            color: "#475569",
             fontSize: "13px",
             lineHeight: 1.7,
             margin: 0,
@@ -3688,8 +3688,8 @@ function CustomIndexBuilder() {
                 cursor: "pointer",
                 fontSize: "12px",
                 fontFamily: "'Cinzel',serif",
-                background: preset === key ? "#0A2040" : "transparent",
-                borderColor: preset === key ? "#8B5CF6" : "#1E3A5F",
+                background: preset === key ? "#EEF2FF" : "transparent",
+                borderColor: preset === key ? "#8B5CF6" : "#CBD5E1",
                 color: preset === key ? "#8B5CF6" : "#64748B",
               }}
             >
@@ -3744,7 +3744,7 @@ function CustomIndexBuilder() {
                   style={{
                     fontSize: "13px",
                     fontWeight: 900,
-                    color: "#E2E8F0",
+                    color: "#1E293B",
                   }}
                 >
                   {weights[p.key]}%
@@ -3807,7 +3807,7 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#E2E8F0",
+                      color: "#1E293B",
                       fontWeight: 600,
                     }}
                   >
@@ -3853,7 +3853,7 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#E2E8F0",
+                      color: "#1E293B",
                       fontWeight: 600,
                     }}
                   >
@@ -3884,20 +3884,20 @@ function CustomIndexBuilder() {
         </div>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={compData} barSize={12}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#94A3B8", fontSize: 10 }}
+              tick={{ fill: "#475569", fontSize: 10 }}
               angle={-30}
               textAnchor="end"
               height={60}
             />
-            <YAxis domain={[0, 100]} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <YAxis domain={[0, 100]} tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{ fontSize: "11px", fontFamily: "'Cinzel',serif" }}
             />
-            <Bar dataKey="Official" fill="#1E3A5F" />
+            <Bar dataKey="Official" fill="#CBD5E1" />
             <Bar dataKey="Custom" fill="#8B5CF6" />
           </BarChart>
         </ResponsiveContainer>
@@ -3915,7 +3915,7 @@ function CustomIndexBuilder() {
             }}
           >
             <thead
-              style={{ position: "sticky", top: 0, background: "#0A1628" }}
+              style={{ position: "sticky", top: 0, background: "#FFFFFF" }}
             >
               <tr style={{ borderBottom: "1px solid #C9A22740" }}>
                 {[
@@ -3947,8 +3947,8 @@ function CustomIndexBuilder() {
                 <tr
                   key={c.name}
                   style={{
-                    borderBottom: "1px solid #050E1E",
-                    background: i % 2 === 0 ? "transparent" : "#050E1E10",
+                    borderBottom: "1px solid #F1F5F9",
+                    background: i % 2 === 0 ? "transparent" : "#64748B10",
                   }}
                 >
                   <td
@@ -3992,7 +3992,7 @@ function CustomIndexBuilder() {
                   <td
                     style={{
                       padding: "7px 8px",
-                      color: "#E2E8F0",
+                      color: "#1E293B",
                       fontWeight: 600,
                     }}
                   >
@@ -4110,7 +4110,7 @@ function PriorityMatrix() {
           style={{
             position: "relative",
             height: "420px",
-            background: "#050E1E",
+            background: "#F1F5F9",
             borderRadius: "10px",
             padding: "20px",
             overflow: "hidden",
@@ -4123,7 +4123,7 @@ function PriorityMatrix() {
               top: 0,
               bottom: 0,
               width: "1px",
-              background: "#1E3A5F",
+              background: "#CBD5E1",
               transform: "translateX(-50%)",
             }}
           />
@@ -4134,7 +4134,7 @@ function PriorityMatrix() {
               left: 0,
               right: 0,
               height: "1px",
-              background: "#1E3A5F",
+              background: "#CBD5E1",
               transform: "translateY(-50%)",
             }}
           />
@@ -4217,10 +4217,10 @@ function PriorityMatrix() {
                     justifyContent: "center",
                     fontSize: "9px",
                     fontWeight: 700,
-                    color: "#030B1A",
+                    color: "#F8FAFC",
                     textAlign: "center",
                     lineHeight: 1.1,
-                    border: "2px solid #030B1A",
+                    border: "2px solid #F8FAFC",
                     boxShadow: `0 0 12px ${d.color}60`,
                     cursor: "pointer",
                   }}
@@ -4270,7 +4270,7 @@ function PriorityMatrix() {
                     display: "flex",
                     justifyContent: "space-between",
                     padding: "5px 0",
-                    borderBottom: "1px solid #050E1E",
+                    borderBottom: "1px solid #F1F5F9",
                     fontSize: "12px",
                   }}
                 >
@@ -4441,7 +4441,7 @@ function PeerLearning() {
               <div
                 key={s.label}
                 style={{
-                  background: "#050E1E",
+                  background: "#F1F5F9",
                   borderRadius: "8px",
                   padding: "10px",
                   textAlign: "center",
@@ -4466,7 +4466,7 @@ function PeerLearning() {
         <div
           style={{
             ...styles.card,
-            background: `linear-gradient(135deg,#0A1628,${focusPillar.color}08)`,
+            background: `linear-gradient(135deg,#FFFFFF,${focusPillar.color}08)`,
             borderColor: `${focusPillar.color}30`,
           }}
         >
@@ -4485,7 +4485,7 @@ function PeerLearning() {
           </div>
           <p
             style={{
-              color: "#94A3B8",
+              color: "#475569",
               fontSize: "13px",
               lineHeight: 1.7,
               margin: 0,
@@ -4513,7 +4513,7 @@ function PeerLearning() {
                 <div
                   key={peer.name}
                   style={{
-                    background: "#050E1E",
+                    background: "#F1F5F9",
                     borderRadius: "10px",
                     padding: "14px",
                     border: `1px solid ${PEER_COLORS[i]}40`,
@@ -4530,14 +4530,14 @@ function PeerLearning() {
                       style={{
                         fontSize: "13px",
                         fontWeight: 700,
-                        color: "#E2E8F0",
+                        color: "#1E293B",
                       }}
                     >
                       {peer.name}
                     </span>
                     <span
                       style={{
-                        ...styles.badge(PEER_COLORS[i], "#0A1628"),
+                        ...styles.badge(PEER_COLORS[i], "#FFFFFF"),
                         fontSize: "11px",
                       }}
                     >
@@ -4595,10 +4595,10 @@ function PeerLearning() {
             </div>
             <ResponsiveContainer width="100%" height={320}>
               <RadarChart data={radarData}>
-                <PolarGrid stroke="#1E3A5F" />
+                <PolarGrid stroke="#CBD5E1" />
                 <PolarAngleAxis
                   dataKey="subject"
-                  tick={{ fill: "#94A3B8", fontSize: 11 }}
+                  tick={{ fill: "#475569", fontSize: 11 }}
                 />
                 <PolarRadiusAxis
                   domain={[0, 100]}
@@ -4694,7 +4694,7 @@ function ExecutiveSummary() {
           onClick={() => window.print()}
           style={{
             ...styles.select,
-            background: "#0A2040",
+            background: "#EEF2FF",
             color: "#C9A227",
             borderColor: "#C9A22740",
             cursor: "pointer",
@@ -4707,7 +4707,7 @@ function ExecutiveSummary() {
         style={{
           ...styles.card,
           border: `2px solid ${cluster.color}60`,
-          background: `linear-gradient(135deg,#0A1628,${cluster.color}06)`,
+          background: `linear-gradient(135deg,#FFFFFF,${cluster.color}06)`,
         }}
       >
         <div
@@ -4724,7 +4724,7 @@ function ExecutiveSummary() {
                 margin: 0,
                 fontFamily: "'Cinzel',serif",
                 fontSize: "24px",
-                color: "#E2E8F0",
+                color: "#1E293B",
                 letterSpacing: "0.05em",
               }}
             >
@@ -4789,7 +4789,7 @@ function ExecutiveSummary() {
             <div
               key={s.label}
               style={{
-                background: "#050E1E",
+                background: "#F1F5F9",
                 borderRadius: "8px",
                 padding: "10px 16px",
                 border: `1px solid ${s.color}30`,
@@ -4837,7 +4837,7 @@ function ExecutiveSummary() {
                     marginBottom: "3px",
                   }}
                 >
-                  <span style={{ color: "#94A3B8" }}>{p.short}</span>
+                  <span style={{ color: "#475569" }}>{p.short}</span>
                   <span style={{ color: p.color, fontWeight: 700 }}>
                     {country[p.key].toFixed(0)}
                   </span>
@@ -4846,7 +4846,7 @@ function ExecutiveSummary() {
                   style={{
                     height: "5px",
                     borderRadius: "3px",
-                    background: "#0A1628",
+                    background: "#FFFFFF",
                   }}
                 >
                   <div
@@ -4871,7 +4871,7 @@ function ExecutiveSummary() {
         >
           <div
             style={{
-              background: "#050E1E",
+              background: "#F1F5F9",
               borderRadius: "8px",
               padding: "14px",
               border: "1px solid #10B98130",
@@ -4891,10 +4891,10 @@ function ExecutiveSummary() {
             {strengths.map((p) => (
               <div
                 key={p.key}
-                style={{ fontSize: "12px", color: "#94A3B8", padding: "3px 0" }}
+                style={{ fontSize: "12px", color: "#475569", padding: "3px 0" }}
               >
                 <span style={{ color: p.color }}>●</span> {p.name}{" "}
-                <strong style={{ color: "#E2E8F0" }}>
+                <strong style={{ color: "#1E293B" }}>
                   {country[p.key].toFixed(0)}
                 </strong>
               </div>
@@ -4902,7 +4902,7 @@ function ExecutiveSummary() {
           </div>
           <div
             style={{
-              background: "#050E1E",
+              background: "#F1F5F9",
               borderRadius: "8px",
               padding: "14px",
               border: "1px solid #EF444430",
@@ -4922,7 +4922,7 @@ function ExecutiveSummary() {
             {gaps.map((p) => (
               <div
                 key={p.key}
-                style={{ fontSize: "12px", color: "#94A3B8", padding: "3px 0" }}
+                style={{ fontSize: "12px", color: "#475569", padding: "3px 0" }}
               >
                 <span style={{ color: p.color }}>●</span> {p.name}{" "}
                 <strong style={{ color: "#EF4444" }}>
@@ -4933,7 +4933,7 @@ function ExecutiveSummary() {
           </div>
           <div
             style={{
-              background: "#050E1E",
+              background: "#F1F5F9",
               borderRadius: "8px",
               padding: "14px",
               border: "1px solid #C9A22730",
@@ -4953,7 +4953,7 @@ function ExecutiveSummary() {
             <p
               style={{
                 fontSize: "12px",
-                color: "#94A3B8",
+                color: "#475569",
                 margin: 0,
                 lineHeight: 1.6,
               }}
@@ -4967,7 +4967,7 @@ function ExecutiveSummary() {
         <div style={styles.cardTitle}>📝 Narrative Assessment</div>
         <p
           style={{
-            color: "#94A3B8",
+            color: "#475569",
             fontSize: "14px",
             lineHeight: 1.8,
             margin: 0,
@@ -5058,9 +5058,9 @@ function ProgressTracker() {
         <div style={styles.cardTitle}>📈 Score Trajectory 2021–2025</div>
         <ResponsiveContainer width="100%" height={340}>
           <LineChart data={lineData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
-            <XAxis dataKey="year" tick={{ fill: "#94A3B8", fontSize: 11 }} />
-            <YAxis domain={[0, 85]} tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <XAxis dataKey="year" tick={{ fill: "#475569", fontSize: 11 }} />
+            <YAxis domain={[0, 85]} tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             {Object.keys(TREND_FULL)
               .slice(0, 10)
@@ -5121,14 +5121,14 @@ function ProgressTracker() {
                   <tr
                     key={c.name}
                     style={{
-                      borderBottom: "1px solid #050E1E",
-                      background: i % 2 === 0 ? "transparent" : "#050E1E10",
+                      borderBottom: "1px solid #F1F5F9",
+                      background: i % 2 === 0 ? "transparent" : "#64748B10",
                     }}
                   >
                     <td
                       style={{
                         padding: "8px",
-                        color: "#E2E8F0",
+                        color: "#1E293B",
                         fontWeight: 600,
                       }}
                     >
@@ -5213,15 +5213,15 @@ function ProgressTracker() {
             }))}
             barSize={28}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#1E3A5F" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#94A3B8", fontSize: 10 }}
+              tick={{ fill: "#475569", fontSize: 10 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
-            <YAxis tick={{ fill: "#94A3B8", fontSize: 11 }} />
+            <YAxis tick={{ fill: "#475569", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="growth" name="Score Gain (2021–2025)">
               {fastestGrowing.map((c, i) => (
@@ -5352,8 +5352,8 @@ function StatisticalAnalysis() {
                 <tr
                   key={s.name}
                   style={{
-                    borderBottom: "1px solid #050E1E",
-                    background: i % 2 === 0 ? "transparent" : "#050E1E10",
+                    borderBottom: "1px solid #F1F5F9",
+                    background: i % 2 === 0 ? "transparent" : "#64748B10",
                   }}
                 >
                   <td
@@ -5368,7 +5368,7 @@ function StatisticalAnalysis() {
                         style={{
                           padding: "8px",
                           textAlign: "center",
-                          color: "#E2E8F0",
+                          color: "#1E293B",
                         }}
                       >
                         {v}
@@ -5433,7 +5433,7 @@ function StatisticalAnalysis() {
                               .padStart(2, "0")}`,
                             borderRadius: "4px",
                             padding: "4px 6px",
-                            color: "#E2E8F0",
+                            color: "#1E293B",
                             fontWeight: v === 1 ? 900 : 600,
                             fontSize: "11px",
                           }}
@@ -5537,11 +5537,11 @@ function StatisticalAnalysis() {
                     display: "flex",
                     justifyContent: "space-between",
                     padding: "6px 0",
-                    borderBottom: "1px solid #050E1E",
+                    borderBottom: "1px solid #F1F5F9",
                     fontSize: "12px",
                   }}
                 >
-                  <span style={{ color: "#E2E8F0" }}>{o.name}</span>
+                  <span style={{ color: "#1E293B" }}>{o.name}</span>
                   <span style={{ color: "#10B981", fontWeight: 700 }}>
                     +{o.residual} pts above expected
                   </span>
@@ -5569,11 +5569,11 @@ function StatisticalAnalysis() {
                     display: "flex",
                     justifyContent: "space-between",
                     padding: "6px 0",
-                    borderBottom: "1px solid #050E1E",
+                    borderBottom: "1px solid #F1F5F9",
                     fontSize: "12px",
                   }}
                 >
-                  <span style={{ color: "#E2E8F0" }}>{o.name}</span>
+                  <span style={{ color: "#1E293B" }}>{o.name}</span>
                   <span style={{ color: "#EF4444", fontWeight: 700 }}>
                     {o.residual} pts below expected
                   </span>
@@ -5647,7 +5647,7 @@ function Methodology() {
       title: "📐 Index Structure",
       content: (
         <div>
-          <p style={{ color: "#94A3B8", fontSize: "13px", lineHeight: 1.8 }}>
+          <p style={{ color: "#475569", fontSize: "13px", lineHeight: 1.8 }}>
             The ODEI, developed by Al-Khouri (2024), measures digital economy
             maturity of OIC member states through{" "}
             <strong style={{ color: "#C9A227" }}>
@@ -5664,7 +5664,7 @@ function Methodology() {
                 alignItems: "center",
                 gap: "12px",
                 padding: "8px 0",
-                borderBottom: "1px solid #050E1E",
+                borderBottom: "1px solid #F1F5F9",
               }}
             >
               <div
@@ -5676,7 +5676,7 @@ function Methodology() {
                   flexShrink: 0,
                 }}
               />
-              <div style={{ flex: 1, fontSize: "13px", color: "#E2E8F0" }}>
+              <div style={{ flex: 1, fontSize: "13px", color: "#1E293B" }}>
                 <strong style={{ color: p.color }}>Pillar {p.id}:</strong>{" "}
                 {p.name}
               </div>
@@ -5693,26 +5693,26 @@ function Methodology() {
       title: "⚗ Normalization",
       content: (
         <div>
-          <p style={{ color: "#94A3B8", fontSize: "13px", lineHeight: 1.8 }}>
+          <p style={{ color: "#475569", fontSize: "13px", lineHeight: 1.8 }}>
             All indicators normalized to{" "}
             <strong style={{ color: "#C9A227" }}>0–100 scale</strong> using
             min-max normalization:
           </p>
           <div
             style={{
-              background: "#050E1E",
+              background: "#F1F5F9",
               borderRadius: "8px",
               padding: "16px",
               margin: "12px 0",
               fontFamily: "monospace",
               fontSize: "13px",
               color: "#10B981",
-              border: "1px solid #1E3A5F",
+              border: "1px solid #CBD5E1",
             }}
           >
             Score = (X - X_min) / (X_max - X_min) × 100
           </div>
-          <p style={{ color: "#94A3B8", fontSize: "13px", lineHeight: 1.8 }}>
+          <p style={{ color: "#475569", fontSize: "13px", lineHeight: 1.8 }}>
             For negative indicators: Score = (X_max - X) / (X_max - X_min) ×
             100. Missing values are imputed using weighted averages of available
             sub-indicators within the same pillar, or regional median if the
@@ -5720,14 +5720,14 @@ function Methodology() {
           </p>
           <div
             style={{
-              background: "#050E1E",
+              background: "#F1F5F9",
               borderRadius: "8px",
               padding: "16px",
               margin: "12px 0",
               fontFamily: "monospace",
               fontSize: "13px",
               color: "#10B981",
-              border: "1px solid #1E3A5F",
+              border: "1px solid #CBD5E1",
             }}
           >
             ODEI = Σ (Pillar_Score_i × Weight_i) for i = 1 to 9
@@ -5739,7 +5739,7 @@ function Methodology() {
       title: "🗂 Cluster Methodology",
       content: (
         <div>
-          <p style={{ color: "#94A3B8", fontSize: "13px", lineHeight: 1.8 }}>
+          <p style={{ color: "#475569", fontSize: "13px", lineHeight: 1.8 }}>
             Countries classified into three clusters based on 2025 Index scores:
           </p>
           {[
@@ -5765,7 +5765,7 @@ function Methodology() {
             <div
               key={cl.label}
               style={{
-                background: "#050E1E",
+                background: "#F1F5F9",
                 borderRadius: "8px",
                 padding: "14px",
                 marginBottom: "10px",
@@ -5794,7 +5794,7 @@ function Methodology() {
               </div>
               <p
                 style={{
-                  color: "#94A3B8",
+                  color: "#475569",
                   fontSize: "12px",
                   lineHeight: 1.7,
                   margin: 0,
@@ -5811,7 +5811,7 @@ function Methodology() {
       title: "📚 Data Sources",
       content: (
         <div>
-          <p style={{ color: "#94A3B8", fontSize: "13px", lineHeight: 1.8 }}>
+          <p style={{ color: "#475569", fontSize: "13px", lineHeight: 1.8 }}>
             All data sourced from internationally recognized, publicly available
             datasets. The 2025 edition uses lagged data primarily from 2023–2024
             reporting periods.
@@ -5847,11 +5847,11 @@ function Methodology() {
                 <tr
                   key={i}
                   style={{
-                    borderBottom: "1px solid #050E1E",
-                    background: i % 2 === 0 ? "transparent" : "#050E1E10",
+                    borderBottom: "1px solid #F1F5F9",
+                    background: i % 2 === 0 ? "transparent" : "#64748B10",
                   }}
                 >
-                  <td style={{ padding: "7px 8px", color: "#E2E8F0" }}>
+                  <td style={{ padding: "7px 8px", color: "#1E293B" }}>
                     {s.indicator}
                   </td>
                   <td
@@ -5863,7 +5863,7 @@ function Methodology() {
                   >
                     {s.code}
                   </td>
-                  <td style={{ padding: "7px 8px", color: "#94A3B8" }}>
+                  <td style={{ padding: "7px 8px", color: "#475569" }}>
                     {s.source}
                   </td>
                 </tr>
@@ -5893,7 +5893,7 @@ function Methodology() {
                 cursor: "pointer",
                 fontSize: "12px",
                 fontFamily: "'Cinzel',serif",
-                background: openSection === key ? "#0A2040" : "transparent",
+                background: openSection === key ? "#EEF2FF" : "transparent",
                 color: openSection === key ? "#C9A227" : "#64748B",
                 borderLeft:
                   openSection === key
@@ -5969,10 +5969,10 @@ export default function App() {
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #030B1A; }
-        ::-webkit-scrollbar-thumb { background: #1E3A5F; border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: #F8FAFC; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #C9A227; }
-        select option { background: #0A1628; color: #E2E8F0; }
+        select option { background: #FFFFFF; color: #1E293B; }
       `}</style>
 
       {/* Header */}
@@ -5998,7 +5998,7 @@ export default function App() {
                 style={{
                   fontFamily: "'Crimson Text', serif",
                   fontSize: "15px",
-                  color: "#94A3B8",
+                  color: "#475569",
                   marginTop: "2px",
                   fontStyle: "italic",
                 }}

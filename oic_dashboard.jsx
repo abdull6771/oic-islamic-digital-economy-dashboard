@@ -1569,14 +1569,17 @@ function CountryProfiles() {
     (c) => REGIONS[c.name] === region && c.name !== selected,
   ).slice(0, 5);
 
-  // SWOT generation
-  const strengths = PILLARS.filter((p) => country[p.key] >= 60).map(
-    (p) => p.name,
+  const strengths = [...PILLARS]
+    .sort((a, b) => country[b.key] - country[a.key])
+    .slice(0, 3);
+  const gaps = [...PILLARS]
+    .sort((a, b) => country[a.key] - country[b.key])
+    .slice(0, 3);
+
+  const regionPeers = COUNTRIES.filter((c) => REGIONS[c.name] === region).sort(
+    (a, b) => a.rank - b.rank,
   );
-  const weaknesses = PILLARS.filter((p) => country[p.key] < 30).map(
-    (p) => p.name,
-  );
-  const oicRank = PILLARS.map((p) => ({ name: p.name, val: country[p.key] }));
+  const regionRank = regionPeers.findIndex((c) => c.name === selected) + 1;
 
   const peerCompData = [country, ...peers].map((c) => ({
     name: c.name.length > 12 ? c.name.slice(0, 12) + "…" : c.name,
@@ -1584,9 +1587,26 @@ function CountryProfiles() {
     fill: c.name === selected ? "#C9A227" : "#CBD5E1",
   }));
 
+  const HEADLINE_REC = {
+    "Advanced Digital Economies":
+      "Transition from digital follower to global standard-setter. Lead OIC in AI governance, digital export frameworks, and Islamic Fintech international standards.",
+    "Emerging Digital Economies":
+      "Bridge the gap to Advanced Digital Economies status by targeting private-sector digital adoption, R&D investment, and advanced skills development.",
+    "Foundational Digital Economies":
+      "Establish core digital infrastructure and implement nationwide digital literacy programs as the immediate national priority.",
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      {/* Header: selector + badge + print */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          flexWrap: "wrap",
+        }}
+      >
         <select
           style={styles.select}
           value={selected}
@@ -1612,17 +1632,45 @@ function CountryProfiles() {
         <div style={{ color: "#64748B", fontSize: "13px" }}>
           Region: <span style={{ color: "#475569" }}>{region}</span>
         </div>
+        <button
+          onClick={() => window.print()}
+          style={{
+            ...styles.select,
+            background: "#EEF2FF",
+            color: "#C9A227",
+            borderColor: "#C9A22740",
+            cursor: "pointer",
+            marginLeft: "auto",
+          }}
+        >
+          🖨 Print / Export
+        </button>
       </div>
 
       {/* KPI Cards */}
-      <div style={styles.grid4}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(5, 1fr)",
+          gap: "12px",
+        }}
+      >
         {[
           {
             label: "ODEI Score",
             value: country.adei.toFixed(1),
             color: cluster.color,
           },
-          { label: "Global Rank", value: `#${country.rank}`, color: "#C9A227" },
+          {
+            label: "Global Rank",
+            value: `#${country.rank} of 57`,
+            color: "#C9A227",
+          },
+          {
+            label: "Regional Rank",
+            value: `#${regionRank} in ${region}`,
+            color: "#10B981",
+          },
           {
             label: "Best Pillar",
             value: PILLARS.reduce(
@@ -1632,18 +1680,15 @@ function CountryProfiles() {
             color: "#10B981",
           },
           {
-            label: "Worst Pillar",
-            value: PILLARS.reduce(
-              (b, p) => (country[p.key] < country[b.key] ? p : b),
-              PILLARS[0],
-            ).short,
-            color: "#EF4444",
+            label: "vs OIC Average",
+            value: `${country.adei > OIC_AVERAGE ? "+" : ""}${(country.adei - OIC_AVERAGE).toFixed(1)} pts`,
+            color: country.adei >= OIC_AVERAGE ? "#10B981" : "#EF4444",
           },
         ].map((kpi, i) => (
           <div key={i} style={{ ...styles.card, textAlign: "center" }}>
             <div
               style={{
-                fontSize: "28px",
+                fontSize: "24px",
                 fontWeight: 900,
                 color: kpi.color,
                 fontFamily: "'Cinzel', serif",
@@ -1653,7 +1698,7 @@ function CountryProfiles() {
             </div>
             <div
               style={{
-                fontSize: "12px",
+                fontSize: "11px",
                 color: "#64748B",
                 marginTop: "4px",
                 textTransform: "uppercase",
@@ -1737,58 +1782,106 @@ function CountryProfiles() {
         </div>
       </div>
 
-      {/* SWOT */}
+      {/* Strengths, Gaps & Recommendation */}
       <div
-        style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: "16px",
+        }}
       >
         <div style={{ ...styles.card, borderColor: "#10B98140" }}>
           <div style={{ ...styles.cardTitle, color: "#10B981" }}>
-            💪 Strengths (Score ≥ 60)
+            ✅ Top 3 Strengths
           </div>
-          {strengths.length ? (
-            strengths.map((s) => (
-              <div
-                key={s}
-                style={{
-                  fontSize: "13px",
-                  color: "#475569",
-                  padding: "4px 0",
-                  borderBottom: "1px solid #FFFFFF",
-                }}
-              >
-                ✓ {s}
-              </div>
-            ))
-          ) : (
-            <div style={{ color: "#64748B", fontSize: "13px" }}>
-              No pillars scored ≥ 60
+          {strengths.map((p) => (
+            <div
+              key={p.key}
+              style={{ fontSize: "13px", color: "#475569", padding: "4px 0" }}
+            >
+              <span style={{ color: p.color }}>●</span> {p.name}{" "}
+              <strong style={{ color: "#1E293B" }}>
+                {country[p.key].toFixed(0)}
+              </strong>
             </div>
-          )}
+          ))}
         </div>
         <div style={{ ...styles.card, borderColor: "#EF444440" }}>
           <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            ⚠ Weaknesses (Score &lt; 30)
+            ⚠ Top 3 Gaps
           </div>
-          {weaknesses.length ? (
-            weaknesses.map((w) => (
-              <div
-                key={w}
-                style={{
-                  fontSize: "13px",
-                  color: "#475569",
-                  padding: "4px 0",
-                  borderBottom: "1px solid #FFFFFF",
-                }}
-              >
-                ✗ {w}
-              </div>
-            ))
-          ) : (
-            <div style={{ color: "#64748B", fontSize: "13px" }}>
-              No critical weaknesses
+          {gaps.map((p) => (
+            <div
+              key={p.key}
+              style={{ fontSize: "13px", color: "#475569", padding: "4px 0" }}
+            >
+              <span style={{ color: p.color }}>●</span> {p.name}{" "}
+              <strong style={{ color: "#EF4444" }}>
+                {country[p.key].toFixed(0)}
+              </strong>
             </div>
-          )}
+          ))}
         </div>
+        <div style={{ ...styles.card, borderColor: "#C9A22740" }}>
+          <div style={{ ...styles.cardTitle, color: "#C9A227" }}>
+            🎯 Headline Recommendation
+          </div>
+          <p
+            style={{
+              fontSize: "12px",
+              color: "#475569",
+              margin: 0,
+              lineHeight: 1.6,
+            }}
+          >
+            {HEADLINE_REC[cluster.label]}
+          </p>
+        </div>
+      </div>
+
+      {/* Narrative Assessment */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>📝 Narrative Assessment</div>
+        <p
+          style={{
+            color: "#475569",
+            fontSize: "14px",
+            lineHeight: 1.8,
+            margin: 0,
+          }}
+        >
+          {country.name} scores{" "}
+          <strong style={{ color: cluster.color }}>
+            {country.adei.toFixed(1)}
+          </strong>{" "}
+          on the 2025 OIC Digital Economy Index, placing it{" "}
+          <strong style={{ color: "#C9A227" }}>#{country.rank}</strong> globally
+          and <strong style={{ color: "#10B981" }}>#{regionRank}</strong> within{" "}
+          {region}. As a{" "}
+          <strong style={{ color: cluster.color }}>{cluster.label}</strong>, the
+          country demonstrates notable capability in{" "}
+          <strong style={{ color: strengths[0].color }}>
+            {strengths[0].name}
+          </strong>{" "}
+          ({country[strengths[0].key].toFixed(0)}),{" "}
+          <strong style={{ color: strengths[1].color }}>
+            {strengths[1].name}
+          </strong>{" "}
+          ({country[strengths[1].key].toFixed(0)}), and{" "}
+          <strong style={{ color: strengths[2].color }}>
+            {strengths[2].name}
+          </strong>{" "}
+          ({country[strengths[2].key].toFixed(0)}). However, critical gaps
+          remain in{" "}
+          <strong style={{ color: gaps[0].color }}>{gaps[0].name}</strong> (
+          {country[gaps[0].key].toFixed(0)}) and{" "}
+          <strong style={{ color: gaps[1].color }}>{gaps[1].name}</strong> (
+          {country[gaps[1].key].toFixed(0)}), which present the highest
+          return-on-investment opportunity for targeted policy intervention.{" "}
+          {country.adei >= OIC_AVERAGE
+            ? `The country performs ${(country.adei - OIC_AVERAGE).toFixed(1)} points above the OIC average of ${OIC_AVERAGE.toFixed(1)}, positioning it as a potential regional knowledge-transfer hub.`
+            : `Closing the ${(OIC_AVERAGE - country.adei).toFixed(1)}-point gap to the OIC average of ${OIC_AVERAGE.toFixed(1)} should serve as a near-term policy milestone.`}
+        </p>
       </div>
 
       {/* Regional Peer Comparison */}
@@ -4649,367 +4742,6 @@ function PeerLearning() {
   );
 }
 
-// ─── EXECUTIVE SUMMARY ────────────────────────────────────────────────────────
-function ExecutiveSummary() {
-  const [selected, setSelected] = useState("Indonesia");
-  const country = COUNTRIES.find((c) => c.name === selected);
-  const cluster = getCluster(country.adei);
-  const region = REGIONS[country.name] || "Other";
-  const strengths = [...PILLARS]
-    .sort((a, b) => country[b.key] - country[a.key])
-    .slice(0, 3);
-  const gaps = [...PILLARS]
-    .sort((a, b) => country[a.key] - country[b.key])
-    .slice(0, 3);
-  const regionPeers = COUNTRIES.filter((c) => REGIONS[c.name] === region).sort(
-    (a, b) => a.rank - b.rank,
-  );
-  const regionRank = regionPeers.findIndex((c) => c.name === selected) + 1;
-  const HEADLINE_REC = {
-    "Advanced Digital Economies":
-      "Transition from digital follower to global standard-setter. Lead OIC in AI governance, digital export frameworks, and Islamic Fintech international standards.",
-    "Emerging Digital Economies":
-      "Bridge the gap to Advanced Digital Economies status by targeting private-sector digital adoption, R&D investment, and advanced skills development.",
-    "Foundational Digital Economies":
-      "Establish core digital infrastructure and implement nationwide digital literacy programs as the immediate national priority.",
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-        <select
-          style={styles.select}
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-        >
-          {[...COUNTRIES]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-        </select>
-        <button
-          onClick={() => window.print()}
-          style={{
-            ...styles.select,
-            background: "#EEF2FF",
-            color: "#C9A227",
-            borderColor: "#C9A22740",
-            cursor: "pointer",
-          }}
-        >
-          🖨 Print / Export
-        </button>
-      </div>
-      <div
-        style={{
-          ...styles.card,
-          border: `2px solid ${cluster.color}60`,
-          background: `linear-gradient(135deg,#FFFFFF,${cluster.color}06)`,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: "20px",
-          }}
-        >
-          <div>
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "'Cinzel',serif",
-                fontSize: "24px",
-                color: "#1E293B",
-                letterSpacing: "0.05em",
-              }}
-            >
-              {country.name}
-            </h2>
-            <div
-              style={{
-                fontSize: "14px",
-                color: "#64748B",
-                marginTop: "4px",
-                fontStyle: "italic",
-              }}
-            >
-              OIC Digital Economy Assessment 2025 — Executive Brief
-            </div>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <div
-              style={{
-                fontSize: "48px",
-                fontWeight: 900,
-                color: cluster.color,
-                fontFamily: "'Cinzel',serif",
-                lineHeight: 1,
-              }}
-            >
-              {country.adei.toFixed(1)}
-            </div>
-            <div style={{ fontSize: "13px", color: "#64748B" }}>ODEI Score</div>
-          </div>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            gap: "16px",
-            marginBottom: "20px",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            {
-              label: "Global Rank",
-              value: `#${country.rank} of 57`,
-              color: "#C9A227",
-            },
-            {
-              label: "Regional Rank",
-              value: `#${regionRank} in ${region}`,
-              color: "#10B981",
-            },
-            {
-              label: "Performance Cluster",
-              value: cluster.label,
-              color: cluster.color,
-            },
-            {
-              label: "vs OIC Average",
-              value: `${country.adei > OIC_AVERAGE ? "+" : ""}${(country.adei - OIC_AVERAGE).toFixed(1)} pts`,
-              color: country.adei >= OIC_AVERAGE ? "#10B981" : "#EF4444",
-            },
-          ].map((s) => (
-            <div
-              key={s.label}
-              style={{
-                background: "#F1F5F9",
-                borderRadius: "8px",
-                padding: "10px 16px",
-                border: `1px solid ${s.color}30`,
-                flex: "1",
-                minWidth: "120px",
-              }}
-            >
-              <div
-                style={{ fontSize: "16px", fontWeight: 900, color: s.color }}
-              >
-                {s.value}
-              </div>
-              <div style={{ fontSize: "11px", color: "#64748B" }}>
-                {s.label}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div style={{ marginBottom: "20px" }}>
-          <div
-            style={{
-              fontSize: "12px",
-              color: "#64748B",
-              marginBottom: "10px",
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
-            }}
-          >
-            Pillar Score Overview
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3,1fr)",
-              gap: "8px",
-            }}
-          >
-            {PILLARS.map((p) => (
-              <div key={p.key}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: "11px",
-                    marginBottom: "3px",
-                  }}
-                >
-                  <span style={{ color: "#475569" }}>{p.short}</span>
-                  <span style={{ color: p.color, fontWeight: 700 }}>
-                    {country[p.key].toFixed(0)}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    height: "5px",
-                    borderRadius: "3px",
-                    background: "#FFFFFF",
-                  }}
-                >
-                  <div
-                    style={{
-                      height: "100%",
-                      width: `${country[p.key]}%`,
-                      background: p.color,
-                      borderRadius: "3px",
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "12px",
-          }}
-        >
-          <div
-            style={{
-              background: "#F1F5F9",
-              borderRadius: "8px",
-              padding: "14px",
-              border: "1px solid #10B98130",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "11px",
-                color: "#10B981",
-                fontWeight: 700,
-                marginBottom: "8px",
-                textTransform: "uppercase",
-              }}
-            >
-              ✅ Top 3 Strengths
-            </div>
-            {strengths.map((p) => (
-              <div
-                key={p.key}
-                style={{ fontSize: "12px", color: "#475569", padding: "3px 0" }}
-              >
-                <span style={{ color: p.color }}>●</span> {p.name}{" "}
-                <strong style={{ color: "#1E293B" }}>
-                  {country[p.key].toFixed(0)}
-                </strong>
-              </div>
-            ))}
-          </div>
-          <div
-            style={{
-              background: "#F1F5F9",
-              borderRadius: "8px",
-              padding: "14px",
-              border: "1px solid #EF444430",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "11px",
-                color: "#EF4444",
-                fontWeight: 700,
-                marginBottom: "8px",
-                textTransform: "uppercase",
-              }}
-            >
-              ⚠ Top 3 Gaps
-            </div>
-            {gaps.map((p) => (
-              <div
-                key={p.key}
-                style={{ fontSize: "12px", color: "#475569", padding: "3px 0" }}
-              >
-                <span style={{ color: p.color }}>●</span> {p.name}{" "}
-                <strong style={{ color: "#EF4444" }}>
-                  {country[p.key].toFixed(0)}
-                </strong>
-              </div>
-            ))}
-          </div>
-          <div
-            style={{
-              background: "#F1F5F9",
-              borderRadius: "8px",
-              padding: "14px",
-              border: "1px solid #C9A22730",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "11px",
-                color: "#C9A227",
-                fontWeight: 700,
-                marginBottom: "8px",
-                textTransform: "uppercase",
-              }}
-            >
-              🎯 Headline Recommendation
-            </div>
-            <p
-              style={{
-                fontSize: "12px",
-                color: "#475569",
-                margin: 0,
-                lineHeight: 1.6,
-              }}
-            >
-              {HEADLINE_REC[cluster.label]}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>📝 Narrative Assessment</div>
-        <p
-          style={{
-            color: "#475569",
-            fontSize: "14px",
-            lineHeight: 1.8,
-            margin: 0,
-          }}
-        >
-          {country.name} scores{" "}
-          <strong style={{ color: cluster.color }}>
-            {country.adei.toFixed(1)}
-          </strong>{" "}
-          on the 2025 OIC Digital Economy Index, placing it{" "}
-          <strong style={{ color: "#C9A227" }}>#{country.rank}</strong> globally
-          and <strong style={{ color: "#10B981" }}>#{regionRank}</strong> within{" "}
-          {region}. As a{" "}
-          <strong style={{ color: cluster.color }}>{cluster.label}</strong>, the
-          country demonstrates notable capability in{" "}
-          <strong style={{ color: strengths[0].color }}>
-            {strengths[0].name}
-          </strong>{" "}
-          ({country[strengths[0].key].toFixed(0)}),{" "}
-          <strong style={{ color: strengths[1].color }}>
-            {strengths[1].name}
-          </strong>{" "}
-          ({country[strengths[1].key].toFixed(0)}), and{" "}
-          <strong style={{ color: strengths[2].color }}>
-            {strengths[2].name}
-          </strong>{" "}
-          ({country[strengths[2].key].toFixed(0)}). However, critical gaps
-          remain in{" "}
-          <strong style={{ color: gaps[0].color }}>{gaps[0].name}</strong> (
-          {country[gaps[0].key].toFixed(0)}) and{" "}
-          <strong style={{ color: gaps[1].color }}>{gaps[1].name}</strong> (
-          {country[gaps[1].key].toFixed(0)}), which present the highest
-          return-on-investment opportunity for targeted policy intervention.{" "}
-          {country.adei >= OIC_AVERAGE
-            ? `The country performs ${(country.adei - OIC_AVERAGE).toFixed(1)} points above the OIC average of ${OIC_AVERAGE.toFixed(1)}, positioning it as a potential regional knowledge-transfer hub.`
-            : `Closing the ${(OIC_AVERAGE - country.adei).toFixed(1)}-point gap to the OIC average of ${OIC_AVERAGE.toFixed(1)} should serve as a near-term policy milestone.`}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 // ─── PROGRESS TRACKER ────────────────────────────────────────────────────────
 function ProgressTracker() {
   const TREND_FULL = {
@@ -5946,7 +5678,6 @@ const TABS = [
   },
   { id: "matrix", label: "📌 Priority Matrix", component: PriorityMatrix },
   { id: "peers", label: "🤝 Peer Learning", component: PeerLearning },
-  { id: "exec", label: "📋 Executive Summary", component: ExecutiveSummary },
   { id: "progress", label: "📈 Progress Tracker", component: ProgressTracker },
   {
     id: "stats",

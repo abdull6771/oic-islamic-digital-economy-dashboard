@@ -1261,9 +1261,9 @@ function GlobalOverview() {
       </div>
 
       <div style={styles.grid2}>
-        {/* Leaderboard Top 10 */}
+        {/* Leaderboard Leading 10 */}
         <div style={styles.card}>
-          <div style={styles.cardTitle}>🏆 Top 10 Countries</div>
+          <div style={styles.cardTitle}>🏆 Leading 10 Countries</div>
           {top10.map((c, i) => {
             const cluster = getCluster(c.adei);
             return (
@@ -1327,10 +1327,10 @@ function GlobalOverview() {
           })}
         </div>
 
-        {/* Bottom 10 */}
+        {/* Emerging 10 */}
         <div style={styles.card}>
           <div style={styles.cardTitle}>
-            ⚠ Bottom 10 Countries (Urgent Priority)
+            🌱 Emerging 10 Countries (Development Focus)
           </div>
           {bottom10.map((c, i) => (
             <div
@@ -1544,7 +1544,7 @@ function GlobalOverview() {
             </tbody>
           </table>
           <div style={{ color: "#64748B", fontSize: "11px", marginTop: "8px" }}>
-            Showing top 20 countries. Use Rankings tab for full table.
+            Showing leading 20 countries. Use Rankings tab for full table.
           </div>
         </div>
       </div>
@@ -1792,7 +1792,7 @@ function CountryProfiles() {
       >
         <div style={{ ...styles.card, borderColor: "#10B98140" }}>
           <div style={{ ...styles.cardTitle, color: "#10B981" }}>
-            ✅ Top 3 Strengths
+            ✅ Key Strengths
           </div>
           {strengths.map((p) => (
             <div
@@ -1808,7 +1808,7 @@ function CountryProfiles() {
         </div>
         <div style={{ ...styles.card, borderColor: "#EF444440" }}>
           <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            ⚠ Top 3 Gaps
+            ⚠ Areas for Growth
           </div>
           {gaps.map((p) => (
             <div
@@ -1871,8 +1871,8 @@ function CountryProfiles() {
           <strong style={{ color: strengths[2].color }}>
             {strengths[2].name}
           </strong>{" "}
-          ({country[strengths[2].key].toFixed(0)}). However, critical gaps
-          remain in{" "}
+          ({country[strengths[2].key].toFixed(0)}). However, notable areas for
+          development remain in{" "}
           <strong style={{ color: gaps[0].color }}>{gaps[0].name}</strong> (
           {country[gaps[0].key].toFixed(0)}) and{" "}
           <strong style={{ color: gaps[1].color }}>{gaps[1].name}</strong> (
@@ -2122,13 +2122,13 @@ function PillarAnalysis() {
 
   const INSIGHTS = {
     p1: "Institutions form the governance bedrock of digital transformation. GCC states lead, with the UAE, Malaysia, and Qatar demonstrating strong political stability and regulatory quality.",
-    p2: "Infrastructure underpins all digital activity. The UAE and Malaysia have near-perfect scores driven by fiber and 5G investments. Many African states score below 20, indicating critical infrastructure gaps.",
-    p3: "Workforce capability remains a major bottleneck. Senegal and Jordan lead in human capital, while conflict-affected states score critically low.",
+    p2: "Infrastructure underpins all digital activity. The UAE and Malaysia have near-perfect scores driven by fiber and 5G investments. Many African states score below 20, indicating opportunities for foundational infrastructure investment.",
+    p3: "Workforce capability remains a major area of focus. Senegal and Jordan lead in human capital, while conflict-affected states show substantial room for development.",
     p4: "E-Government is the OIC's standout strength. State-led digitization has resulted in high scores across diverse economies, with Saudi Arabia and Kazakhstan leading.",
-    p5: "Innovation is the OIC's critical weakness. Even top performers score below 65, reflecting dependence on state R&D over private-sector investment.",
+    p5: "Innovation is the OIC's key area for growth. Even leading countries score below 65, reflecting dependence on state R&D over private-sector investment.",
     p6: "Technological Readiness (Future Tech) varies widely. GCC states score high due to AI and advanced tech adoption strategies.",
     p7: "Market Development shows the strongest performers in Southeast Asia. Malaysia leads due to its vibrant digital economy and startup ecosystem.",
-    p8: "Financial Market Development is dominated by Iran's unique position. Islamic Fintech is an emerging strategic advantage for GCC and Malaysia.",
+    p8: "Financial Market Development is prominently led by Iran's unique position. Islamic Fintech is an emerging strategic advantage for GCC and Malaysia.",
     p9: "SDG Impact scores reflect access and inclusion progress. Countries with strong public health systems and connectivity score highest.",
   };
 
@@ -2261,10 +2261,10 @@ function PillarAnalysis() {
       </div>
 
       <div style={styles.grid2}>
-        {/* Top 10 */}
+        {/* Leading 10 */}
         <div style={styles.card}>
           <div style={{ ...styles.cardTitle, color: "#10B981" }}>
-            🏆 Top 10 in {pillar.name}
+            🏆 Leading 10 in {pillar.name}
           </div>
           {sorted.slice(0, 10).map((c, i) => (
             <div
@@ -2312,10 +2312,10 @@ function PillarAnalysis() {
           ))}
         </div>
 
-        {/* Bottom 10 */}
+        {/* Emerging 10 */}
         <div style={styles.card}>
           <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            ⚠ Bottom 10 in {pillar.name}
+            🌱 Emerging 10 in {pillar.name}
           </div>
           {sorted
             .slice(-10)
@@ -2611,7 +2611,7 @@ function TrendsProgress() {
       {/* Trend Lines */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          📈 ODEI Score Trends 2021–2025 (Top Countries + OIC Avg)
+          📈 ODEI Score Trends 2021–2025 (Leading Countries + OIC Avg)
         </div>
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={lineData}>
@@ -2989,7 +2989,7 @@ function PolicyRecommendations() {
     if (p.p5 < 40)
       recs.push({
         pillar: "Innovation",
-        priority: "CRITICAL",
+        priority: "IMMEDIATE",
         action:
           "Establish a national R&D incentive framework to attract private-sector investment. Target: Increase business-financed R&D from <1% to 3% of GDP within 5 years. Create public-private innovation hubs at universities.",
         icon: "🔬",
@@ -3066,7 +3066,7 @@ function PolicyRecommendations() {
   const recs = generateRecommendations(country);
 
   const PRIORITY_STYLES = {
-    CRITICAL: { color: "#EF4444", bg: "#FEE2E2", border: "#EF4444" },
+    IMMEDIATE: { color: "#EF4444", bg: "#FEE2E2", border: "#EF4444" },
     HIGH: { color: "#F59E0B", bg: "#FEF3C7", border: "#F59E0B" },
     MEDIUM: { color: "#3B82F6", bg: "#DBEAFE", border: "#3B82F6" },
     STRATEGIC: { color: "#10B981", bg: "#D1FAE5", border: "#10B981" },
@@ -3126,7 +3126,7 @@ function PolicyRecommendations() {
           </strong>{" "}
           (Rank #{country.rank} of 57 OIC states). The following evidence-based
           recommendations are derived from pillar-level gap analysis relative to
-          OIC top performers and global best practices.
+          OIC leading nations and global best practices.
         </p>
       </div>
 
@@ -3221,7 +3221,7 @@ function PolicyRecommendations() {
           {
             icon: "📶",
             title: "Bridging the Digital Divide",
-            desc: "The 65-point gap between UAE (77) and Somalia (11) demands urgent intra-OIC knowledge transfer. Establish OIC Digital Solidarity Fund modeled on Islamic Development Bank frameworks.",
+            desc: "The 65-point gap between UAE (77) and Somalia (11) highlights the importance of intra-OIC knowledge transfer. Establish OIC Digital Solidarity Fund modeled on Islamic Development Bank frameworks.",
           },
           {
             icon: "🕌",
@@ -3450,8 +3450,8 @@ function IslamicDigitalSpecial() {
           <strong style={{ color: "#10B981" }}>digital technology</strong>.
           Nations such as Malaysia, Saudi Arabia, and the UAE are leveraging
           Islamic Fintech as a globally competitive advantage. Meanwhile,
-          Innovation remains the OIC's critical systemic weakness — the region
-          produces far more digital consumers than digital innovators.
+          Innovation remains a key systemic area for growth for the OIC — the
+          region produces far more digital consumers than digital innovators.
         </p>
       </div>
 
@@ -3518,10 +3518,10 @@ function IslamicDigitalSpecial() {
       </div>
 
       <div style={styles.grid2}>
-        {/* Top Islamic Fintech */}
+        {/* Leading Islamic Fintech */}
         <div style={styles.card}>
           <div style={{ ...styles.cardTitle, color: "#EC4899" }}>
-            🏦 Top 15 — Financial Market Development
+            🏦 Leading 15 — Financial Market Development
           </div>
           {fintech.map((c, i) => (
             <div
@@ -3569,10 +3569,10 @@ function IslamicDigitalSpecial() {
           ))}
         </div>
 
-        {/* Top Innovators */}
+        {/* Leading Innovators */}
         <div style={styles.card}>
           <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            🔬 Top 15 — Innovation Leaders
+            🔬 Leading 15 — Innovation Leaders
           </div>
           {innovators.map((c, i) => (
             <div
@@ -3973,7 +3973,7 @@ function CustomIndexBuilder() {
       </div>
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          📊 Official vs Custom Score — Top 20 Countries
+          📊 Official vs Custom Score — Leading 20 Countries
         </div>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={compData} barSize={12}>
@@ -4733,7 +4733,7 @@ function PeerLearning() {
             No peer learners found
           </div>
           <div style={{ fontSize: "13px", color: "#64748B", marginTop: "8px" }}>
-            {country.name} is among the top performers in {focusPillar.name}{" "}
+            {country.name} is among the leading performers in {focusPillar.name}{" "}
             relative to similar ODEI countries.
           </div>
         </div>
@@ -5183,7 +5183,7 @@ function StatisticalAnalysis() {
             {[
               ["#10B981", "Strong ≥0.7"],
               ["#3B82F6", "Moderate 0.4–0.7"],
-              ["#64748B", "Weak 0–0.4"],
+              ["#64748B", "Low 0–0.4"],
               ["#EF4444", "Negative <0"],
             ].map(([c, l]) => (
               <div
@@ -5479,7 +5479,7 @@ function Methodology() {
               label: "Advanced Digital Economies",
               range: "Score ≥ 60",
               color: "#10B981",
-              desc: "Top 6 states with global competitiveness in AI, E-Government, and digital infrastructure. Strategic priority: global innovation leadership.",
+              desc: "Leading 6 states with global competitiveness in AI, E-Government, and digital infrastructure. Strategic priority: global innovation leadership.",
             },
             {
               label: "Emerging Digital Economies",

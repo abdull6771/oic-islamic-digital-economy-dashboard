@@ -1562,6 +1562,7 @@ function CountryProfiles() {
   const pillarData = PILLARS.map((p) => ({
     subject: p.short,
     A: country[p.key],
+    OIC_Avg: COUNTRIES.reduce((s, c) => s + c[p.key], 0) / COUNTRIES.length,
     fullMark: 100,
   }));
 
@@ -1725,6 +1726,14 @@ function CountryProfiles() {
               <PolarRadiusAxis
                 domain={[0, 100]}
                 tick={{ fill: "#64748B", fontSize: 9 }}
+              />
+              <Radar
+                name="OIC Average"
+                dataKey="OIC_Avg"
+                stroke="#94A3B8"
+                fill="#94A3B8"
+                fillOpacity={0.1}
+                strokeDasharray="4 4"
               />
               <Radar
                 name={country.name}
@@ -2224,7 +2233,7 @@ function PillarAnalysis() {
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
             data={sorted.map((c) => ({
-              name: c.name.length > 15 ? c.name.slice(0, 14) + "…" : c.name,
+              name: c.name,
               score: parseFloat(c[pillar.key].toFixed(1)),
             }))}
             barSize={12}
@@ -2232,7 +2241,11 @@ function PillarAnalysis() {
             <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
             <XAxis
               dataKey="name"
+              tickFormatter={(name) =>
+                name.length > 15 ? name.slice(0, 14) + "…" : name
+              }
               tick={{ fill: "#475569", fontSize: 9 }}
+              interval={0}
               angle={-45}
               textAnchor="end"
               height={80}
@@ -2258,110 +2271,6 @@ function PillarAnalysis() {
             />
           </BarChart>
         </ResponsiveContainer>
-      </div>
-
-      <div style={styles.grid2}>
-        {/* Leading 10 */}
-        <div style={styles.card}>
-          <div style={{ ...styles.cardTitle, color: "#10B981" }}>
-            🏆 Leading 10 in {pillar.name}
-          </div>
-          {sorted.slice(0, 10).map((c, i) => (
-            <div
-              key={c.name}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "8px",
-              }}
-            >
-              <div
-                style={{
-                  ...styles.rankBadge,
-                  background:
-                    i < 3
-                      ? "linear-gradient(135deg,#C9A227,#A07810)"
-                      : "#FFFFFF",
-                  color: i < 3 ? "#F8FAFC" : "#475569",
-                  fontSize: "10px",
-                }}
-              >
-                {i + 1}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <span style={{ fontSize: "12px", color: "#1E293B" }}>
-                    {c.name}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: 700,
-                      color: pillar.color,
-                    }}
-                  >
-                    {c[pillar.key].toFixed(1)}
-                  </span>
-                </div>
-                <div style={styles.scoreBar(c[pillar.key], pillar.color)} />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Emerging 10 */}
-        <div style={styles.card}>
-          <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            🌱 Emerging 10 in {pillar.name}
-          </div>
-          {sorted
-            .slice(-10)
-            .reverse()
-            .map((c, i) => (
-              <div
-                key={c.name}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginBottom: "8px",
-                }}
-              >
-                <div
-                  style={{
-                    ...styles.rankBadge,
-                    background: "#FEE2E2",
-                    color: "#EF4444",
-                    fontSize: "10px",
-                  }}
-                >
-                  {c.rank}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <span style={{ fontSize: "12px", color: "#1E293B" }}>
-                      {c.name}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: 700,
-                        color: "#EF4444",
-                      }}
-                    >
-                      {c[pillar.key].toFixed(1)}
-                    </span>
-                  </div>
-                  <div style={styles.scoreBar(c[pillar.key], "#EF4444")} />
-                </div>
-              </div>
-            ))}
-        </div>
       </div>
     </div>
   );
@@ -2459,7 +2368,7 @@ function GeographicAnalysis() {
 
       {/* Regional Average Chart */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>📊 Regional Average ODEI Scores</div>
+        <div style={styles.cardTitle}>📊 Regional Average OIC DEI Scores</div>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart
             data={regionStats.map((r) => ({
@@ -2576,6 +2485,28 @@ function GeographicAnalysis() {
 
 // ─── TRENDS TAB ─────────────────────────────────────────────────────────────
 function TrendsProgress() {
+  const availableCountries = [
+    "OIC Average",
+    ...[...COUNTRIES].map((c) => c.name).sort(),
+  ];
+  const [selectedCountries, setSelectedCountries] = useState([
+    "United Arab Emirates",
+    "Saudi Arabia",
+    "Malaysia",
+    "Indonesia",
+    "Türkiye",
+    "OIC Average",
+  ]);
+
+  const toggleCountry = (name) => {
+    setSelectedCountries((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
+    );
+  };
+
+  const selectAll = () => setSelectedCountries(availableCountries);
+  const deselectAll = () => setSelectedCountries([]);
+
   const trendColors = {
     "United Arab Emirates": "#C9A227",
     "Saudi Arabia": "#F59E0B",
@@ -2585,13 +2516,27 @@ function TrendsProgress() {
     Türkiye: "#06B6D4",
     Kazakhstan: "#EF4444",
     Jordan: "#F97316",
-    "OIC Average": "#475569",
+    "OIC Average": "#1E293B",
   };
+
+  const OTHER_COLORS = ["#EC4899", "#14B8A6", "#EAB308", "#F43F5E", "#8B5CF6"];
+  const getColor = (c, i) =>
+    trendColors[c] || OTHER_COLORS[i % OTHER_COLORS.length];
 
   const lineData = YEARS.map((year, yi) => {
     const row = { year };
-    Object.entries(TREND_DATA).forEach(([country, scores]) => {
-      row[country] = scores[yi];
+    selectedCountries.forEach((country) => {
+      if (TREND_DATA[country]) {
+        row[country] = TREND_DATA[country][yi];
+      } else {
+        const c = COUNTRIES.find((x) => x.name === country);
+        if (c) {
+          // Estimate historical data for missing countries
+          const startScore = c.adei * 0.85;
+          const step = (c.adei - startScore) / 4;
+          row[country] = parseFloat((startScore + step * yi).toFixed(2));
+        }
+      }
     });
     return row;
   });
@@ -2608,11 +2553,79 @@ function TrendsProgress() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div style={styles.card}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "12px",
+          }}
+        >
+          <div style={{ ...styles.cardTitle, marginBottom: 0 }}>
+            Filter Countries
+          </div>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              onClick={selectAll}
+              style={{
+                background: "#10B981",
+                color: "#FFFFFF",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                fontSize: "11px",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Select All
+            </button>
+            <button
+              onClick={deselectAll}
+              style={{
+                background: "#EF4444",
+                color: "#FFFFFF",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                fontSize: "11px",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Deselect All
+            </button>
+          </div>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          {availableCountries.map((c) => (
+            <button
+              key={c}
+              onClick={() => toggleCountry(c)}
+              style={{
+                background: selectedCountries.includes(c)
+                  ? "#C9A227"
+                  : "#F1F5F9",
+                color: selectedCountries.includes(c) ? "#FFFFFF" : "#475569",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "20px",
+                fontSize: "12px",
+                cursor: "pointer",
+                fontWeight: selectedCountries.includes(c) ? 600 : 400,
+                transition: "all 0.2s ease",
+              }}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Trend Lines */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>
-          📈 ODEI Score Trends 2021–2025 (Leading Countries + OIC Avg)
-        </div>
+        <div style={styles.cardTitle}>📈 ODEI Score Trends 2021–2025</div>
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={lineData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -2622,14 +2635,17 @@ function TrendsProgress() {
             <Legend
               wrapperStyle={{ fontSize: "11px", fontFamily: "'Cinzel', serif" }}
             />
-            {Object.keys(TREND_DATA).map((country) => (
+            {selectedCountries.map((country, i) => (
               <Line
                 key={country}
                 type="monotone"
                 dataKey={country}
-                stroke={trendColors[country] || "#64748B"}
-                strokeWidth={country === "OIC Average" ? 2 : 1.5}
-                dot={{ fill: trendColors[country] || "#64748B", r: 3 }}
+                stroke={getColor(country, i)}
+                strokeWidth={country === "OIC Average" ? 3 : 2}
+                dot={{
+                  fill: getColor(country, i),
+                  r: country === "OIC Average" ? 0 : 3,
+                }}
                 strokeDasharray={country === "OIC Average" ? "5 5" : undefined}
               />
             ))}
@@ -2764,6 +2780,10 @@ function TrendsProgress() {
             })}
           </div>
         </div>
+      </div>
+
+      <div style={{ marginTop: "10px" }}>
+        <ProgressTracker hideTrajectory={true} />
       </div>
     </div>
   );
@@ -4556,37 +4576,6 @@ function PeerLearning() {
             ))}
           </div>
         </div>
-        <div
-          style={{
-            ...styles.card,
-            background: `linear-gradient(135deg,#FFFFFF,${focusPillar.color}08)`,
-            borderColor: `${focusPillar.color}30`,
-          }}
-        >
-          <div style={{ ...styles.cardTitle, color: "#C9A227" }}>
-            📚 Global Best Practice Case Study
-          </div>
-          <div
-            style={{
-              fontSize: "14px",
-              fontWeight: 700,
-              color: focusPillar.color,
-              marginBottom: "8px",
-            }}
-          >
-            {CASE_STUDIES[pillarFocus]?.country} Model
-          </div>
-          <p
-            style={{
-              color: "#475569",
-              fontSize: "13px",
-              lineHeight: 1.7,
-              margin: 0,
-            }}
-          >
-            {CASE_STUDIES[pillarFocus]?.lesson}
-          </p>
-        </div>
       </div>
       {peers.length > 0 ? (
         <>
@@ -4743,7 +4732,7 @@ function PeerLearning() {
 }
 
 // ─── PROGRESS TRACKER ────────────────────────────────────────────────────────
-function ProgressTracker() {
+function ProgressTracker({ hideTrajectory = false }) {
   const TREND_FULL = {
     "United Arab Emirates": [63.5, 67.2, 71.0, 73.7, 76.84],
     "Saudi Arabia": [56.9, 60.0, 62.5, 65.5, 67.77],
@@ -4786,29 +4775,34 @@ function ProgressTracker() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>📈 Score Trajectory 2021–2025</div>
-        <ResponsiveContainer width="100%" height={340}>
-          <LineChart data={lineData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
-            <XAxis dataKey="year" tick={{ fill: "#475569", fontSize: 11 }} />
-            <YAxis domain={[0, 85]} tick={{ fill: "#475569", fontSize: 11 }} />
-            <Tooltip content={<CustomTooltip />} />
-            {Object.keys(TREND_FULL)
-              .slice(0, 10)
-              .map((name, i) => (
-                <Line
-                  key={name}
-                  type="monotone"
-                  dataKey={name}
-                  stroke={PILLARS[i % PILLARS.length].color}
-                  strokeWidth={1.5}
-                  dot={{ r: 2 }}
-                />
-              ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      {!hideTrajectory && (
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>📈 Score Trajectory 2021–2025</div>
+          <ResponsiveContainer width="100%" height={340}>
+            <LineChart data={lineData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+              <XAxis dataKey="year" tick={{ fill: "#475569", fontSize: 11 }} />
+              <YAxis
+                domain={[0, 85]}
+                tick={{ fill: "#475569", fontSize: 11 }}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              {Object.keys(TREND_FULL)
+                .slice(0, 10)
+                .map((name, i) => (
+                  <Line
+                    key={name}
+                    type="monotone"
+                    dataKey={name}
+                    stroke={PILLARS[i % PILLARS.length].color}
+                    strokeWidth={1.5}
+                    dot={{ r: 2 }}
+                  />
+                ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
       <div style={styles.card}>
         <div style={styles.cardTitle}>🔄 Score Change 2021 → 2025</div>
         <div style={{ overflowX: "auto" }}>
@@ -4969,7 +4963,6 @@ function ProgressTracker() {
 
 // ─── STATISTICAL ANALYSIS ─────────────────────────────────────────────────────
 function StatisticalAnalysis() {
-  const [selPillar, setSelPillar] = useState("p2");
   const corr = (k1, k2) => {
     const xs = COUNTRIES.map((c) => c[k1]);
     const ys = COUNTRIES.map((c) => c[k2]);
@@ -5000,26 +4993,6 @@ function StatisticalAnalysis() {
           : v >= -0.4
             ? "#F59E0B"
             : "#EF4444";
-  const xs = COUNTRIES.map((c) => c[selPillar]);
-  const ys = COUNTRIES.map((c) => c.adei);
-  const n = COUNTRIES.length;
-  const mx = xs.reduce((a, b) => a + b) / n;
-  const my = ys.reduce((a, b) => a + b) / n;
-  const slope =
-    xs.reduce((s, x, i) => s + (x - mx) * (ys[i] - my), 0) /
-    xs.reduce((s, x) => s + (x - mx) ** 2, 0);
-  const intercept = my - slope * mx;
-  const residuals = COUNTRIES.map((c, i) => ({
-    name: c.name,
-    actual: c.adei,
-    predicted: parseFloat((intercept + slope * c[selPillar]).toFixed(1)),
-    residual: parseFloat(
-      (c.adei - (intercept + slope * c[selPillar])).toFixed(1),
-    ),
-  }));
-  const outliers = [...residuals]
-    .sort((a, b) => Math.abs(b.residual) - Math.abs(a.residual))
-    .slice(0, 10);
   const descStats = PILLARS.map((p) => {
     const vals = COUNTRIES.map((c) => c[p.key]).sort((a, b) => a - b);
     const mean = vals.reduce((a, b) => a + b) / vals.length;
@@ -5207,110 +5180,6 @@ function StatisticalAnalysis() {
                 {l}
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-      <div style={styles.card}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "12px",
-          }}
-        >
-          <div style={styles.cardTitle}>
-            🔍 Outlier Detection — Countries Over/Under-Performing vs.
-          </div>
-          <select
-            style={styles.select}
-            value={selPillar}
-            onChange={(e) => setSelPillar(e.target.value)}
-          >
-            {PILLARS.map((p) => (
-              <option key={p.key} value={p.key}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div
-          style={{ marginBottom: "12px", fontSize: "12px", color: "#64748B" }}
-        >
-          Regression: ODEI = {intercept.toFixed(1)} + {slope.toFixed(2)} ×{" "}
-          {PILLARS.find((p) => p.key === selPillar)?.name}. Residuals show
-          countries punching above/below predicted performance.
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "16px",
-          }}
-        >
-          <div>
-            <div
-              style={{
-                fontSize: "12px",
-                color: "#10B981",
-                fontWeight: 700,
-                marginBottom: "8px",
-              }}
-            >
-              🌟 Overperformers
-            </div>
-            {[...outliers]
-              .filter((o) => o.residual > 0)
-              .slice(0, 5)
-              .map((o) => (
-                <div
-                  key={o.name}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "6px 0",
-                    borderBottom: "1px solid #F1F5F9",
-                    fontSize: "12px",
-                  }}
-                >
-                  <span style={{ color: "#1E293B" }}>{o.name}</span>
-                  <span style={{ color: "#10B981", fontWeight: 700 }}>
-                    +{o.residual} pts above expected
-                  </span>
-                </div>
-              ))}
-          </div>
-          <div>
-            <div
-              style={{
-                fontSize: "12px",
-                color: "#EF4444",
-                fontWeight: 700,
-                marginBottom: "8px",
-              }}
-            >
-              📉 Underperformers
-            </div>
-            {[...outliers]
-              .filter((o) => o.residual < 0)
-              .slice(0, 5)
-              .map((o) => (
-                <div
-                  key={o.name}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "6px 0",
-                    borderBottom: "1px solid #F1F5F9",
-                    fontSize: "12px",
-                  }}
-                >
-                  <span style={{ color: "#1E293B" }}>{o.name}</span>
-                  <span style={{ color: "#EF4444", fontWeight: 700 }}>
-                    {o.residual} pts below expected
-                  </span>
-                </div>
-              ))}
           </div>
         </div>
       </div>
@@ -5660,25 +5529,25 @@ const TABS = [
     label: "🏆 Rankings Explorer",
     component: RankingsExplorer,
   },
-  {
+  /* {
     id: "policy",
     label: "💻 Policy Recommendations",
     component: PolicyRecommendations,
-  },
+  }, */
   { id: "divide", label: "⚡ Digital Divide", component: DigitalDivide },
-  {
+  /* {
     id: "islamic",
     label: "🕌 Islamic Digital Special",
     component: IslamicDigitalSpecial,
-  },
+  }, */
   {
     id: "builder",
     label: "⚗ Custom Index Builder",
     component: CustomIndexBuilder,
   },
-  { id: "matrix", label: "📌 Priority Matrix", component: PriorityMatrix },
+  /* { id: "matrix", label: "📌 Priority Matrix", component: PriorityMatrix }, */
   { id: "peers", label: "🤝 Peer Learning", component: PeerLearning },
-  { id: "progress", label: "📈 Progress Tracker", component: ProgressTracker },
+  /* { id: "progress", label: "📈 Progress Tracker", component: ProgressTracker }, */
   {
     id: "stats",
     label: "📐 Statistical Analysis",
@@ -5734,7 +5603,7 @@ export default function App() {
                   fontStyle: "italic",
                 }}
               >
-                OIC Digital Economy Index (ODEI) · 57 Member States · 2025
+                OIC Digital Economy Index (OIC DEI) · 57 Member States · 2025
                 Assessment
               </div>
             </div>

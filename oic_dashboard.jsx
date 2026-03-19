@@ -153,18 +153,18 @@ const REGIONS = {
   Togo: "West Africa",
   Mauritania: "West Africa",
   "Sierra Leone": "West Africa",
-  Cameroon: "West Africa",
-  Gabon: "West Africa",
+  Cameroon: "Central Africa",
+  Gabon: "Central Africa",
   Uganda: "East Africa",
   Somalia: "East Africa",
   Djibouti: "East Africa",
   Comoros: "East Africa",
-  Mozambique: "East Africa",
+  Mozambique: "Southeastern Africa",
   Albania: "Europe",
-  Guyana: "Americas",
-  Suriname: "Americas",
+  Guyana: "South America",
+  Suriname: "South America",
   Afghanistan: "Central Asia",
-  Chad: "West Africa",
+  Chad: "Central Africa",
 };
 
 const COUNTRIES = [
@@ -771,7 +771,7 @@ const COUNTRIES = [
     p9: 48.49,
   },
   {
-    name: "Gambia, The",
+    name: "Gambia,",
     rank: 44,
     adei: 18.6569,
     p1: 41.11,
@@ -5517,6 +5517,256 @@ function Methodology() {
 }
 
 // ─── TABS CONFIG ─────────────────────────────────────────────────────────────
+// ─── ACKNOWLEDGEMENT ─────────────────────────────────────────────────────────
+function Acknowledgement() {
+  const cardStyle = {
+    background: "#FFFFFF",
+    border: "1px solid #E2E8F0",
+    borderRadius: "12px",
+    padding: "28px 32px",
+    marginBottom: "20px",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+  };
+  const headingStyle = {
+    fontFamily: "'Cinzel', serif",
+    fontSize: "15px",
+    fontWeight: 700,
+    color: "#C9A227",
+    letterSpacing: "0.06em",
+    marginBottom: "14px",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  };
+  const bodyStyle = {
+    color: "#475569",
+    fontSize: "14px",
+    lineHeight: 1.85,
+  };
+  const nameStyle = {
+    display: "inline-block",
+    background: "#FEF9EC",
+    border: "1px solid #F0D67A",
+    borderRadius: "6px",
+    padding: "3px 10px",
+    margin: "3px 4px",
+    fontSize: "13px",
+    color: "#1E293B",
+    fontWeight: 500,
+  };
+  const authorRow = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  };
+  const authorEntry = {
+    fontSize: "14px",
+    color: "#1E293B",
+    padding: "6px 0",
+    borderBottom: "1px solid #F1F5F9",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  };
+
+  return (
+    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "24px 16px" }}>
+      {/* Banner */}
+      <div
+        style={{
+          background: "linear-gradient(135deg, #1E293B 0%, #0F172A 100%)",
+          borderRadius: "14px",
+          padding: "32px 36px",
+          marginBottom: "28px",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            width: "200px",
+            height: "200px",
+            background:
+              "radial-gradient(circle, rgba(201,162,39,0.15) 0%, transparent 70%)",
+            borderRadius: "50%",
+            transform: "translate(40px,-40px)",
+          }}
+        />
+        <div style={{ fontSize: "36px", marginBottom: "10px" }}>🌙</div>
+        <h2
+          style={{
+            fontFamily: "'Cinzel', serif",
+            color: "#C9A227",
+            fontSize: "20px",
+            fontWeight: 900,
+            margin: "0 0 6px",
+            letterSpacing: "0.08em",
+          }}
+        >
+          Acknowledgements
+        </h2>
+        <p
+          style={{
+            color: "#94A3B8",
+            fontSize: "14px",
+            margin: 0,
+            fontStyle: "italic",
+          }}
+        >
+          OIC Digital Economy Index (OIC DEI) · 2025
+        </p>
+      </div>
+
+      {/* About the Project */}
+      <div style={cardStyle}>
+        <div style={headingStyle}>
+          <span>📋</span> About the Project
+        </div>
+        <p style={bodyStyle}>
+          This report was prepared as part of the{" "}
+          <strong style={{ color: "#1E293B" }}>
+            Islamic Digital Economy Project
+          </strong>
+          , supported by a grant from the{" "}
+          <strong style={{ color: "#C9A227" }}>
+            Islamic Economics Research &amp; Innovation Fund (IERIF)
+          </strong>
+          . The project aims to advance research and policy dialogue on the
+          development of the Islamic digital economy and to provide data-driven
+          insights for policymakers, researchers, and industry stakeholders.
+        </p>
+      </div>
+
+      {/* INCEIF */}
+      <div style={cardStyle}>
+        <div style={headingStyle}>
+          <span>🏛</span> About INCEIF University
+        </div>
+        <p style={bodyStyle}>
+          <strong style={{ color: "#1E293B" }}>
+            INCEIF University — The Global University of Islamic Finance
+          </strong>{" "}
+          is a world-class institution dedicated to advancing knowledge and
+          expertise in Islamic finance and economics. Established by Bank Negara
+          Malaysia, INCEIF provides postgraduate education and spearheads
+          cutting-edge research that bridges Islamic principles with
+          contemporary financial and digital economy challenges. Through its
+          academic programmes and research initiatives, INCEIF contributes to
+          shaping evidence-based policy and building human capital for the
+          global Islamic economy.
+        </p>
+      </div>
+
+      {/* Research Team */}
+      <div style={cardStyle}>
+        <div style={headingStyle}>
+          <span>🔬</span> Research Team
+        </div>
+        <p style={{ ...bodyStyle, marginBottom: "14px" }}>
+          The research team for this project includes:
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+          {[
+            "Assoc. Prof. Dr. Kinan Salim",
+            "Prof. Dr. Baharom Abd Hamid",
+            "Prof. Dr. Ahmet Faruk Aysan",
+            "Prof. Dr. Nafis Alam",
+            "Assoc. Prof. Dr. Mustafa Disli",
+            "Dr. Nur Huda Othman",
+            "Ruslena Ramli",
+            "Haitham Alnaeb",
+          ].map((name) => (
+            <span key={name} style={nameStyle}>
+              {name}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Authors */}
+      <div style={cardStyle}>
+        <div style={headingStyle}>
+          <span>✍️</span> Authors
+        </div>
+        <div style={authorRow}>
+          {[
+            "Assoc. Prof. Dr. Kinan Salim",
+            "Prof. Dr. Baharom Abdul Hamid",
+            "Assoc. Prof. Dr. Mustafa Disli",
+            "Khairunnisa Ismah Lutfi",
+            "Kurniagung Nur Cahyono",
+          ].map((name, i) => (
+            <div key={name} style={authorEntry}>
+              <span
+                style={{
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "50%",
+                  background: "#C9A227",
+                  color: "#FFF",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  flexShrink: 0,
+                }}
+              >
+                {i + 1}
+              </span>
+              {name}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Dashboard Development Team */}
+      <div style={cardStyle}>
+        <div style={headingStyle}>
+          <span>💻</span> Dashboard Development Team
+        </div>
+        <p style={{ ...bodyStyle, marginBottom: "14px" }}>
+          The authors acknowledge the valuable contribution of the dashboard
+          development team, whose work in designing and developing the
+          interactive dashboard significantly enhanced the accessibility and
+          usability of the project's data and findings.
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+          {["Haitham Alnaeb", "Abdullahi Ahmad Babura", "Amnan Hanani"].map(
+            (name) => (
+              <span key={name} style={nameStyle}>
+                {name}
+              </span>
+            ),
+          )}
+        </div>
+      </div>
+
+      {/* Disclaimer */}
+      <div
+        style={{
+          ...cardStyle,
+          background: "#F8FAFC",
+          border: "1px solid #E2E8F0",
+        }}
+      >
+        <div style={headingStyle}>
+          <span>⚖️</span> Disclaimer
+        </div>
+        <p style={{ ...bodyStyle, fontSize: "13px", color: "#64748B" }}>
+          The views expressed in this report are those of the authors and do not
+          necessarily reflect the official positions of INCEIF University,
+          IERIF, or any affiliated organisations. The data presented is intended
+          for research and informational purposes only.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 const TABS = [
   { id: "overview", label: "🌍 Global Overview", component: GlobalOverview },
   { id: "profiles", label: "📄 Country Profiles", component: CountryProfiles },
@@ -5554,6 +5804,11 @@ const TABS = [
     component: StatisticalAnalysis,
   },
   { id: "methodology", label: "🔬 Methodology", component: Methodology },
+  {
+    id: "acknowledgement",
+    label: "🤝 Acknowledgements",
+    component: Acknowledgement,
+  },
 ];
 
 // ─── APP ─────────────────────────────────────────────────────────────────────

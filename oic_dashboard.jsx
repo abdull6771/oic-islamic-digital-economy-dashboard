@@ -1028,7 +1028,7 @@ const styles = {
   header: {
     background:
       "linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 50%, #EFF6FF 100%)",
-    borderBottom: "1px solid #C9A22740",
+    borderBottom: "1px solid #B8922A40",
     padding: "24px 32px",
     position: "relative",
     overflow: "hidden",
@@ -1063,8 +1063,8 @@ const styles = {
     background: active
       ? "linear-gradient(180deg, #EEF2FF 0%, #DBEAFE 100%)"
       : "transparent",
-    color: active ? "#C9A227" : "#64748B",
-    borderBottom: active ? "2px solid #C9A227" : "2px solid transparent",
+    color: active ? "#B8922A" : "#64748B",
+    borderBottom: active ? "2px solid #B8922A" : "2px solid transparent",
     transition: "all 0.2s",
   }),
   content: { padding: "24px 32px", maxWidth: "1400px", margin: "0 auto" },
@@ -1077,7 +1077,7 @@ const styles = {
   cardTitle: {
     fontSize: "13px",
     fontFamily: "'Cinzel', serif",
-    color: "#C9A227",
+    color: "#B8922A",
     textTransform: "uppercase",
     letterSpacing: "0.1em",
     marginBottom: "16px",
@@ -1111,7 +1111,7 @@ const styles = {
     width: "28px",
     height: "28px",
     borderRadius: "50%",
-    background: "linear-gradient(135deg, #C9A227, #A07810)",
+    background: "linear-gradient(135deg, #B8922A, #A07810)",
     color: "#F8FAFC",
     fontSize: "12px",
     fontWeight: 900,
@@ -1129,7 +1129,7 @@ const styles = {
   },
   tooltip: {
     background: "#FFFFFF",
-    border: "1px solid #C9A22740",
+    border: "1px solid #B8922A40",
     borderRadius: "8px",
     padding: "10px 14px",
     fontSize: "12px",
@@ -1143,7 +1143,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
     <div style={styles.tooltip}>
-      <div style={{ color: "#C9A227", fontWeight: 700, marginBottom: "6px" }}>
+      <div style={{ color: "#B8922A", fontWeight: 700, marginBottom: "6px" }}>
         {label}
       </div>
       {payload.map((p, i) => (
@@ -1267,7 +1267,7 @@ function GlobalOverview() {
               style={{
                 fontSize: "32px",
                 fontWeight: 900,
-                color: "#C9A227",
+                color: "#B8922A",
                 fontFamily: "'Cinzel', serif",
               }}
             >
@@ -1347,7 +1347,7 @@ function GlobalOverview() {
                       style={{
                         fontSize: "13px",
                         fontWeight: 700,
-                        color: "#C9A227",
+                        color: "#B8922A",
                       }}
                     >
                       {c.adei.toFixed(1)}
@@ -1484,13 +1484,13 @@ function GlobalOverview() {
             </Bar>
             <ReferenceLine
               y={OIC_AVERAGE}
-              stroke="#C9A227"
+              stroke="#B8922A"
               strokeDasharray="4 4"
-              label={{ value: "OIC Avg", fill: "#C9A227", fontSize: 11 }}
+              label={{ value: "OIC Avg", fill: "#B8922A", fontSize: 11 }}
             />
           </BarChart>
         </ResponsiveContainer>
-        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+        <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
           <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
             The OIC's strongest pillar is <strong>{bestPillar.name}</strong> (avg {bestPillar.avg}/100), while <strong>{weakestPillar.name}</strong> (avg {weakestPillar.avg}/100) represents the most critical area for collective improvement. The <strong>{(bestPillar.avg - weakestPillar.avg).toFixed(0)}-point spread</strong> across pillars reveals significant structural unevenness in OIC digital development.
@@ -1517,7 +1517,7 @@ function GlobalOverview() {
                   style={{
                     textAlign: "left",
                     padding: "6px 8px",
-                    color: "#C9A227",
+                    color: "#B8922A",
                     borderBottom: "1px solid #CBD5E1",
                   }}
                 >
@@ -1632,7 +1632,7 @@ function CountryProfiles() {
   const peerCompData = [country, ...peers].map((c) => ({
     name: c.name.length > 12 ? c.name.slice(0, 12) + "…" : c.name,
     Score: parseFloat(c.adei.toFixed(1)),
-    fill: c.name === selected ? "#C9A227" : "#CBD5E1",
+    fill: c.name === selected ? "#B8922A" : "#CBD5E1",
   }));
 
   // Key insight computations
@@ -1729,11 +1729,11 @@ function CountryProfiles() {
                     onMouseDown={() => { setSelected(c.name); setSearch(""); setShowDrop(false); }}
                     style={{
                       padding: "8px 12px", cursor: "pointer", fontSize: "13px",
-                      color: c.name === selected ? "#C9A227" : "#1E293B",
-                      background: c.name === selected ? "#FFFBEB" : "transparent",
+                      color: c.name === selected ? "#B8922A" : "#1E293B",
+                      background: c.name === selected ? "#FDF6E3" : "transparent",
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.background = "#F1F5F9"}
-                    onMouseLeave={(e) => e.currentTarget.style.background = c.name === selected ? "#FFFBEB" : "transparent"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = c.name === selected ? "#FDF6E3" : "transparent"}
                   >
                     {c.name}
                   </div>
@@ -1756,7 +1756,7 @@ function CountryProfiles() {
           </button>
           <button
             onClick={copyLink}
-            style={{ ...styles.select, background: "#FFFBEB", color: "#C9A227", borderColor: "#C9A22740", cursor: "pointer" }}
+            style={{ ...styles.select, background: "#FDF6E3", color: "#B8922A", borderColor: "#B8922A40", cursor: "pointer" }}
           >
             {copied ? "✅ Copied!" : "🔗 Copy Link"}
           </button>
@@ -1786,7 +1786,7 @@ function CountryProfiles() {
           {
             label: "Global Rank",
             value: `#${country.rank} of 57`,
-            color: "#C9A227",
+            color: "#B8922A",
           },
           {
             label: "Regional Rank",
@@ -1867,7 +1867,7 @@ function CountryProfiles() {
             </RadarChart>
           </ResponsiveContainer>
           {/* Key Insight */}
-          <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+          <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
             <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>
               💡 Key insight
             </div>
@@ -1965,8 +1965,8 @@ function CountryProfiles() {
             </div>
           ))}
         </div>
-        <div style={{ ...styles.card, borderColor: "#C9A22740" }}>
-          <div style={{ ...styles.cardTitle, color: "#C9A227" }}>
+        <div style={{ ...styles.card, borderColor: "#B8922A40" }}>
+          <div style={{ ...styles.cardTitle, color: "#B8922A" }}>
             🎯 Headline Recommendation
           </div>
           <p
@@ -1998,7 +1998,7 @@ function CountryProfiles() {
             {country.adei.toFixed(1)}
           </strong>{" "}
           on the 2025 OIC Digital Economy Index, placing it{" "}
-          <strong style={{ color: "#C9A227" }}>#{country.rank}</strong> globally
+          <strong style={{ color: "#B8922A" }}>#{country.rank}</strong> globally
           and <strong style={{ color: "#10B981" }}>#{regionRank}</strong> within{" "}
           {region}. As a{" "}
           <strong style={{ color: cluster.color }}>{cluster.label}</strong>, the
@@ -2040,13 +2040,13 @@ function CountryProfiles() {
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="Score">
               {peerCompData.map((d, i) => (
-                <Cell key={i} fill={i === 0 ? "#C9A227" : "#CBD5E1"} />
+                <Cell key={i} fill={i === 0 ? "#B8922A" : "#CBD5E1"} />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
         {/* Key Insight */}
-        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+        <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>
             💡 Key insight
           </div>
@@ -2109,7 +2109,7 @@ function CompareCountries() {
   });
 
   const COMPARE_COLORS = [
-    "#C9A227",
+    "#B8922A",
     "#10B981",
     "#3B82F6",
     "#EF4444",
@@ -2138,9 +2138,9 @@ function CompareCountries() {
                     ? "#EEF2FF"
                     : "transparent",
                   borderColor: selected.includes(c.name)
-                    ? "#C9A227"
+                    ? "#B8922A"
                     : "#CBD5E1",
-                  color: selected.includes(c.name) ? "#C9A227" : "#64748B",
+                  color: selected.includes(c.name) ? "#B8922A" : "#64748B",
                   fontFamily: "'Cinzel', serif",
                 }}
               >
@@ -2242,7 +2242,7 @@ function CompareCountries() {
                 }, PILLARS[0]);
                 const spread = (Math.max(...countries.map(c => c[spreadPillar.key])) - Math.min(...countries.map(c => c[spreadPillar.key]))).toFixed(1);
                 return (
-                  <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                  <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
                     <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
                     <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                       <strong>{leader.name}</strong> leads the group overall (ODEI {leader.adei.toFixed(1)}). The widest gap across selected countries is in <strong>{spreadPillar.name}</strong> ({spread} pt spread), highlighting this as the most differentiating pillar.
@@ -2295,7 +2295,7 @@ function CompareCountries() {
                   return range(b) - range(a);
                 })[0];
                 return (
-                  <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                  <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
                     <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
                     <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                       <strong>{mostBalanced.name}</strong> has the most balanced pillar profile (smallest score range), while <strong>{mostSpecialized.name}</strong> shows the most uneven profile with pronounced strengths and gaps.
@@ -2363,7 +2363,7 @@ function PillarAnalysis() {
       <div style={styles.grid4}>
         {[
           { label: "Pillar Name", value: pillar.name, color: pillar.color },
-          { label: "Weight", value: `${pillar.weight}%`, color: "#C9A227" },
+          { label: "Weight", value: `${pillar.weight}%`, color: "#B8922A" },
           { label: "OIC Average", value: avg.toFixed(1), color: "#10B981" },
           { label: "Dimension", value: pillar.dim, color: "#8B5CF6" },
         ].map((s, i) => (
@@ -2450,18 +2450,18 @@ function PillarAnalysis() {
             />
             <ReferenceLine
               y={avg}
-              stroke="#C9A227"
+              stroke="#B8922A"
               strokeDasharray="4 4"
               label={{
                 value: `Avg: ${avg.toFixed(1)}`,
-                fill: "#C9A227",
+                fill: "#B8922A",
                 fontSize: 11,
                 position: "insideTopRight",
               }}
             />
           </BarChart>
         </ResponsiveContainer>
-        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+        <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
           <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
             <strong>{sorted[0].name}</strong> leads in {pillar.name} with a score of <strong>{sorted[0][pillar.key].toFixed(1)}</strong>, while <strong>{sorted[sorted.length - 1].name}</strong> scores lowest at <strong>{sorted[sorted.length - 1][pillar.key].toFixed(1)}</strong> — a <strong>{(sorted[0][pillar.key] - sorted[sorted.length - 1][pillar.key]).toFixed(0)}-point divide</strong>. <strong>{COUNTRIES.filter(c => c[pillar.key] >= avg).length} of 57</strong> countries score at or above the OIC average of {avg.toFixed(1)}.
@@ -2569,7 +2569,7 @@ function GeographicAnalysis() {
             <div
               style={{
                 fontSize: "10px",
-                color: REGION_COLORS[r.region] || "#C9A227",
+                color: REGION_COLORS[r.region] || "#B8922A",
                 fontWeight: 700,
                 marginBottom: "8px",
                 textTransform: "uppercase",
@@ -2642,7 +2642,7 @@ function GeographicAnalysis() {
           const topCountry = mapData.reduce((a, b) => a.score > b.score ? a : b);
           const bottomCountry = mapData.reduce((a, b) => a.score < b.score ? a : b);
           return (
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
               <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                 The map reveals a clear <strong>geographic concentration of digital leaders</strong> in the Gulf and Southeast Asia, while Sub-Saharan Africa and parts of Central Asia remain predominantly foundational. <strong>{advanced.length} countries</strong> (green) score above 60, <strong>{foundational.length}</strong> (red) score below 40. <strong>{topCountry.name}</strong> ({topCountry.score}) and <strong>{bottomCountry.name}</strong> ({bottomCountry.score}) represent the two poles of the OIC digital divide.
@@ -2680,9 +2680,9 @@ function GeographicAnalysis() {
             </Bar>
             <ReferenceLine
               y={OIC_AVERAGE}
-              stroke="#C9A227"
+              stroke="#B8922A"
               strokeDasharray="4 4"
-              label={{ value: "OIC Average", fill: "#C9A227", fontSize: 11 }}
+              label={{ value: "OIC Average", fill: "#B8922A", fontSize: 11 }}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -2690,7 +2690,7 @@ function GeographicAnalysis() {
           const topRegion = regionStats.reduce((a, b) => a.avg > b.avg ? a : b);
           const bottomRegion = regionStats.reduce((a, b) => a.avg < b.avg ? a : b);
           return (
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
               <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                 <strong>{topRegion.region}</strong> is the highest-performing region (avg {topRegion.avg.toFixed(1)}), while <strong>{bottomRegion.region}</strong> scores lowest (avg {bottomRegion.avg.toFixed(1)}). The inter-regional gap of <strong>{(topRegion.avg - bottomRegion.avg).toFixed(1)} pts</strong> highlights significant geographic disparity within the OIC. <strong>{regionStats.filter(r => r.avg >= OIC_AVERAGE).length} of {regionStats.length}</strong> regions exceed the OIC average of {OIC_AVERAGE.toFixed(1)}.
@@ -2725,7 +2725,7 @@ function GeographicAnalysis() {
           const mostAdvanced = [...clusterByRegion].sort((a, b) => b.Leaders - a.Leaders)[0];
           const mostEmerging = [...clusterByRegion].sort((a, b) => b.Emerging - a.Emerging)[0];
           return (
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
               <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                 <strong>{mostAdvanced.name}</strong> has the highest concentration of Advanced Digital Economies ({mostAdvanced.Leaders} countries). <strong>{mostEmerging.name}</strong> has the most Foundational Digital Economies ({mostEmerging.Emerging} countries), indicating the greatest need for targeted development support.
@@ -2741,7 +2741,7 @@ function GeographicAnalysis() {
           <div
             style={{
               ...styles.cardTitle,
-              color: REGION_COLORS[r.region] || "#C9A227",
+              color: REGION_COLORS[r.region] || "#B8922A",
             }}
           >
             {r.region} ({r.count} countries, avg: {r.avg.toFixed(1)})
@@ -2818,7 +2818,7 @@ function TrendsProgress() {
   const deselectAll = () => setSelectedCountries([]);
 
   const trendColors = {
-    "United Arab Emirates": "#C9A227",
+    "United Arab Emirates": "#B8922A",
     "Saudi Arabia": "#F59E0B",
     Malaysia: "#10B981",
     Indonesia: "#3B82F6",
@@ -2915,7 +2915,7 @@ function TrendsProgress() {
               onClick={() => toggleCountry(c)}
               style={{
                 background: selectedCountries.includes(c)
-                  ? "#C9A227"
+                  ? "#B8922A"
                   : "#F1F5F9",
                 color: selectedCountries.includes(c) ? "#FFFFFF" : "#475569",
                 border: "none",
@@ -2968,7 +2968,7 @@ function TrendsProgress() {
           const gains = nonAvg.map(c => ({ name: c, gain: (endYear[c] || 0) - (startYear[c] || 0) })).filter(x => x.gain !== 0);
           const topGainer = gains.length > 0 ? gains.reduce((a, b) => a.gain > b.gain ? a : b) : null;
           return (
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
               <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                 {topGainer ? <>Among selected countries, <strong>{topGainer.name}</strong> shows the strongest upward trajectory with a <strong>+{topGainer.gain.toFixed(1)} pt</strong> gain from 2021 to 2025.</> : <>Tracking <strong>{nonAvg.length}</strong> countries over the 2021–2025 period.</>}
@@ -2992,7 +2992,7 @@ function TrendsProgress() {
               <Bar
                 dataKey="count"
                 name="Countries"
-                fill="#C9A227"
+                fill="#B8922A"
                 fillOpacity={0.8}
               />
             </BarChart>
@@ -3004,7 +3004,7 @@ function TrendsProgress() {
               return mid >= OIC_AVERAGE;
             });
             return (
-              <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
                 <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
                 <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                   The most common score band is <strong>{peakBin.range}</strong> with <strong>{peakBin.count} countries</strong>. The distribution is right-skewed, with a small cluster of high performers pulling the mean above the median — indicating that most OIC nations are still in early-to-mid digital development stages.
@@ -3046,7 +3046,7 @@ function TrendsProgress() {
                     style={{
                       fontSize: "18px",
                       fontWeight: 900,
-                      color: "#C9A227",
+                      color: "#B8922A",
                     }}
                   >
                     {s.value}
@@ -3179,7 +3179,7 @@ function RankingsExplorer() {
   const SortIcon = ({ col }) => (
     <span
       style={{
-        color: sortBy === col ? "#C9A227" : "#CBD5E1",
+        color: sortBy === col ? "#B8922A" : "#CBD5E1",
         marginLeft: "4px",
       }}
     >
@@ -3201,8 +3201,8 @@ function RankingsExplorer() {
           style={{
             ...styles.select,
             background: "#EEF2FF",
-            color: "#C9A227",
-            borderColor: "#C9A22740",
+            color: "#B8922A",
+            borderColor: "#B8922A40",
             cursor: "pointer",
             whiteSpace: "nowrap",
           }}
@@ -3224,7 +3224,7 @@ function RankingsExplorer() {
             }}
           >
             <thead>
-              <tr style={{ borderBottom: "1px solid #C9A22740" }}>
+              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
                 {[
                   ["rank", "#"],
                   ["name", "Country"],
@@ -3237,7 +3237,7 @@ function RankingsExplorer() {
                     style={{
                       padding: "10px 8px",
                       cursor: "pointer",
-                      color: sortBy === key ? "#C9A227" : "#64748B",
+                      color: sortBy === key ? "#B8922A" : "#64748B",
                       textAlign: key === "name" ? "left" : "center",
                       whiteSpace: "nowrap",
                       fontFamily: "'Cinzel', serif",
@@ -3490,7 +3490,7 @@ function PolicyRecommendations() {
           {country.name} is classified as a{" "}
           <strong style={{ color: cluster.color }}>{cluster.label}</strong> with
           an ODEI score of{" "}
-          <strong style={{ color: "#C9A227" }}>
+          <strong style={{ color: "#B8922A" }}>
             {country.adei.toFixed(1)}
           </strong>{" "}
           (Rank #{country.rank} of 57 OIC states). The following evidence-based
@@ -3673,7 +3673,7 @@ function DigitalDivide() {
           {
             label: "OIC Average Score",
             value: oicAvg.toFixed(1),
-            color: "#C9A227",
+            color: "#B8922A",
           },
           {
             label: "Max Digital Divide",
@@ -3717,9 +3717,9 @@ function DigitalDivide() {
             <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
               y={0}
-              stroke="#C9A227"
+              stroke="#B8922A"
               strokeWidth={2}
-              label={{ value: "OIC Average", fill: "#C9A227", fontSize: 11 }}
+              label={{ value: "OIC Average", fill: "#B8922A", fontSize: 11 }}
             />
             <Bar dataKey="gap" name="Gap from OIC Avg">
               {gapData.map((d, i) => (
@@ -3728,7 +3728,7 @@ function DigitalDivide() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+        <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
           <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
           <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
             <strong>{above.length} countries</strong> exceed the OIC average ({oicAvg.toFixed(1)}), while <strong>{below.length} countries</strong> fall below it. The largest positive gap belongs to <strong>{sorted[0].name}</strong> (+{(sorted[0].adei - oicAvg).toFixed(1)} pts) and the largest deficit to <strong>{sorted[sorted.length - 1].name}</strong> ({(sorted[sorted.length - 1].adei - oicAvg).toFixed(1)} pts), representing a total intra-OIC divide of <strong>{(sorted[0].adei - sorted[sorted.length - 1].adei).toFixed(0)} pts</strong>.
@@ -3804,8 +3804,8 @@ function IslamicDigitalSpecial() {
       <div
         style={{
           ...styles.card,
-          borderColor: "#C9A22740",
-          background: "linear-gradient(135deg, #FFFFFF 0%, #C9A22708 100%)",
+          borderColor: "#B8922A40",
+          background: "linear-gradient(135deg, #FFFFFF 0%, #B8922A08 100%)",
         }}
       >
         <div style={styles.cardTitle}>
@@ -3821,7 +3821,7 @@ function IslamicDigitalSpecial() {
         >
           A unique strategic opportunity is emerging within the OIC bloc: the
           convergence of{" "}
-          <strong style={{ color: "#C9A227" }}>Islamic Finance</strong> and{" "}
+          <strong style={{ color: "#B8922A" }}>Islamic Finance</strong> and{" "}
           <strong style={{ color: "#10B981" }}>digital technology</strong>.
           Nations such as Malaysia, Saudi Arabia, and the UAE are leveraging
           Islamic Fintech as a globally competitive advantage. Meanwhile,
@@ -3873,7 +3873,7 @@ function IslamicDigitalSpecial() {
                 const d = payload[0].payload;
                 return (
                   <div style={styles.tooltip}>
-                    <div style={{ color: "#C9A227", fontWeight: 700 }}>
+                    <div style={{ color: "#B8922A", fontWeight: 700 }}>
                       {d.name}
                     </div>
                     <div>Innovation: {d.x.toFixed(1)}</div>
@@ -3897,7 +3897,7 @@ function IslamicDigitalSpecial() {
           const topInnovator = QUADRANT_DATA.reduce((a, b) => a.x > b.x ? a : b);
           const topFintech = QUADRANT_DATA.reduce((a, b) => a.y > b.y ? a : b);
           return (
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
               <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                 Only <strong>{highBoth.length} countries</strong> score above the OIC average in both Innovation and Financial Markets — the rare "dual leaders". <strong>{topInnovator.name}</strong> leads in Innovation ({topInnovator.x.toFixed(1)}) and <strong>{topFintech.name}</strong> in Financial Market Development ({topFintech.y.toFixed(1)}). Most OIC nations concentrate in the lower-left quadrant, signalling a systemic gap in private-sector digital innovation.
@@ -4151,10 +4151,10 @@ function CustomIndexBuilder() {
           Re-weight the 9 pillars to see how rankings shift under alternative
           policy priorities. Use presets or manually adjust sliders. Weights
           auto-normalize to 100%. Essential for{" "}
-          <strong style={{ color: "#C9A227" }}>
+          <strong style={{ color: "#B8922A" }}>
             academic sensitivity analysis
           </strong>{" "}
-          and <strong style={{ color: "#C9A227" }}>scenario planning</strong>.
+          and <strong style={{ color: "#B8922A" }}>scenario planning</strong>.
         </p>
       </div>
       <div style={styles.card}>
@@ -4389,7 +4389,7 @@ function CustomIndexBuilder() {
           const biggestLoser = [...customRanked].sort((a, b) => a.rankChange - b.rankChange)[0];
           const scoreDiff = biggestGainer ? (biggestGainer.customScore - biggestGainer.adei).toFixed(1) : 0;
           return (
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
               <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                 Under the current weight settings, <strong>{biggestGainer?.name}</strong> gains the most (+{biggestGainer?.rankChange} ranks, score {biggestGainer?.adei.toFixed(1)} → {biggestGainer?.customScore.toFixed(1)}), while <strong>{biggestLoser?.name}</strong> drops the most ({biggestLoser?.rankChange} ranks). Adjusting pillar weights reveals which countries are under- or over-valued by the official index.
@@ -4413,7 +4413,7 @@ function CustomIndexBuilder() {
             <thead
               style={{ position: "sticky", top: 0, background: "#FFFFFF" }}
             >
-              <tr style={{ borderBottom: "1px solid #C9A22740" }}>
+              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
                 {[
                   "Custom #",
                   "Official #",
@@ -4426,7 +4426,7 @@ function CustomIndexBuilder() {
                     key={h}
                     style={{
                       padding: "10px 8px",
-                      color: "#C9A227",
+                      color: "#B8922A",
                       textAlign: "center",
                       fontFamily: "'Cinzel',serif",
                       fontSize: "11px",
@@ -4498,7 +4498,7 @@ function CustomIndexBuilder() {
                     style={{
                       padding: "7px 8px",
                       textAlign: "center",
-                      color: "#C9A227",
+                      color: "#B8922A",
                     }}
                   >
                     {c.adei.toFixed(1)}
@@ -4589,16 +4589,16 @@ function PriorityMatrix() {
         </select>
         <div style={{ fontSize: "13px", color: "#64748B" }}>
           ODEI:{" "}
-          <span style={{ color: "#C9A227", fontWeight: 700 }}>
+          <span style={{ color: "#B8922A", fontWeight: 700 }}>
             {country.adei.toFixed(1)}
           </span>{" "}
           | Rank{" "}
-          <span style={{ color: "#C9A227", fontWeight: 700 }}>
+          <span style={{ color: "#B8922A", fontWeight: 700 }}>
             #{country.rank}
           </span>
         </div>
       </div>
-      <div style={{ ...styles.card, borderColor: "#C9A22740" }}>
+      <div style={{ ...styles.card, borderColor: "#B8922A40" }}>
         <div style={styles.cardTitle}>
           📌 Priority Matrix — Impact vs. Achievability for {country.name}
         </div>
@@ -4817,7 +4817,7 @@ function PeerLearning() {
     return row;
   });
   const PEER_COLORS = [
-    "#C9A227",
+    "#B8922A",
     "#10B981",
     "#3B82F6",
     "#EF4444",
@@ -5019,7 +5019,7 @@ function PeerLearning() {
                     <span style={{ fontSize: "12px", color: "#64748B" }}>
                       ODEI Score
                     </span>
-                    <span style={{ fontSize: "12px", color: "#C9A227" }}>
+                    <span style={{ fontSize: "12px", color: "#B8922A" }}>
                       {peer.adei.toFixed(1)}
                     </span>
                   </div>
@@ -5072,8 +5072,8 @@ function PeerLearning() {
                 <Radar
                   name={country.name}
                   dataKey={country.name}
-                  stroke="#C9A227"
-                  fill="#C9A227"
+                  stroke="#B8922A"
+                  fill="#B8922A"
                   fillOpacity={0.3}
                   strokeWidth={2}
                 />
@@ -5103,7 +5103,7 @@ function PeerLearning() {
                 name: p.name, diff: topPeer[p.key] - country[p.key]
               })).sort((a, b) => b.diff - a.diff)[0];
               return (
-                <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
                   <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
                   <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                     Best peer learner <strong>{topPeer.name}</strong> outscores {country.name} in <strong>{focusPillar.name}</strong> by <strong>{gap} pts</strong> ({country[pillarFocus].toFixed(1)} vs {topPeer[pillarFocus].toFixed(1)}), despite having a similar overall ODEI profile. {otherGaps.diff > 0 && <>They also lead in <strong>{otherGaps.name}</strong> (+{otherGaps.diff.toFixed(1)} pts), suggesting broader capacity to emulate.</>}
@@ -5116,7 +5116,7 @@ function PeerLearning() {
       ) : (
         <div style={{ ...styles.card, textAlign: "center", padding: "40px" }}>
           <div style={{ fontSize: "32px", marginBottom: "12px" }}>🏆</div>
-          <div style={{ fontSize: "16px", color: "#C9A227", fontWeight: 700 }}>
+          <div style={{ fontSize: "16px", color: "#B8922A", fontWeight: 700 }}>
             No peer learners found
           </div>
           <div style={{ fontSize: "13px", color: "#64748B", marginTop: "8px" }}>
@@ -5204,7 +5204,7 @@ function ProgressTracker({ hideTrajectory = false }) {
             const gains = names.map(n => ({ name: n, gain: TREND_FULL[n][4] - TREND_FULL[n][0] }));
             const top = gains.reduce((a, b) => a.gain > b.gain ? a : b);
             return (
-              <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
                 <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
                 <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                   Among tracked countries, <strong>{top.name}</strong> recorded the strongest 4-year growth of <strong>+{top.gain.toFixed(1)} pts</strong> (2021–2025). The upward trajectory across most countries reflects sustained digital investment across the OIC bloc.
@@ -5225,7 +5225,7 @@ function ProgressTracker({ hideTrajectory = false }) {
             }}
           >
             <thead>
-              <tr style={{ borderBottom: "1px solid #C9A22740" }}>
+              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
                 {[
                   "Country",
                   "2025 Rank",
@@ -5238,7 +5238,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                     key={h}
                     style={{
                       padding: "10px 8px",
-                      color: "#C9A227",
+                      color: "#B8922A",
                       textAlign: "center",
                       fontFamily: "'Cinzel',serif",
                       fontSize: "11px",
@@ -5275,7 +5275,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                       style={{
                         padding: "8px",
                         textAlign: "center",
-                        color: "#C9A227",
+                        color: "#B8922A",
                         fontWeight: 700,
                       }}
                     >
@@ -5371,7 +5371,7 @@ function ProgressTracker({ hideTrajectory = false }) {
           const topGrower = fastestGrowing[0];
           const declined = fastestGrowing.filter(c => c.growth < 0);
           return (
-            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ background: "#FDF6E3", border: "1px solid #F0C96A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
               <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
               <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
                 <strong>{topGrower?.name}</strong> is the fastest-growing OIC economy with a <strong>+{topGrower?.growth.toFixed(1)} pt</strong> gain over 4 years. {declined.length > 0 ? <><strong>{declined.length} countr{declined.length > 1 ? "ies" : "y"}</strong> recorded a decline, with <strong>{declined[declined.length - 1]?.name}</strong> falling the most ({declined[declined.length - 1]?.growth.toFixed(1)} pts).</> : <>All tracked countries recorded positive growth over the period.</>}
@@ -5449,7 +5449,7 @@ function StatisticalAnalysis() {
             }}
           >
             <thead>
-              <tr style={{ borderBottom: "1px solid #C9A22740" }}>
+              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
                 {[
                   "Pillar",
                   "Mean",
@@ -5464,7 +5464,7 @@ function StatisticalAnalysis() {
                     key={h}
                     style={{
                       padding: "10px 8px",
-                      color: "#C9A227",
+                      color: "#B8922A",
                       textAlign: "center",
                       fontFamily: "'Cinzel',serif",
                       fontSize: "11px",
@@ -5515,7 +5515,7 @@ function StatisticalAnalysis() {
           <table style={{ borderCollapse: "collapse", fontSize: "11px" }}>
             <thead>
               <tr>
-                <th style={{ padding: "6px 10px", color: "#C9A227" }}>
+                <th style={{ padding: "6px 10px", color: "#B8922A" }}>
                   Pillar
                 </th>
                 {PILLARS.map((p) => (
@@ -5674,7 +5674,7 @@ function Methodology() {
           <p style={{ color: "#475569", fontSize: "13px", lineHeight: 1.8 }}>
             The ODEI, developed by Al-Khouri (2024), measures digital economy
             maturity of OIC member states through{" "}
-            <strong style={{ color: "#C9A227" }}>
+            <strong style={{ color: "#B8922A" }}>
               9 pillars, 32 indicators, and 21 sub-indicators
             </strong>
             . The 2025 edition covers all 57 OIC member states using lagged
@@ -5719,7 +5719,7 @@ function Methodology() {
         <div>
           <p style={{ color: "#475569", fontSize: "13px", lineHeight: 1.8 }}>
             All indicators normalized to{" "}
-            <strong style={{ color: "#C9A227" }}>0–100 scale</strong> using
+            <strong style={{ color: "#B8922A" }}>0–100 scale</strong> using
             min-max normalization:
           </p>
           <div
@@ -5849,13 +5849,13 @@ function Methodology() {
             }}
           >
             <thead>
-              <tr style={{ borderBottom: "1px solid #C9A22740" }}>
+              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
                 {["Indicator", "Code", "Source"].map((h) => (
                   <th
                     key={h}
                     style={{
                       padding: "8px",
-                      color: "#C9A227",
+                      color: "#B8922A",
                       textAlign: "left",
                       fontFamily: "'Cinzel',serif",
                       fontSize: "11px",
@@ -5881,7 +5881,7 @@ function Methodology() {
                   <td
                     style={{
                       padding: "7px 8px",
-                      color: "#C9A227",
+                      color: "#B8922A",
                       fontFamily: "monospace",
                     }}
                   >
@@ -5918,10 +5918,10 @@ function Methodology() {
                 fontSize: "12px",
                 fontFamily: "'Cinzel',serif",
                 background: openSection === key ? "#EEF2FF" : "transparent",
-                color: openSection === key ? "#C9A227" : "#64748B",
+                color: openSection === key ? "#B8922A" : "#64748B",
                 borderLeft:
                   openSection === key
-                    ? "3px solid #C9A227"
+                    ? "3px solid #B8922A"
                     : "3px solid transparent",
                 marginBottom: "4px",
               }}
@@ -5954,7 +5954,7 @@ function Acknowledgement() {
     fontFamily: "'Inter', sans-serif",
     fontSize: "15px",
     fontWeight: 700,
-    color: "#C9A227",
+    color: "#B8922A",
     letterSpacing: "0.01em",
     marginBottom: "14px",
     display: "flex",
@@ -6022,7 +6022,7 @@ function Acknowledgement() {
         <h2
           style={{
             fontFamily: "'Inter', sans-serif",
-            color: "#C9A227",
+            color: "#B8922A",
             fontSize: "20px",
             fontWeight: 700,
             margin: "0 0 6px",
@@ -6054,7 +6054,7 @@ function Acknowledgement() {
             Islamic Digital Economy Project
           </strong>
           , supported by a grant from the{" "}
-          <strong style={{ color: "#C9A227" }}>
+          <strong style={{ color: "#B8922A" }}>
             Islamic Economics Research &amp; Innovation Fund (IERIF)
           </strong>
           . The project aims to advance research and policy dialogue on the
@@ -6128,7 +6128,7 @@ function Acknowledgement() {
                   width: "24px",
                   height: "24px",
                   borderRadius: "50%",
-                  background: "#C9A227",
+                  background: "#B8922A",
                   color: "#FFF",
                   display: "flex",
                   alignItems: "center",
@@ -6260,7 +6260,7 @@ export default function App() {
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #F8FAFC; }
         ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #C9A227; }
+        ::-webkit-scrollbar-thumb:hover { background: #B8922A; }
         select option { background: #FFFFFF; color: #1E293B; }
       `}</style>
 
@@ -6277,7 +6277,7 @@ export default function App() {
                   fontFamily: "'Cinzel', serif",
                   fontSize: "22px",
                   fontWeight: 900,
-                  color: "#C9A227",
+                  color: "#B8922A",
                   letterSpacing: "0.08em",
                 }}
               >
@@ -6304,7 +6304,7 @@ export default function App() {
                 style={{
                   fontSize: "24px",
                   fontWeight: 900,
-                  color: "#C9A227",
+                  color: "#B8922A",
                   fontFamily: "'Cinzel', serif",
                 }}
               >

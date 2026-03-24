@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   BarChart,
   Bar,
@@ -149,7 +149,7 @@ const REGIONS = {
   Mali: "West Africa",
   "Burkina Faso": "West Africa",
   Niger: "West Africa",
-  "Gambia, The": "West Africa",
+  Gambia: "West Africa",
   Togo: "West Africa",
   Mauritania: "West Africa",
   "Sierra Leone": "West Africa",
@@ -771,7 +771,7 @@ const COUNTRIES = [
     p9: 48.49,
   },
   {
-    name: "Gambia,",
+    name: "Gambia",
     rank: 44,
     adei: 18.6569,
     p1: 41.11,
@@ -1175,6 +1175,9 @@ function GlobalOverview() {
     color: p.color,
   }));
 
+  const bestPillar = pillarAvgs.reduce((b, p) => p.avg > b.avg ? p : b, pillarAvgs[0]);
+  const weakestPillar = pillarAvgs.reduce((w, p) => p.avg < w.avg ? p : w, pillarAvgs[0]);
+
   const clusterData = [
     {
       name: "Advanced Digital Economies",
@@ -1198,6 +1201,36 @@ function GlobalOverview() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* Top / Bottom 5 Widget */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+        <div style={{ ...styles.card, borderColor: "#10B98140" }}>
+          <div style={{ ...styles.cardTitle, color: "#10B981", marginBottom: "10px" }}>🥇 Top 5 Countries</div>
+          {sorted.slice(0, 5).map((c, i) => {
+            const cl = getCluster(c.adei);
+            return (
+              <div key={c.name} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "5px 0", borderBottom: i < 4 ? "1px solid #F1F5F9" : "none" }}>
+                <span style={{ fontSize: "11px", color: "#64748B", width: "16px", textAlign: "right" }}>{i + 1}</span>
+                <span style={{ flex: 1, fontSize: "13px", color: "#1E293B", fontWeight: 600 }}>{c.name}</span>
+                <span style={{ fontSize: "13px", fontWeight: 700, color: cl.color }}>{c.adei.toFixed(1)}</span>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ ...styles.card, borderColor: "#EF444440" }}>
+          <div style={{ ...styles.cardTitle, color: "#EF4444", marginBottom: "10px" }}>📍 Bottom 5 Countries</div>
+          {sorted.slice(-5).reverse().map((c, i) => {
+            const cl = getCluster(c.adei);
+            return (
+              <div key={c.name} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "5px 0", borderBottom: i < 4 ? "1px solid #F1F5F9" : "none" }}>
+                <span style={{ fontSize: "11px", color: "#64748B", width: "16px", textAlign: "right" }}>{57 - 4 + i}</span>
+                <span style={{ flex: 1, fontSize: "13px", color: "#1E293B", fontWeight: 600 }}>{c.name}</span>
+                <span style={{ fontSize: "13px", fontWeight: 700, color: cl.color }}>{c.adei.toFixed(1)}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* KPI Row */}
       <div style={styles.grid4}>
         {[
@@ -1457,6 +1490,12 @@ function GlobalOverview() {
             />
           </BarChart>
         </ResponsiveContainer>
+        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+          <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+            The OIC's strongest pillar is <strong>{bestPillar.name}</strong> (avg {bestPillar.avg}/100), while <strong>{weakestPillar.name}</strong> (avg {weakestPillar.avg}/100) represents the most critical area for collective improvement. The <strong>{(bestPillar.avg - weakestPillar.avg).toFixed(0)}-point spread</strong> across pillars reveals significant structural unevenness in OIC digital development.
+          </p>
+        </div>
       </div>
 
       {/* Pillar Correlation Heatmap */}
@@ -1464,7 +1503,7 @@ function GlobalOverview() {
         <div style={styles.cardTitle}>
           🔥 Pillar Score Heatmap (All 57 Countries)
         </div>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: "auto", maxHeight: "420px", overflowY: "auto" }}>
           <table
             style={{
               width: "100%",
@@ -1472,7 +1511,7 @@ function GlobalOverview() {
               fontSize: "11px",
             }}
           >
-            <thead>
+            <thead style={{ position: "sticky", top: 0, background: "#FFFFFF", zIndex: 1 }}>
               <tr>
                 <th
                   style={{
@@ -1501,7 +1540,7 @@ function GlobalOverview() {
               </tr>
             </thead>
             <tbody>
-              {sorted.slice(0, 20).map((c) => (
+              {sorted.map((c) => (
                 <tr key={c.name} style={{ borderBottom: "1px solid #FFFFFF" }}>
                   <td
                     style={{
@@ -1544,7 +1583,7 @@ function GlobalOverview() {
             </tbody>
           </table>
           <div style={{ color: "#64748B", fontSize: "11px", marginTop: "8px" }}>
-            Showing leading 20 countries. Use Rankings tab for full table.
+            All 57 OIC member states · scroll to explore
           </div>
         </div>
       </div>
@@ -1554,7 +1593,15 @@ function GlobalOverview() {
 
 // ─── COUNTRY PROFILES TAB ───────────────────────────────────────────────────
 function CountryProfiles() {
-  const [selected, setSelected] = useState("United Arab Emirates");
+  const [selected, setSelected] = useState(() => {
+    const p = new URLSearchParams(window.location.hash.replace("#", ""));
+    const c = p.get("country");
+    return c && COUNTRIES.find((x) => x.name === c) ? c : "United Arab Emirates";
+  });
+  const [search, setSearch] = useState("");
+  const [showDrop, setShowDrop] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const dropRef = useRef(null);
   const country = COUNTRIES.find((c) => c.name === selected);
   const cluster = getCluster(country.adei);
   const region = REGIONS[country.name] || "Other";
@@ -1588,6 +1635,54 @@ function CountryProfiles() {
     fill: c.name === selected ? "#C9A227" : "#CBD5E1",
   }));
 
+  // Key insight computations
+  const oicAvgByPillar = PILLARS.reduce((acc, p) => {
+    acc[p.key] = COUNTRIES.reduce((s, c) => s + c[p.key], 0) / COUNTRIES.length;
+    return acc;
+  }, {});
+  const pillarsAboveAvg = PILLARS.filter((p) => country[p.key] > oicAvgByPillar[p.key]).length;
+  const bestVsAvg = PILLARS.reduce((best, p) =>
+    country[p.key] - oicAvgByPillar[p.key] > country[best.key] - oicAvgByPillar[best.key] ? p : best, PILLARS[0]);
+  const worstVsAvg = PILLARS.reduce((worst, p) =>
+    country[p.key] - oicAvgByPillar[p.key] < country[worst.key] - oicAvgByPillar[worst.key] ? p : worst, PILLARS[0]);
+  const peerLeader = regionPeers[0];
+  const gapToLeader = (peerLeader.adei - country.adei).toFixed(1);
+  const isRegionLeader = regionRank === 1;
+  const secondPlace = regionPeers[1];
+
+  const exportCSV = () => {
+    const headers = ["Pillar", "Score", "OIC Average", "vs OIC Avg"];
+    const rows = PILLARS.map((p) => [
+      p.name,
+      country[p.key].toFixed(2),
+      oicAvgByPillar[p.key].toFixed(2),
+      (country[p.key] - oicAvgByPillar[p.key]).toFixed(2),
+    ]);
+    const meta = [
+      [`Country,${country.name}`],
+      [`ODEI Score,${country.adei.toFixed(2)}`],
+      [`Global Rank,#${country.rank}`],
+      [`Region,${region}`],
+      [],
+    ];
+    const csv = [...meta, headers, ...rows].map((r) => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${country.name.replace(/[^a-z0-9]/gi, "_")}_ODEI_Profile.csv`;
+    a.click();
+  };
+
+  const copyLink = () => {
+    const hash = `#country=${encodeURIComponent(selected)}&tab=profiles`;
+    const url = window.location.href.split("#")[0] + hash;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   const HEADLINE_REC = {
     "Advanced Digital Economies":
       "Transition from digital follower to global standard-setter. Lead OIC in AI governance, digital export frameworks, and Islamic Fintech international standards.",
@@ -1608,44 +1703,70 @@ function CountryProfiles() {
           flexWrap: "wrap",
         }}
       >
-        <select
-          style={styles.select}
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-        >
-          {[...COUNTRIES]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-        </select>
-        <div
-          style={{
-            ...styles.badge(cluster.color, cluster.bg),
-            fontSize: "13px",
-            padding: "4px 12px",
-          }}
-        >
+        {/* Searchable country selector */}
+        <div style={{ position: "relative" }} ref={dropRef}>
+          <input
+            value={showDrop ? search : selected}
+            onChange={(e) => { setSearch(e.target.value); setShowDrop(true); }}
+            onFocus={() => { setSearch(""); setShowDrop(true); }}
+            onBlur={() => setTimeout(() => setShowDrop(false), 150)}
+            placeholder="Search country…"
+            style={{ ...styles.select, minWidth: "220px" }}
+          />
+          {showDrop && (
+            <div style={{
+              position: "absolute", top: "105%", left: 0, right: 0,
+              background: "#FFFFFF", border: "1px solid #E2E8F0",
+              borderRadius: "8px", maxHeight: "240px", overflowY: "auto",
+              zIndex: 200, boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+            }}>
+              {[...COUNTRIES]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .filter((c) => c.name.toLowerCase().includes(search.toLowerCase()))
+                .map((c) => (
+                  <div
+                    key={c.name}
+                    onMouseDown={() => { setSelected(c.name); setSearch(""); setShowDrop(false); }}
+                    style={{
+                      padding: "8px 12px", cursor: "pointer", fontSize: "13px",
+                      color: c.name === selected ? "#C9A227" : "#1E293B",
+                      background: c.name === selected ? "#FFFBEB" : "transparent",
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = "#F1F5F9"}
+                    onMouseLeave={(e) => e.currentTarget.style.background = c.name === selected ? "#FFFBEB" : "transparent"}
+                  >
+                    {c.name}
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+        <div style={{ ...styles.badge(cluster.color, cluster.bg), fontSize: "13px", padding: "4px 12px" }}>
           {cluster.label}
         </div>
         <div style={{ color: "#64748B", fontSize: "13px" }}>
           Region: <span style={{ color: "#475569" }}>{region}</span>
         </div>
-        <button
-          onClick={() => window.print()}
-          style={{
-            ...styles.select,
-            background: "#EEF2FF",
-            color: "#C9A227",
-            borderColor: "#C9A22740",
-            cursor: "pointer",
-            marginLeft: "auto",
-          }}
-        >
-          🖨 Print / Export
-        </button>
+        <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
+          <button
+            onClick={exportCSV}
+            style={{ ...styles.select, background: "#F0FDF4", color: "#10B981", borderColor: "#10B98140", cursor: "pointer" }}
+          >
+            ⬇ Export CSV
+          </button>
+          <button
+            onClick={copyLink}
+            style={{ ...styles.select, background: "#FFFBEB", color: "#C9A227", borderColor: "#C9A22740", cursor: "pointer" }}
+          >
+            {copied ? "✅ Copied!" : "🔗 Copy Link"}
+          </button>
+          <button
+            onClick={() => window.print()}
+            style={{ ...styles.select, background: "#EEF2FF", color: "#6366F1", borderColor: "#6366F140", cursor: "pointer" }}
+          >
+            🖨 Print
+          </button>
+        </div>
       </div>
 
       {/* KPI Cards */}
@@ -1745,6 +1866,19 @@ function CountryProfiles() {
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>
           </ResponsiveContainer>
+          {/* Key Insight */}
+          <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+            <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>
+              💡 Key insight
+            </div>
+            <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+              {country.name} outperforms the OIC average in <strong>{pillarsAboveAvg} of {PILLARS.length} pillars</strong>.
+              {" "}Strongest advantage in <strong style={{ color: bestVsAvg.color }}>{bestVsAvg.name}</strong>
+              {" "}(<strong>+{(country[bestVsAvg.key] - oicAvgByPillar[bestVsAvg.key]).toFixed(1)} pts</strong> vs OIC avg);
+              {" "}largest gap in <strong style={{ color: worstVsAvg.color }}>{worstVsAvg.name}</strong>
+              {" "}(<strong>{(country[worstVsAvg.key] - oicAvgByPillar[worstVsAvg.key]).toFixed(1)} pts</strong> vs OIC avg).
+            </p>
+          </div>
         </div>
 
         {/* Pillar Scores */}
@@ -1911,6 +2045,27 @@ function CountryProfiles() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        {/* Key Insight */}
+        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>
+            💡 Key insight
+          </div>
+          <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+            {isRegionLeader ? (
+              <>
+                <strong>{country.name} leads {region}</strong> with a score of <strong>{country.adei.toFixed(1)}</strong>,
+                {" "}<strong>{(country.adei - secondPlace.adei).toFixed(1)} pts</strong> ahead of <strong>{secondPlace.name}</strong> ({secondPlace.adei.toFixed(1)}).
+              </>
+            ) : (
+              <>
+                {country.name} ranks <strong>#{regionRank} in {region}</strong> with a score of <strong>{country.adei.toFixed(1)}</strong>.
+                {" "}Gap to regional leader <strong>{peerLeader.name}</strong>: <strong>{gapToLeader} pts</strong>.
+                {regionRank === 2 && <>{" "}One position away from leading the region.</>}
+              </>
+            )}
+            {" "}The region spans <strong>{regionPeers.length} OIC member states</strong>.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -2045,7 +2200,7 @@ function CompareCountries() {
             <div style={styles.card}>
               <div style={styles.cardTitle}>📊 Pillar Bar Comparison</div>
               <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={barData} layout="vertical" barSize={8}>
+                <BarChart data={barData} layout="vertical" barSize={8} >
                   <CartesianGrid
                     strokeDasharray="3 3"
                     stroke="#CBD5E1"
@@ -2078,6 +2233,23 @@ function CompareCountries() {
                   ))}
                 </BarChart>
               </ResponsiveContainer>
+              {countries.length > 1 && (() => {
+                const leader = [...countries].sort((a, b) => b.adei - a.adei)[0];
+                const spreadPillar = PILLARS.reduce((best, p) => {
+                  const s = Math.max(...countries.map(c => c[p.key])) - Math.min(...countries.map(c => c[p.key]));
+                  const bs = Math.max(...countries.map(c => c[best.key])) - Math.min(...countries.map(c => c[best.key]));
+                  return s > bs ? p : best;
+                }, PILLARS[0]);
+                const spread = (Math.max(...countries.map(c => c[spreadPillar.key])) - Math.min(...countries.map(c => c[spreadPillar.key]))).toFixed(1);
+                return (
+                  <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                    <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+                    <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                      <strong>{leader.name}</strong> leads the group overall (ODEI {leader.adei.toFixed(1)}). The widest gap across selected countries is in <strong>{spreadPillar.name}</strong> ({spread} pt spread), highlighting this as the most differentiating pillar.
+                    </p>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* Radar Overlay */}
@@ -2113,6 +2285,24 @@ function CompareCountries() {
                   <Tooltip content={<CustomTooltip />} />
                 </RadarChart>
               </ResponsiveContainer>
+              {countries.length > 1 && (() => {
+                const mostBalanced = [...countries].sort((a, b) => {
+                  const range = c => Math.max(...PILLARS.map(p => c[p.key])) - Math.min(...PILLARS.map(p => c[p.key]));
+                  return range(a) - range(b);
+                })[0];
+                const mostSpecialized = [...countries].sort((a, b) => {
+                  const range = c => Math.max(...PILLARS.map(p => c[p.key])) - Math.min(...PILLARS.map(p => c[p.key]));
+                  return range(b) - range(a);
+                })[0];
+                return (
+                  <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                    <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+                    <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                      <strong>{mostBalanced.name}</strong> has the most balanced pillar profile (smallest score range), while <strong>{mostSpecialized.name}</strong> shows the most uneven profile with pronounced strengths and gaps.
+                    </p>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </>
@@ -2211,7 +2401,7 @@ function PillarAnalysis() {
         }}
       >
         <div style={{ ...styles.cardTitle, color: pillar.color }}>
-          💡 Key Insight
+          💡 Key insight
         </div>
         <p
           style={{
@@ -2271,6 +2461,12 @@ function PillarAnalysis() {
             />
           </BarChart>
         </ResponsiveContainer>
+        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+          <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+            <strong>{sorted[0].name}</strong> leads in {pillar.name} with a score of <strong>{sorted[0][pillar.key].toFixed(1)}</strong>, while <strong>{sorted[sorted.length - 1].name}</strong> scores lowest at <strong>{sorted[sorted.length - 1][pillar.key].toFixed(1)}</strong> — a <strong>{(sorted[0][pillar.key] - sorted[sorted.length - 1][pillar.key]).toFixed(0)}-point divide</strong>. <strong>{COUNTRIES.filter(c => c[pillar.key] >= avg).length} of 57</strong> countries score at or above the OIC average of {avg.toFixed(1)}.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -2305,6 +2501,9 @@ function GeographicAnalysis() {
     "North Africa": "#06B6D4",
     "West Africa": "#F97316",
     "East Africa": "#EC4899",
+    "Central Africa": "#D946EF",
+    "Southeastern Africa": "#FB7185",
+    "South America": "#A78BFA",
     Europe: "#14B8A6",
     Americas: "#A78BFA",
   };
@@ -2315,6 +2514,39 @@ function GeographicAnalysis() {
     Adopters: r.countries.filter((c) => c.adei >= 40 && c.adei < 60).length,
     Emerging: r.countries.filter((c) => c.adei < 40).length,
   }));
+
+  const GEO_COORDS = {
+    "United Arab Emirates": [24.0, 54.0], "Saudi Arabia": [24.0, 45.0],
+    Malaysia: [4.0, 108.0], Qatar: [25.3, 51.5], Indonesia: [-5.0, 117.0],
+    Türkiye: [39.0, 35.0], Kazakhstan: [48.0, 68.0], Jordan: [31.0, 37.0],
+    Tunisia: [34.0, 9.0], Morocco: [32.0, -5.0], Oman: [21.0, 57.0],
+    Uzbekistan: [41.0, 64.0], Bahrain: [26.0, 50.5], Egypt: [26.0, 30.0],
+    Kuwait: [29.5, 47.5], Albania: [41.0, 20.0], Senegal: [14.0, -14.0],
+    "Kyrgyz Republic": [41.5, 75.0], Azerbaijan: [40.5, 47.5], Algeria: [28.0, 3.0],
+    "Iran, Islamic Rep.": [32.0, 53.0], Bangladesh: [24.0, 90.0],
+    "Brunei Darussalam": [4.5, 114.7], Pakistan: [30.0, 70.0], Nigeria: [10.0, 8.0],
+    Benin: [9.3, 2.3], Uganda: [1.0, 32.0], "Cote d'Ivoire": [7.5, -5.5],
+    Lebanon: [33.9, 35.9], Cameroon: [5.0, 12.0], Tajikistan: [39.0, 71.0],
+    Mali: [17.0, -4.0], Maldives: [3.2, 73.2], Togo: [8.0, 1.2],
+    Suriname: [4.0, -56.0], Mozambique: [-18.0, 35.0], Mauritania: [20.0, -12.0],
+    "Burkina Faso": [12.0, -2.0], Gabon: [-1.0, 12.0], Guyana: [5.0, -59.0],
+    "Sierra Leone": [8.5, -11.8], Iraq: [33.0, 44.0], Guinea: [11.0, -12.0],
+    Gambia: [13.5, -16.6], Niger: [17.0, 8.0], Yemen: [15.0, 48.0],
+    Turkmenistan: [40.0, 59.0], Chad: [15.0, 19.0], Djibouti: [11.5, 43.0],
+    Comoros: [-11.6, 43.3], "Guinea-Bissau": [11.8, -15.2], Palestine: [31.9, 35.2],
+    "Syrian Arab Republic": [35.0, 38.0], Libya: [27.0, 17.0], Sudan: [15.0, 30.0],
+    Afghanistan: [33.0, 65.0], Somalia: [6.0, 46.2],
+  };
+
+  const mapData = COUNTRIES
+    .filter((c) => GEO_COORDS[c.name])
+    .map((c) => ({
+      name: c.name,
+      x: GEO_COORDS[c.name][1],
+      y: GEO_COORDS[c.name][0],
+      score: parseFloat(c.adei.toFixed(1)),
+      color: c.adei >= 60 ? "#10B981" : c.adei >= 40 ? "#F59E0B" : "#EF4444",
+    }));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -2366,6 +2598,60 @@ function GeographicAnalysis() {
         ))}
       </div>
 
+      {/* Geographic Scatter Map */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>🗺 OIC Member States — Geographic Score Map</div>
+        <div style={{ display: "flex", gap: "12px", fontSize: "11px", color: "#64748B", marginBottom: "8px" }}>
+          <span><span style={{ color: "#10B981" }}>●</span> Advanced (≥60)</span>
+          <span><span style={{ color: "#F59E0B" }}>●</span> Emerging (40–60)</span>
+          <span><span style={{ color: "#EF4444" }}>●</span> Foundational (&lt;40)</span>
+        </div>
+        <ResponsiveContainer width="100%" height={300}>
+          <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
+            <XAxis type="number" dataKey="x" domain={[-70, 130]} name="Longitude"
+              tick={{ fill: "#94A3B8", fontSize: 9 }}
+              label={{ value: "← West   Longitude   East →", fill: "#94A3B8", fontSize: 9, position: "insideBottom", offset: -2 }} />
+            <YAxis type="number" dataKey="y" domain={[-25, 55]} name="Latitude"
+              tick={{ fill: "#94A3B8", fontSize: 9 }}
+              label={{ value: "Latitude", fill: "#94A3B8", fontSize: 9, angle: -90, position: "insideLeft" }} />
+            <ZAxis type="number" dataKey="score" range={[40, 300]} />
+            <Tooltip content={({ active, payload }) => {
+              if (!active || !payload?.length) return null;
+              const d = payload[0].payload;
+              return (
+                <div style={styles.tooltip}>
+                  <div style={{ color: d.color, fontWeight: 700 }}>{d.name}</div>
+                  <div>ODEI Score: {d.score}</div>
+                </div>
+              );
+            }} />
+            <Scatter data={mapData} name="Countries">
+              {mapData.map((d, i) => (
+                <Cell key={i} fill={d.color} fillOpacity={0.8} />
+              ))}
+            </Scatter>
+          </ScatterChart>
+        </ResponsiveContainer>
+        <div style={{ fontSize: "11px", color: "#94A3B8", marginTop: "4px" }}>
+          Dot position = approximate geographic location · Dot size = ODEI score magnitude
+        </div>
+        {(() => {
+          const advanced = mapData.filter(d => d.score >= 60);
+          const foundational = mapData.filter(d => d.score < 40);
+          const topCountry = mapData.reduce((a, b) => a.score > b.score ? a : b);
+          const bottomCountry = mapData.reduce((a, b) => a.score < b.score ? a : b);
+          return (
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+              <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                The map reveals a clear <strong>geographic concentration of digital leaders</strong> in the Gulf and Southeast Asia, while Sub-Saharan Africa and parts of Central Asia remain predominantly foundational. <strong>{advanced.length} countries</strong> (green) score above 60, <strong>{foundational.length}</strong> (red) score below 40. <strong>{topCountry.name}</strong> ({topCountry.score}) and <strong>{bottomCountry.name}</strong> ({bottomCountry.score}) represent the two poles of the OIC digital divide.
+              </p>
+            </div>
+          );
+        })()}
+      </div>
+
       {/* Regional Average Chart */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>📊 Regional Average OIC DEI Scores</div>
@@ -2400,6 +2686,18 @@ function GeographicAnalysis() {
             />
           </BarChart>
         </ResponsiveContainer>
+        {(() => {
+          const topRegion = regionStats.reduce((a, b) => a.avg > b.avg ? a : b);
+          const bottomRegion = regionStats.reduce((a, b) => a.avg < b.avg ? a : b);
+          return (
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+              <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                <strong>{topRegion.region}</strong> is the highest-performing region (avg {topRegion.avg.toFixed(1)}), while <strong>{bottomRegion.region}</strong> scores lowest (avg {bottomRegion.avg.toFixed(1)}). The inter-regional gap of <strong>{(topRegion.avg - bottomRegion.avg).toFixed(1)} pts</strong> highlights significant geographic disparity within the OIC. <strong>{regionStats.filter(r => r.avg >= OIC_AVERAGE).length} of {regionStats.length}</strong> regions exceed the OIC average of {OIC_AVERAGE.toFixed(1)}.
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Cluster Distribution by Region */}
@@ -2423,6 +2721,18 @@ function GeographicAnalysis() {
             <Bar dataKey="Emerging" fill="#EF4444" stackId="a" />
           </BarChart>
         </ResponsiveContainer>
+        {(() => {
+          const mostAdvanced = [...clusterByRegion].sort((a, b) => b.Leaders - a.Leaders)[0];
+          const mostEmerging = [...clusterByRegion].sort((a, b) => b.Emerging - a.Emerging)[0];
+          return (
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+              <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                <strong>{mostAdvanced.name}</strong> has the highest concentration of Advanced Digital Economies ({mostAdvanced.Leaders} countries). <strong>{mostEmerging.name}</strong> has the most Foundational Digital Economies ({mostEmerging.Emerging} countries), indicating the greatest need for targeted development support.
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Country Table by Region */}
@@ -2651,6 +2961,22 @@ function TrendsProgress() {
             ))}
           </LineChart>
         </ResponsiveContainer>
+        {selectedCountries.filter(c => c !== "OIC Average").length > 0 && (() => {
+          const nonAvg = selectedCountries.filter(c => c !== "OIC Average");
+          const startYear = lineData[0];
+          const endYear = lineData[lineData.length - 1];
+          const gains = nonAvg.map(c => ({ name: c, gain: (endYear[c] || 0) - (startYear[c] || 0) })).filter(x => x.gain !== 0);
+          const topGainer = gains.length > 0 ? gains.reduce((a, b) => a.gain > b.gain ? a : b) : null;
+          return (
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+              <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                {topGainer ? <>Among selected countries, <strong>{topGainer.name}</strong> shows the strongest upward trajectory with a <strong>+{topGainer.gain.toFixed(1)} pt</strong> gain from 2021 to 2025.</> : <>Tracking <strong>{nonAvg.length}</strong> countries over the 2021–2025 period.</>}
+                {" "}The OIC average {selectedCountries.includes("OIC Average") ? <>is shown as a <strong>dashed reference line</strong></> : <>currently stands at <strong>{OIC_AVERAGE.toFixed(1)}</strong></>}.
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
       <div style={styles.grid2}>
@@ -2671,6 +2997,21 @@ function TrendsProgress() {
               />
             </BarChart>
           </ResponsiveContainer>
+          {(() => {
+            const peakBin = bins.reduce((a, b) => a.count > b.count ? a : b);
+            const aboveMedianBins = bins.filter(b => {
+              const mid = parseInt(b.range.split("–")[0]) + 5;
+              return mid >= OIC_AVERAGE;
+            });
+            return (
+              <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+                <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                  The most common score band is <strong>{peakBin.range}</strong> with <strong>{peakBin.count} countries</strong>. The distribution is right-skewed, with a small cluster of high performers pulling the mean above the median — indicating that most OIC nations are still in early-to-mid digital development stages.
+                </p>
+              </div>
+            );
+          })()}
           <div
             style={{
               marginTop: "12px",
@@ -2958,6 +3299,14 @@ function RankingsExplorer() {
                       }}
                     >
                       {c.adei.toFixed(1)}
+                      {TREND_DATA[c.name] && (() => {
+                        const chg = TREND_DATA[c.name][4] - TREND_DATA[c.name][3];
+                        return (
+                          <span style={{ fontSize: "10px", marginLeft: "4px", color: chg >= 0 ? "#10B981" : "#EF4444" }}>
+                            {chg >= 0 ? "▲" : "▼"}{Math.abs(chg).toFixed(1)}
+                          </span>
+                        );
+                      })()}
                     </td>
                     {PILLARS.map((p) => {
                       const val = c[p.key];
@@ -3379,6 +3728,12 @@ function DigitalDivide() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+          <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+            <strong>{above.length} countries</strong> exceed the OIC average ({oicAvg.toFixed(1)}), while <strong>{below.length} countries</strong> fall below it. The largest positive gap belongs to <strong>{sorted[0].name}</strong> (+{(sorted[0].adei - oicAvg).toFixed(1)} pts) and the largest deficit to <strong>{sorted[sorted.length - 1].name}</strong> ({(sorted[sorted.length - 1].adei - oicAvg).toFixed(1)} pts), representing a total intra-OIC divide of <strong>{(sorted[0].adei - sorted[sorted.length - 1].adei).toFixed(0)} pts</strong>.
+          </p>
+        </div>
       </div>
 
       <div style={styles.grid2}>
@@ -3535,6 +3890,21 @@ function IslamicDigitalSpecial() {
             </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
+        {(() => {
+          const innovAvg = COUNTRIES.reduce((s, c) => s + c.p5, 0) / COUNTRIES.length;
+          const finAvg = COUNTRIES.reduce((s, c) => s + c.p8, 0) / COUNTRIES.length;
+          const highBoth = QUADRANT_DATA.filter(d => d.x >= innovAvg && d.y >= finAvg);
+          const topInnovator = QUADRANT_DATA.reduce((a, b) => a.x > b.x ? a : b);
+          const topFintech = QUADRANT_DATA.reduce((a, b) => a.y > b.y ? a : b);
+          return (
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+              <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                Only <strong>{highBoth.length} countries</strong> score above the OIC average in both Innovation and Financial Markets — the rare "dual leaders". <strong>{topInnovator.name}</strong> leads in Innovation ({topInnovator.x.toFixed(1)}) and <strong>{topFintech.name}</strong> in Financial Market Development ({topFintech.y.toFixed(1)}). Most OIC nations concentrate in the lower-left quadrant, signalling a systemic gap in private-sector digital innovation.
+              </p>
+            </div>
+          );
+        })()}
       </div>
 
       <div style={styles.grid2}>
@@ -4014,6 +4384,19 @@ function CustomIndexBuilder() {
             <Bar dataKey="Custom" fill="#8B5CF6" />
           </BarChart>
         </ResponsiveContainer>
+        {(() => {
+          const biggestGainer = [...customRanked].sort((a, b) => b.rankChange - a.rankChange)[0];
+          const biggestLoser = [...customRanked].sort((a, b) => a.rankChange - b.rankChange)[0];
+          const scoreDiff = biggestGainer ? (biggestGainer.customScore - biggestGainer.adei).toFixed(1) : 0;
+          return (
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+              <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                Under the current weight settings, <strong>{biggestGainer?.name}</strong> gains the most (+{biggestGainer?.rankChange} ranks, score {biggestGainer?.adei.toFixed(1)} → {biggestGainer?.customScore.toFixed(1)}), while <strong>{biggestLoser?.name}</strong> drops the most ({biggestLoser?.rankChange} ranks). Adjusting pillar weights reveals which countries are under- or over-valued by the official index.
+              </p>
+            </div>
+          );
+        })()}
       </div>
       <div style={styles.card}>
         <div style={styles.cardTitle}>🏆 Full Custom Rankings</div>
@@ -4713,6 +5096,21 @@ function PeerLearning() {
                 <Tooltip content={<CustomTooltip />} />
               </RadarChart>
             </ResponsiveContainer>
+            {peers.length > 0 && (() => {
+              const topPeer = peers[0];
+              const gap = (topPeer[pillarFocus] - country[pillarFocus]).toFixed(1);
+              const otherGaps = PILLARS.filter(p => p.key !== pillarFocus).map(p => ({
+                name: p.name, diff: topPeer[p.key] - country[p.key]
+              })).sort((a, b) => b.diff - a.diff)[0];
+              return (
+                <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                  <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+                  <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                    Best peer learner <strong>{topPeer.name}</strong> outscores {country.name} in <strong>{focusPillar.name}</strong> by <strong>{gap} pts</strong> ({country[pillarFocus].toFixed(1)} vs {topPeer[pillarFocus].toFixed(1)}), despite having a similar overall ODEI profile. {otherGaps.diff > 0 && <>They also lead in <strong>{otherGaps.name}</strong> (+{otherGaps.diff.toFixed(1)} pts), suggesting broader capacity to emulate.</>}
+                  </p>
+                </div>
+              );
+            })()}
           </div>
         </>
       ) : (
@@ -4801,6 +5199,19 @@ function ProgressTracker({ hideTrajectory = false }) {
                 ))}
             </LineChart>
           </ResponsiveContainer>
+          {(() => {
+            const names = Object.keys(TREND_FULL).slice(0, 10);
+            const gains = names.map(n => ({ name: n, gain: TREND_FULL[n][4] - TREND_FULL[n][0] }));
+            const top = gains.reduce((a, b) => a.gain > b.gain ? a : b);
+            return (
+              <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+                <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+                <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                  Among tracked countries, <strong>{top.name}</strong> recorded the strongest 4-year growth of <strong>+{top.gain.toFixed(1)} pts</strong> (2021–2025). The upward trajectory across most countries reflects sustained digital investment across the OIC bloc.
+                </p>
+              </div>
+            );
+          })()}
         </div>
       )}
       <div style={styles.card}>
@@ -4956,6 +5367,18 @@ function ProgressTracker({ hideTrajectory = false }) {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        {(() => {
+          const topGrower = fastestGrowing[0];
+          const declined = fastestGrowing.filter(c => c.growth < 0);
+          return (
+            <div style={{ background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: "8px", padding: "10px 14px", marginTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>💡 Key insight</div>
+              <p style={{ fontSize: "12px", color: "#78350F", margin: 0, lineHeight: 1.6 }}>
+                <strong>{topGrower?.name}</strong> is the fastest-growing OIC economy with a <strong>+{topGrower?.growth.toFixed(1)} pt</strong> gain over 4 years. {declined.length > 0 ? <><strong>{declined.length} countr{declined.length > 1 ? "ies" : "y"}</strong> recorded a decline, with <strong>{declined[declined.length - 1]?.name}</strong> falling the most ({declined[declined.length - 1]?.growth.toFixed(1)} pts).</> : <>All tracked countries recorded positive growth over the period.</>}
+              </p>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
@@ -5528,11 +5951,11 @@ function Acknowledgement() {
     boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
   };
   const headingStyle = {
-    fontFamily: "'Cinzel', serif",
+    fontFamily: "'Inter', sans-serif",
     fontSize: "15px",
     fontWeight: 700,
     color: "#C9A227",
-    letterSpacing: "0.06em",
+    letterSpacing: "0.01em",
     marginBottom: "14px",
     display: "flex",
     alignItems: "center",
@@ -5598,12 +6021,12 @@ function Acknowledgement() {
         <div style={{ fontSize: "36px", marginBottom: "10px" }}>🌙</div>
         <h2
           style={{
-            fontFamily: "'Cinzel', serif",
+            fontFamily: "'Inter', sans-serif",
             color: "#C9A227",
             fontSize: "20px",
-            fontWeight: 900,
+            fontWeight: 700,
             margin: "0 0 6px",
-            letterSpacing: "0.08em",
+            letterSpacing: "0.01em",
           }}
         >
           Acknowledgements
@@ -5813,9 +6236,20 @@ const TABS = [
 
 // ─── APP ─────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState(() => {
+    const p = new URLSearchParams(window.location.hash.replace("#", ""));
+    const t = p.get("tab");
+    return t && TABS.find((x) => x.id === t) ? t : "overview";
+  });
   const tab = TABS.find((t) => t.id === activeTab);
   const Component = tab.component;
+
+  const handleTabChange = (id) => {
+    setActiveTab(id);
+    const p = new URLSearchParams(window.location.hash.replace("#", ""));
+    p.set("tab", id);
+    window.location.hash = p.toString();
+  };
 
   return (
     <div style={styles.app}>
@@ -5887,7 +6321,7 @@ export default function App() {
           <button
             key={t.id}
             style={styles.tab(activeTab === t.id)}
-            onClick={() => setActiveTab(t.id)}
+            onClick={() => handleTabChange(t.id)}
           >
             {t.label}
           </button>

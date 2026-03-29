@@ -2549,18 +2549,41 @@ function CompareCountries() {
   });
 
   const COMPARE_COLORS = [
-    "#B8922A",
-    "#10B981",
-    "#3B82F6",
-    "#EF4444",
-    "#8B5CF6",
-    "#F97316",
+    "#1B4332",
+    "#2D6A4F",
+    "#40916C",
+    "#52B788",
+    "#74C69D",
+    "#95D5B2",
   ];
+
+  const avgScore =
+    countries.length > 0
+      ? (countries.reduce((s, c) => s + c.adei, 0) / countries.length).toFixed(
+          1,
+        )
+      : 0;
+
+  const groupCluster = () => {
+    if (countries.length === 0) return null;
+    const clusterCounts = { Advanced: 0, Emerging: 0, Foundational: 0 };
+    countries.forEach((c) => {
+      const cluster = getCluster(c.adei);
+      const label = cluster.label.split(" ")[0];
+      if (label === "Advanced") clusterCounts.Advanced++;
+      else if (label === "Emerging") clusterCounts.Emerging++;
+      else clusterCounts.Foundational++;
+    });
+    return clusterCounts;
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* Country Selection */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>Select Countries (up to 6)</div>
+        <div style={styles.cardTitle}>
+          Select Countries for Comparison (up to 6)
+        </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           {[...COUNTRIES]
             .sort((a, b) => a.name.localeCompare(b.name))
@@ -2569,19 +2592,21 @@ function CompareCountries() {
                 key={c.name}
                 onClick={() => toggleCountry(c.name)}
                 style={{
-                  padding: "5px 12px",
-                  borderRadius: "6px",
+                  padding: "6px 14px",
+                  borderRadius: "20px",
                   border: "1px solid",
                   cursor: "pointer",
                   fontSize: "12px",
+                  fontWeight: selected.includes(c.name) ? 600 : 500,
                   background: selected.includes(c.name)
-                    ? "#EEF2FF"
+                    ? "#D8F3DC"
                     : "transparent",
                   borderColor: selected.includes(c.name)
-                    ? "#B8922A"
+                    ? "#1B4332"
                     : "#CBD5E1",
-                  color: selected.includes(c.name) ? "#B8922A" : "#64748B",
+                  color: selected.includes(c.name) ? "#1B4332" : "#64748B",
                   fontFamily: "'Georgia', serif",
+                  transition: "all 0.2s",
                 }}
               >
                 {c.name}
@@ -2592,234 +2617,425 @@ function CompareCountries() {
 
       {countries.length > 0 && (
         <>
-          {/* Overall Score Comparison */}
-          <div style={styles.card}>
-            <div style={styles.cardTitle}>
-              🏅 Overall OIC DEI Score Comparison
-            </div>
-            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-              {countries
-                .sort((a, b) => b.adei - a.adei)
-                .map((c, i) => (
+          {/* Quick Overview Cards */}
+          <div style={styles.grid4}>
+            {countries
+              .sort((a, b) => b.adei - a.adei)
+              .map((c, i) => {
+                const cluster = getCluster(c.adei);
+                return (
                   <div
                     key={c.name}
                     style={{
-                      flex: "1",
-                      minWidth: "120px",
                       ...styles.card,
+                      border: `2px solid ${cluster.color}`,
+                      background: cluster.bg,
                       textAlign: "center",
-                      border: `1px solid ${COMPARE_COLORS[i]}40`,
                     }}
                   >
                     <div
                       style={{
-                        fontSize: "22px",
+                        fontSize: "24px",
                         fontWeight: 900,
-                        color: COMPARE_COLORS[selected.indexOf(c.name)],
+                        color: cluster.color,
                       }}
                     >
                       {c.adei.toFixed(1)}
                     </div>
                     <div
                       style={{
-                        fontSize: "11px",
-                        color: "#1E293B",
+                        fontSize: "12px",
+                        color: "#1B4332",
+                        fontWeight: 600,
                         marginTop: "4px",
                       }}
                     >
                       {c.name}
                     </div>
-                    <div style={{ fontSize: "11px", color: "#64748B" }}>
-                      Rank #{c.rank}
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        color: "#2D6A4F",
+                        marginTop: "4px",
+                      }}
+                    >
+                      Rank #{c.rank} • {cluster.label.split(" ")[0]}
                     </div>
                   </div>
-                ))}
-            </div>
+                );
+              })}
           </div>
 
-          <div style={styles.grid2}>
-            {/* Bar Chart */}
+          {/* Group Summary */}
+          {countries.length > 1 && (
             <div style={styles.card}>
-              <div style={styles.cardTitle}>Pillar Bar Comparison</div>
-              <ResponsiveContainer width="100%" height={320}>
-                <BarChart data={barData} layout="vertical" barSize={8}>
-                  <CartesianGrid
-                    strokeDasharray="0"
-                    stroke="#E2E8F0"
-                    horizontal={false}
-                  />
-                  <XAxis
-                    type="number"
-                    domain={[0, 100]}
-                    tick={{ fill: "#64748B", fontSize: 10, fontWeight: 500 }}
-                  />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    tick={{ fill: "#64748B", fontSize: 10 }}
-                    width={70}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend
-                    wrapperStyle={{
-                      fontSize: "12px",
-                      fontFamily: "'Georgia', serif",
-                      paddingTop: "12px",
+              <div style={styles.cardTitle}>Group Summary</div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "16px",
+                }}
+              >
+                <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: 900,
+                      color: "#1B4332",
                     }}
+                  >
+                    {avgScore}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#64748B" }}>
+                    Average OIC DEI Score
+                  </div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{
+                      fontSize: "28px",
+                      fontWeight: 900,
+                      color: "#2D6A4F",
+                    }}
+                  >
+                    {countries.length}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#64748B" }}>
+                    Countries Selected
+                  </div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: 700,
+                      color: "#40916C",
+                    }}
+                  >
+                    {(() => {
+                      const clusters = groupCluster();
+                      if (clusters.Advanced > 0) return "Advanced Focus";
+                      if (clusters.Emerging > 0) return "Mixed Growth";
+                      return "Foundational";
+                    })()}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#64748B" }}>
+                    Group Composition
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Pillar Bar Comparison */}
+          <div style={styles.card}>
+            <div style={styles.cardTitle}>Pillar Performance Comparison</div>
+            <ResponsiveContainer width="100%" height={340}>
+              <BarChart data={barData} layout="vertical" barSize={10}>
+                <CartesianGrid
+                  strokeDasharray="0"
+                  stroke="#E2E8F0"
+                  horizontal={false}
+                />
+                <XAxis
+                  type="number"
+                  domain={[0, 100]}
+                  tick={{ fill: "#64748B", fontSize: 10, fontWeight: 500 }}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
+                  width={70}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend
+                  wrapperStyle={{
+                    fontSize: "12px",
+                    fontFamily: "'Georgia', serif",
+                    paddingTop: "12px",
+                  }}
+                />
+                {countries.map((c, i) => (
+                  <Bar
+                    key={c.name}
+                    dataKey={c.name}
+                    fill={COMPARE_COLORS[selected.indexOf(c.name)]}
+                    radius={[0, 4, 4, 0]}
                   />
-                  {countries.map((c, i) => (
-                    <Bar
-                      key={c.name}
-                      dataKey={c.name}
-                      fill={COMPARE_COLORS[selected.indexOf(c.name)]}
-                      radius={[0, 4, 4, 0]}
-                    />
-                  ))}
-                </BarChart>
-              </ResponsiveContainer>
-              {countries.length > 1 &&
-                (() => {
-                  const leader = [...countries].sort(
-                    (a, b) => b.adei - a.adei,
-                  )[0];
-                  const spreadPillar = PILLARS.reduce((best, p) => {
-                    const s =
-                      Math.max(...countries.map((c) => c[p.key])) -
-                      Math.min(...countries.map((c) => c[p.key]));
-                    const bs =
-                      Math.max(...countries.map((c) => c[best.key])) -
-                      Math.min(...countries.map((c) => c[best.key]));
-                    return s > bs ? p : best;
-                  }, PILLARS[0]);
-                  const spread = (
-                    Math.max(...countries.map((c) => c[spreadPillar.key])) -
-                    Math.min(...countries.map((c) => c[spreadPillar.key]))
-                  ).toFixed(1);
-                  return (
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+            {countries.length > 1 &&
+              (() => {
+                const leader = [...countries].sort(
+                  (a, b) => b.adei - a.adei,
+                )[0];
+                const spreadPillar = PILLARS.reduce((best, p) => {
+                  const s =
+                    Math.max(...countries.map((c) => c[p.key])) -
+                    Math.min(...countries.map((c) => c[p.key]));
+                  const bs =
+                    Math.max(...countries.map((c) => c[best.key])) -
+                    Math.min(...countries.map((c) => c[best.key]));
+                  return s > bs ? p : best;
+                }, PILLARS[0]);
+                const spread = (
+                  Math.max(...countries.map((c) => c[spreadPillar.key])) -
+                  Math.min(...countries.map((c) => c[spreadPillar.key]))
+                ).toFixed(1);
+                return (
+                  <div
+                    style={{
+                      background: "#D8F3DC",
+                      border: "1px solid #1B4332",
+                      borderRadius: "8px",
+                      padding: "12px 14px",
+                      marginTop: "12px",
+                    }}
+                  >
                     <div
                       style={{
-                        background: "#FDF6E3",
-                        border: "1px solid #F0C96A",
-                        borderRadius: "8px",
-                        padding: "10px 14px",
-                        marginTop: "12px",
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        color: "#1B4332",
+                        marginBottom: "6px",
                       }}
                     >
-                      <div
-                        style={{
-                          fontSize: "11px",
-                          fontWeight: 700,
-                          color: "#000000",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        Key insight
-                      </div>
-                      <p
-                        style={{
-                          fontSize: "12px",
-                          color: "#1E293B",
-                          margin: 0,
-                          lineHeight: 1.6,
-                        }}
-                      >
-                        <strong>{leader.name}</strong> leads the group overall
-                        (OIC DEI {leader.adei.toFixed(1)}). The widest gap
-                        across selected countries is in{" "}
-                        <strong>{spreadPillar.name}</strong> ({spread} pt
-                        spread), highlighting this as the most differentiating
-                        pillar.
-                      </p>
+                      Strategic Insight
                     </div>
-                  );
-                })()}
+                    <p
+                      style={{
+                        fontSize: "12px",
+                        color: "#1E293B",
+                        margin: 0,
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      <strong>{leader.name}</strong> leads overall (OIC DEI{" "}
+                      {leader.adei.toFixed(1)}). The most divergent pillar is{" "}
+                      <strong>{spreadPillar.name}</strong> with {spread} points
+                      spread, indicating this as a key differentiation factor
+                      among selected countries.
+                    </p>
+                  </div>
+                );
+              })()}
+          </div>
+
+          {/* Radar Comparison */}
+          <div style={styles.card}>
+            <div style={styles.cardTitle}>Profile Shape Comparison</div>
+            <ResponsiveContainer width="100%" height={340}>
+              <RadarChart data={radarData}>
+                <PolarGrid stroke="#E2E8F0" />
+                <PolarAngleAxis
+                  dataKey="subject"
+                  tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
+                />
+                <PolarRadiusAxis
+                  domain={[0, 100]}
+                  tick={{ fill: "#64748B", fontSize: 9 }}
+                />
+                {countries.map((c, i) => (
+                  <Radar
+                    key={c.name}
+                    name={c.name}
+                    dataKey={c.name}
+                    stroke={COMPARE_COLORS[selected.indexOf(c.name)]}
+                    fill={COMPARE_COLORS[selected.indexOf(c.name)]}
+                    fillOpacity={0.12}
+                    strokeWidth={2.5}
+                  />
+                ))}
+                <Legend
+                  wrapperStyle={{
+                    fontSize: "12px",
+                    fontFamily: "'Georgia', serif",
+                    paddingTop: "12px",
+                  }}
+                />
+                <Tooltip content={<CustomTooltip />} />
+              </RadarChart>
+            </ResponsiveContainer>
+            {countries.length > 1 &&
+              (() => {
+                const mostBalanced = [...countries].sort((a, b) => {
+                  const range = (c) =>
+                    Math.max(...PILLARS.map((p) => c[p.key])) -
+                    Math.min(...PILLARS.map((p) => c[p.key]));
+                  return range(a) - range(b);
+                })[0];
+                const mostSpecialized = [...countries].sort((a, b) => {
+                  const range = (c) =>
+                    Math.max(...PILLARS.map((p) => c[p.key])) -
+                    Math.min(...PILLARS.map((p) => c[p.key]));
+                  return range(b) - range(a);
+                })[0];
+                return (
+                  <div
+                    style={{
+                      background: "#D8F3DC",
+                      border: "1px solid #1B4332",
+                      borderRadius: "8px",
+                      padding: "12px 14px",
+                      marginTop: "12px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        color: "#1B4332",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Strategic Insight
+                    </div>
+                    <p
+                      style={{
+                        fontSize: "12px",
+                        color: "#1E293B",
+                        margin: 0,
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      <strong>{mostBalanced.name}</strong> demonstrates the most
+                      balanced pillar portfolio, while{" "}
+                      <strong>{mostSpecialized.name}</strong> shows the most
+                      concentrated profile with notable strengths and gaps,
+                      indicating distinct strategic specialization.
+                    </p>
+                  </div>
+                );
+              })()}
+          </div>
+
+          {/* Strengths & Weaknesses */}
+          <div style={styles.grid2}>
+            {/* Group Strengths */}
+            <div style={styles.card}>
+              <div
+                style={{
+                  ...styles.cardTitle,
+                  background: "#D8F3DC",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  marginBottom: "12px",
+                }}
+              >
+                Group Strengths
+              </div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+              >
+                {PILLARS.sort((a, b) => {
+                  const avgA =
+                    countries.reduce((s, c) => s + c[a.key], 0) /
+                    countries.length;
+                  const avgB =
+                    countries.reduce((s, c) => s + c[b.key], 0) /
+                    countries.length;
+                  return avgB - avgA;
+                })
+                  .slice(0, 4)
+                  .map((p) => {
+                    const avg = (
+                      countries.reduce((s, c) => s + c[p.key], 0) /
+                      countries.length
+                    ).toFixed(1);
+                    return (
+                      <div
+                        key={p.id}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "8px",
+                          background: "#F8FDFC",
+                          borderRadius: "6px",
+                          fontSize: "12px",
+                        }}
+                      >
+                        <span style={{ color: "#1B4332", fontWeight: 600 }}>
+                          {p.name}
+                        </span>
+                        <span
+                          style={{
+                            color: "#40916C",
+                            fontWeight: 700,
+                            fontSize: "13px",
+                          }}
+                        >
+                          {avg}
+                        </span>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
 
-            {/* Radar Overlay */}
+            {/* Group Opportunities */}
             <div style={styles.card}>
-              <div style={styles.cardTitle}>📡 Radar Overlay</div>
-              <ResponsiveContainer width="100%" height={320}>
-                <RadarChart data={radarData}>
-                  <PolarGrid stroke="#E2E8F0" />
-                  <PolarAngleAxis
-                    dataKey="subject"
-                    tick={{ fill: "#64748B", fontSize: 10, fontWeight: 500 }}
-                  />
-                  <PolarRadiusAxis
-                    domain={[0, 100]}
-                    tick={{ fill: "#64748B", fontSize: 9 }}
-                  />
-                  {countries.map((c, i) => (
-                    <Radar
-                      key={c.name}
-                      name={c.name}
-                      dataKey={c.name}
-                      stroke={COMPARE_COLORS[selected.indexOf(c.name)]}
-                      fill={COMPARE_COLORS[selected.indexOf(c.name)]}
-                      fillOpacity={0.1}
-                      strokeWidth={2}
-                    />
-                  ))}
-                  <Legend
-                    wrapperStyle={{
-                      fontSize: "12px",
-                      fontFamily: "'Georgia', serif",
-                      paddingTop: "12px",
-                    }}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                </RadarChart>
-              </ResponsiveContainer>
-              {countries.length > 1 &&
-                (() => {
-                  const mostBalanced = [...countries].sort((a, b) => {
-                    const range = (c) =>
-                      Math.max(...PILLARS.map((p) => c[p.key])) -
-                      Math.min(...PILLARS.map((p) => c[p.key]));
-                    return range(a) - range(b);
-                  })[0];
-                  const mostSpecialized = [...countries].sort((a, b) => {
-                    const range = (c) =>
-                      Math.max(...PILLARS.map((p) => c[p.key])) -
-                      Math.min(...PILLARS.map((p) => c[p.key]));
-                    return range(b) - range(a);
-                  })[0];
-                  return (
-                    <div
-                      style={{
-                        background: "#FDF6E3",
-                        border: "1px solid #F0C96A",
-                        borderRadius: "8px",
-                        padding: "10px 14px",
-                        marginTop: "12px",
-                      }}
-                    >
+              <div
+                style={{
+                  ...styles.cardTitle,
+                  background: "#F1F8F6",
+                  padding: "10px 12px",
+                  borderRadius: "6px",
+                  marginBottom: "12px",
+                }}
+              >
+                Group Opportunities
+              </div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+              >
+                {PILLARS.sort((a, b) => {
+                  const avgA =
+                    countries.reduce((s, c) => s + c[a.key], 0) /
+                    countries.length;
+                  const avgB =
+                    countries.reduce((s, c) => s + c[b.key], 0) /
+                    countries.length;
+                  return avgA - avgB;
+                })
+                  .slice(0, 4)
+                  .map((p) => {
+                    const avg = (
+                      countries.reduce((s, c) => s + c[p.key], 0) /
+                      countries.length
+                    ).toFixed(1);
+                    return (
                       <div
+                        key={p.id}
                         style={{
-                          fontSize: "11px",
-                          fontWeight: 700,
-                          color: "#000000",
-                          marginBottom: "4px",
-                        }}
-                      >
-                        Key insight
-                      </div>
-                      <p
-                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "8px",
+                          background: "#F8FDFC",
+                          borderRadius: "6px",
                           fontSize: "12px",
-                          color: "#1E293B",
-                          margin: 0,
-                          lineHeight: 1.6,
                         }}
                       >
-                        <strong>{mostBalanced.name}</strong> has the most
-                        balanced pillar profile (smallest score range), while{" "}
-                        <strong>{mostSpecialized.name}</strong> shows the most
-                        uneven profile with pronounced strengths and gaps.
-                      </p>
-                    </div>
-                  );
-                })()}
+                        <span style={{ color: "#1B4332", fontWeight: 600 }}>
+                          {p.name}
+                        </span>
+                        <span
+                          style={{
+                            color: "#95D5B2",
+                            fontWeight: 700,
+                            fontSize: "13px",
+                          }}
+                        >
+                          {avg}
+                        </span>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
         </>
@@ -5710,9 +5926,21 @@ function PeerLearning() {
           }}
         >
           {[
-            { label: "OIC DEI Rank", value: `#${country.rank}`, color: "#1B4332" },
-            { label: "OIC DEI Score", value: country.adei.toFixed(1), color: "#2D6A4F" },
-            { label: `${focusPillar.name} Score`, value: country[pillarFocus].toFixed(1), color: focusPillar.color },
+            {
+              label: "OIC DEI Rank",
+              value: `#${country.rank}`,
+              color: "#1B4332",
+            },
+            {
+              label: "OIC DEI Score",
+              value: country.adei.toFixed(1),
+              color: "#2D6A4F",
+            },
+            {
+              label: `${focusPillar.name} Score`,
+              value: country[pillarFocus].toFixed(1),
+              color: focusPillar.color,
+            },
             {
               label: "Performance Gap",
               value: `-${(Math.max(...COUNTRIES.map((c) => c[pillarFocus])) - country[pillarFocus]).toFixed(1)} pts`,
@@ -5729,10 +5957,18 @@ function PeerLearning() {
                 textAlign: "center",
               }}
             >
-              <div style={{ fontSize: "12px", color: "#64748B", marginBottom: "6px" }}>
+              <div
+                style={{
+                  fontSize: "12px",
+                  color: "#64748B",
+                  marginBottom: "6px",
+                }}
+              >
                 {s.label}
               </div>
-              <div style={{ fontSize: "28px", fontWeight: 900, color: s.color }}>
+              <div
+                style={{ fontSize: "28px", fontWeight: 900, color: s.color }}
+              >
                 {s.value}
               </div>
             </div>
@@ -5780,7 +6016,8 @@ function PeerLearning() {
         <>
           <div style={styles.card}>
             <div style={styles.cardTitle}>
-              Best Peer Comparables — Similar OIC DEI, Stronger in {focusPillar.name}
+              Best Peer Comparables — Similar OIC DEI, Stronger in{" "}
+              {focusPillar.name}
             </div>
             <div
               style={{
@@ -5837,7 +6074,8 @@ function PeerLearning() {
                         fontWeight: 600,
                       }}
                     >
-                      {(peer[pillarFocus] - country[pillarFocus]).toFixed(1)} pts ahead
+                      {(peer[pillarFocus] - country[pillarFocus]).toFixed(1)}{" "}
+                      pts ahead
                     </span>
                   </div>
                   <div
@@ -5849,30 +6087,58 @@ function PeerLearning() {
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: "10px", color: "#64748B", marginBottom: "2px" }}>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          color: "#64748B",
+                          marginBottom: "2px",
+                        }}
+                      >
                         OIC DEI Score
                       </div>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#1B4332" }}>
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: "#1B4332",
+                        }}
+                      >
                         {peer.adei.toFixed(1)}
                       </div>
                     </div>
                     <div>
-                      <div style={{ fontSize: "10px", color: "#64748B", marginBottom: "2px" }}>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          color: "#64748B",
+                          marginBottom: "2px",
+                        }}
+                      >
                         {focusPillar.short}
                       </div>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: PEER_COLORS[i] }}>
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: PEER_COLORS[i],
+                        }}
+                      >
                         {peer[pillarFocus].toFixed(1)}
                       </div>
                     </div>
                   </div>
-                  <div style={styles.scoreBar(peer[pillarFocus], PEER_COLORS[i])} />
+                  <div
+                    style={styles.scoreBar(peer[pillarFocus], PEER_COLORS[i])}
+                  />
                 </div>
               ))}
             </div>
           </div>
 
           <div style={styles.card}>
-            <div style={styles.cardTitle}>Comparative Profile — Radar Analysis</div>
+            <div style={styles.cardTitle}>
+              Comparative Profile — Radar Analysis
+            </div>
             <ResponsiveContainer width="100%" height={320}>
               <RadarChart data={radarData}>
                 <PolarGrid stroke="#E8F5E9" />
@@ -5917,16 +6183,43 @@ function PeerLearning() {
           {peers.length > 0 &&
             (() => {
               const topPeer = peers[0];
-              const gap = (topPeer[pillarFocus] - country[pillarFocus]).toFixed(1);
+              const gap = (topPeer[pillarFocus] - country[pillarFocus]).toFixed(
+                1,
+              );
               return (
-                <div style={{ ...styles.card, background: "#D8F3DC", border: "1px solid #40916C40" }}>
-                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#1B4332", marginBottom: "8px" }}>
+                <div
+                  style={{
+                    ...styles.card,
+                    background: "#D8F3DC",
+                    border: "1px solid #40916C40",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      color: "#1B4332",
+                      marginBottom: "8px",
+                    }}
+                  >
                     Strategic Insight
                   </div>
-                  <p style={{ fontSize: "13px", color: "#1E293B", margin: 0, lineHeight: 1.7 }}>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      color: "#1E293B",
+                      margin: 0,
+                      lineHeight: 1.7,
+                    }}
+                  >
                     <strong>{topPeer.name}</strong> achieves{" "}
-                    <strong className="strong">{gap} points higher</strong> performance in{" "}
-                    <strong>{focusPillar.name}</strong> despite having comparable overall OIC DEI scores. This suggests targeted policy intervention in this specific pillar可 yield significant competitive gains for {country.name}. Target learning areas include regulatory frameworks, infrastructure investments, and institutional capacity building.
+                    <strong className="strong">{gap} points higher</strong>{" "}
+                    performance in <strong>{focusPillar.name}</strong> despite
+                    having comparable overall OIC DEI scores. This suggests
+                    targeted policy intervention in this specific pillar可 yield
+                    significant competitive gains for {country.name}. Target
+                    learning areas include regulatory frameworks, infrastructure
+                    investments, and institutional capacity building.
                   </p>
                 </div>
               );
@@ -5936,7 +6229,9 @@ function PeerLearning() {
         <>
           {/* Success Stories View */}
           <div style={styles.card}>
-            <div style={styles.cardTitle}>Success Stories — {focusPillar.name} Excellence</div>
+            <div style={styles.cardTitle}>
+              Success Stories — {focusPillar.name} Excellence
+            </div>
             <div
               style={{
                 display: "grid",
@@ -5985,7 +6280,14 @@ function PeerLearning() {
           </div>
 
           <div style={{ ...styles.card, background: "#E8F5E915" }}>
-            <div style={{ fontSize: "13px", fontWeight: 700, color: "#1B4332", marginBottom: "8px" }}>
+            <div
+              style={{
+                fontSize: "13px",
+                fontWeight: 700,
+                color: "#1B4332",
+                marginBottom: "8px",
+              }}
+            >
               Implementation Roadmap
             </div>
             <ol
@@ -5997,9 +6299,16 @@ function PeerLearning() {
                 paddingLeft: "20px",
               }}
             >
-              <li>Study regulatory and policy frameworks from peer leaders in {focusPillar.name}</li>
-              <li>Identify resource gaps and institutional capacity requirements</li>
-              <li>Develop phased implementation plan with clear KPIs and timelines</li>
+              <li>
+                Study regulatory and policy frameworks from peer leaders in{" "}
+                {focusPillar.name}
+              </li>
+              <li>
+                Identify resource gaps and institutional capacity requirements
+              </li>
+              <li>
+                Develop phased implementation plan with clear KPIs and timelines
+              </li>
               <li>Secure cross-ministry coordination and stakeholder buy-in</li>
               <li>Monitor progress against peer benchmarks quarterly</li>
             </ol>
@@ -6009,96 +6318,16 @@ function PeerLearning() {
 
       {peers.length === 0 && viewMode === "peers" && (
         <div style={{ ...styles.card, textAlign: "center", padding: "40px" }}>
-          <div style={{ fontSize: "32px", marginBottom: "12px" }}>Achievement</div>
+          <div style={{ fontSize: "32px", marginBottom: "12px" }}>
+            Achievement
+          </div>
           <div style={{ fontSize: "16px", color: "#000000", fontWeight: 700 }}>
             Leading Performance in {focusPillar.name}
           </div>
           <div style={{ fontSize: "13px", color: "#64748B", marginTop: "8px" }}>
-            {country.name} is among the top performers in {focusPillar.name} relative to similar OIC DEI countries. Focus on maintaining competitive advantage and thought leadership.
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-                <Legend
-                  wrapperStyle={{
-                    fontSize: "11px",
-                    fontFamily: "'Georgia',serif",
-                  }}
-                />
-                <Tooltip content={<CustomTooltip />} />
-              </RadarChart>
-            </ResponsiveContainer>
-            {peers.length > 0 &&
-              (() => {
-                const topPeer = peers[0];
-                const gap = (
-                  topPeer[pillarFocus] - country[pillarFocus]
-                ).toFixed(1);
-                const otherGaps = PILLARS.filter((p) => p.key !== pillarFocus)
-                  .map((p) => ({
-                    name: p.name,
-                    diff: topPeer[p.key] - country[p.key],
-                  }))
-                  .sort((a, b) => b.diff - a.diff)[0];
-                return (
-                  <div
-                    style={{
-                      background: "#FDF6E3",
-                      border: "1px solid #F0C96A",
-                      borderRadius: "8px",
-                      padding: "10px 14px",
-                      marginTop: "12px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        color: "#000000",
-                        marginBottom: "4px",
-                      }}
-                    >
-                      Key insight
-                    </div>
-                    <p
-                      style={{
-                        fontSize: "12px",
-                        color: "#1E293B",
-                        margin: 0,
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      Best peer learner <strong>{topPeer.name}</strong>{" "}
-                      outscores {country.name} in{" "}
-                      <strong>{focusPillar.name}</strong> by{" "}
-                      <strong>{gap} pts</strong> (
-                      {country[pillarFocus].toFixed(1)} vs{" "}
-                      {topPeer[pillarFocus].toFixed(1)}), despite having a
-                      similar overall OIC DEI profile.{" "}
-                      {otherGaps.diff > 0 && (
-                        <>
-                          They also lead in <strong>{otherGaps.name}</strong> (+
-                          {otherGaps.diff.toFixed(1)} pts), suggesting broader
-                          capacity to emulate.
-                        </>
-                      )}
-                    </p>
-                  </div>
-                );
-              })()}
-          </div>
-        </>
-      ) : (
-        <div style={{ ...styles.card, textAlign: "center", padding: "40px" }}>
-          <div style={{ fontSize: "32px", marginBottom: "12px" }}>🏆</div>
-          <div style={{ fontSize: "16px", color: "#000000", fontWeight: 700 }}>
-            No peer learners found
-          </div>
-          <div style={{ fontSize: "13px", color: "#64748B", marginTop: "8px" }}>
-            {country.name} is among the leading performers in {focusPillar.name}{" "}
-            relative to similar OIC DEI countries.
+            {country.name} is among the top performers in {focusPillar.name}{" "}
+            relative to similar OIC DEI countries. Focus on maintaining
+            competitive advantage and thought leadership.
           </div>
         </div>
       )}

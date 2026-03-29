@@ -5557,6 +5557,7 @@ function PriorityMatrix() {
 function PeerLearning() {
   const [selected, setSelected] = useState("Egypt");
   const [pillarFocus, setPillarFocus] = useState("p4");
+  const [viewMode, setViewMode] = useState("peers"); // 'peers' or 'cases'
   const country = COUNTRIES.find((c) => c.name === selected);
   const focusPillar = PILLARS.find((p) => p.key === pillarFocus);
   const peers = COUNTRIES.filter(
@@ -5578,12 +5579,12 @@ function PeerLearning() {
     return row;
   });
   const PEER_COLORS = [
-    "#B8922A",
-    "#10B981",
-    "#3B82F6",
-    "#EF4444",
-    "#8B5CF6",
-    "#F97316",
+    "#1B4332",
+    "#2D6A4F",
+    "#40916C",
+    "#52B788",
+    "#74C69D",
+    "#95D5B2",
   ];
   const CASE_STUDIES = {
     p1: {
@@ -5634,194 +5635,247 @@ function PeerLearning() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div
-        style={{
-          display: "flex",
-          gap: "12px",
-          flexWrap: "wrap",
-          alignItems: "center",
-        }}
-      >
-        <select
-          style={styles.select}
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
+    <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+      {/* Selection Section */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>Select Country & Focus Area</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "16px",
+          }}
         >
-          {[...COUNTRIES]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-        </select>
-        <span style={{ color: "#64748B", fontSize: "13px" }}>
-          wants to learn about →
-        </span>
-        <select
-          style={styles.select}
-          value={pillarFocus}
-          onChange={(e) => setPillarFocus(e.target.value)}
-        >
-          {PILLARS.map((p) => (
-            <option key={p.key} value={p.key}>
-              {p.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div style={styles.grid2}>
-        <div style={{ ...styles.card, borderColor: `${focusPillar.color}40` }}>
-          <div style={{ ...styles.cardTitle, color: focusPillar.color }}>
-            {country.name} — Current Status
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "#1B4332",
+                marginBottom: "8px",
+              }}
+            >
+              Select Country
+            </label>
+            <select
+              style={styles.select}
+              value={selected}
+              onChange={(e) => setSelected(e.target.value)}
+            >
+              {[...COUNTRIES]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((c) => (
+                  <option key={c.name} value={c.name}>
+                    {c.name} (Rank #{c.rank}, Score: {c.adei.toFixed(1)})
+                  </option>
+                ))}
+            </select>
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "12px",
-            }}
-          >
-            {[
-              { label: "OIC DEI Rank", value: `#${country.rank}` },
-              { label: "OIC DEI Score", value: country.adei.toFixed(1) },
-              {
-                label: `${focusPillar.name} Score`,
-                value: country[pillarFocus].toFixed(1),
-              },
-              {
-                label: "Gap to OIC Leader",
-                value: `-${(Math.max(...COUNTRIES.map((c) => c[pillarFocus])) - country[pillarFocus]).toFixed(1)}`,
-              },
-            ].map((s) => (
-              <div
-                key={s.label}
-                style={{
-                  background: "#F1F5F9",
-                  borderRadius: "8px",
-                  padding: "10px",
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: 900,
-                    color: focusPillar.color,
-                  }}
-                >
-                  {s.value}
-                </div>
-                <div style={{ fontSize: "11px", color: "#64748B" }}>
-                  {s.label}
-                </div>
-              </div>
-            ))}
+          <div>
+            <label
+              style={{
+                display: "block",
+                fontSize: "12px",
+                fontWeight: 600,
+                color: "#1B4332",
+                marginBottom: "8px",
+              }}
+            >
+              Learning Focus
+            </label>
+            <select
+              style={styles.select}
+              value={pillarFocus}
+              onChange={(e) => setPillarFocus(e.target.value)}
+            >
+              {PILLARS.map((p) => (
+                <option key={p.key} value={p.key}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
-      {peers.length > 0 ? (
+
+      {/* Country Status Overview */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>{country.name} — Digital Profile</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "16px",
+          }}
+        >
+          {[
+            { label: "OIC DEI Rank", value: `#${country.rank}`, color: "#1B4332" },
+            { label: "OIC DEI Score", value: country.adei.toFixed(1), color: "#2D6A4F" },
+            { label: `${focusPillar.name} Score`, value: country[pillarFocus].toFixed(1), color: focusPillar.color },
+            {
+              label: "Performance Gap",
+              value: `-${(Math.max(...COUNTRIES.map((c) => c[pillarFocus])) - country[pillarFocus]).toFixed(1)} pts`,
+              color: "#EF4444",
+            },
+          ].map((s, i) => (
+            <div
+              key={s.label}
+              style={{
+                background: `${s.color}10`,
+                borderRadius: "10px",
+                padding: "16px",
+                border: `1px solid ${s.color}30`,
+                textAlign: "center",
+              }}
+            >
+              <div style={{ fontSize: "12px", color: "#64748B", marginBottom: "6px" }}>
+                {s.label}
+              </div>
+              <div style={{ fontSize: "28px", fontWeight: 900, color: s.color }}>
+                {s.value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* View Toggle */}
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          borderBottom: "2px solid #E8F5E9",
+          paddingBottom: "12px",
+        }}
+      >
+        {[
+          { id: "peers", label: "Peer Benchmarking" },
+          { id: "cases", label: "Success Stories" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setViewMode(tab.id)}
+            style={{
+              padding: "10px 16px",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "13px",
+              fontWeight: 600,
+              fontFamily: "'Georgia', serif",
+              background: viewMode === tab.id ? "#1B433210" : "transparent",
+              color: viewMode === tab.id ? "#1B4332" : "#64748B",
+              borderBottom: viewMode === tab.id ? "3px solid #1B4332" : "none",
+              transition: "all 0.2s ease",
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Peer Benchmarking View */}
+      {viewMode === "peers" && peers.length > 0 ? (
         <>
           <div style={styles.card}>
             <div style={styles.cardTitle}>
-              Best Peer Learners — Similar OIC DEI, Stronger in{" "}
-              {focusPillar.name}
+              Best Peer Comparables — Similar OIC DEI, Stronger in {focusPillar.name}
             </div>
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(3,1fr)",
-                gap: "12px",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: "14px",
               }}
             >
               {peers.map((peer, i) => (
                 <div
                   key={peer.name}
                   style={{
-                    background: "#F1F5F9",
+                    background: `${PEER_COLORS[i]}10`,
                     borderRadius: "10px",
-                    padding: "14px",
-                    border: `1px solid ${PEER_COLORS[i]}40`,
+                    padding: "16px",
+                    border: `1px solid ${PEER_COLORS[i]}30`,
                   }}
                 >
                   <div
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      marginBottom: "8px",
+                      alignItems: "flex-start",
+                      marginBottom: "12px",
                     }}
                   >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: "#1E293B",
+                          marginBottom: "3px",
+                        }}
+                      >
+                        {peer.name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          color: "#64748B",
+                        }}
+                      >
+                        Rank #{peer.rank}
+                      </div>
+                    </div>
                     <span
                       style={{
-                        fontSize: "13px",
-                        fontWeight: 700,
-                        color: "#1E293B",
-                      }}
-                    >
-                      {peer.name}
-                    </span>
-                    <span
-                      style={{
-                        ...styles.badge(PEER_COLORS[i], "#FFFFFF"),
                         fontSize: "11px",
+                        background: PEER_COLORS[i],
+                        color: "#FFFFFF",
+                        padding: "4px 10px",
+                        borderRadius: "4px",
+                        fontWeight: 600,
                       }}
                     >
-                      #{peer.rank}
+                      {(peer[pillarFocus] - country[pillarFocus]).toFixed(1)} pts ahead
                     </span>
                   </div>
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "4px",
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "8px",
+                      marginBottom: "10px",
                     }}
                   >
-                    <span style={{ fontSize: "12px", color: "#64748B" }}>
-                      OIC DEI Score
-                    </span>
-                    <span style={{ fontSize: "12px", color: "#000000" }}>
-                      {peer.adei.toFixed(1)}
-                    </span>
+                    <div>
+                      <div style={{ fontSize: "10px", color: "#64748B", marginBottom: "2px" }}>
+                        OIC DEI Score
+                      </div>
+                      <div style={{ fontSize: "14px", fontWeight: 700, color: "#1B4332" }}>
+                        {peer.adei.toFixed(1)}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: "10px", color: "#64748B", marginBottom: "2px" }}>
+                        {focusPillar.short}
+                      </div>
+                      <div style={{ fontSize: "14px", fontWeight: 700, color: PEER_COLORS[i] }}>
+                        {peer[pillarFocus].toFixed(1)}
+                      </div>
+                    </div>
                   </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    <span style={{ fontSize: "12px", color: "#64748B" }}>
-                      {focusPillar.short}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "13px",
-                        fontWeight: 700,
-                        color: PEER_COLORS[i],
-                      }}
-                    >
-                      {peer[pillarFocus].toFixed(1)}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: "11px", color: "#10B981" }}>
-                    +{(peer[pillarFocus] - country[pillarFocus]).toFixed(1)} pts
-                    ahead
-                  </div>
-                  <div
-                    style={styles.scoreBar(peer[pillarFocus], PEER_COLORS[i])}
-                  />
+                  <div style={styles.scoreBar(peer[pillarFocus], PEER_COLORS[i])} />
                 </div>
               ))}
             </div>
           </div>
+
           <div style={styles.card}>
-            <div style={styles.cardTitle}>
-              📡 Profile Comparison — {country.name} vs. Peer Learners
-            </div>
+            <div style={styles.cardTitle}>Comparative Profile — Radar Analysis</div>
             <ResponsiveContainer width="100%" height={320}>
               <RadarChart data={radarData}>
-                <PolarGrid stroke="#CBD5E1" />
+                <PolarGrid stroke="#E8F5E9" />
                 <PolarAngleAxis
                   dataKey="subject"
                   tick={{ fill: "#1E293B", fontSize: 11 }}
@@ -5833,10 +5887,10 @@ function PeerLearning() {
                 <Radar
                   name={country.name}
                   dataKey={country.name}
-                  stroke="#B8922A"
-                  fill="#B8922A"
-                  fillOpacity={0.3}
-                  strokeWidth={2}
+                  stroke="#1B4332"
+                  fill="#1B4332"
+                  fillOpacity={0.25}
+                  strokeWidth={2.5}
                 />
                 {peers.slice(0, 3).map((peer, i) => (
                   <Radar
@@ -5845,9 +5899,128 @@ function PeerLearning() {
                     dataKey={peer.name}
                     stroke={PEER_COLORS[i + 1]}
                     fill={PEER_COLORS[i + 1]}
-                    fillOpacity={0.1}
+                    fillOpacity={0.08}
+                    strokeWidth={1.5}
                   />
                 ))}
+                <Legend
+                  wrapperStyle={{
+                    fontSize: "11px",
+                    fontFamily: "'Georgia',serif",
+                  }}
+                />
+                <Tooltip content={<CustomTooltip />} />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {peers.length > 0 &&
+            (() => {
+              const topPeer = peers[0];
+              const gap = (topPeer[pillarFocus] - country[pillarFocus]).toFixed(1);
+              return (
+                <div style={{ ...styles.card, background: "#D8F3DC", border: "1px solid #40916C40" }}>
+                  <div style={{ fontSize: "13px", fontWeight: 700, color: "#1B4332", marginBottom: "8px" }}>
+                    Strategic Insight
+                  </div>
+                  <p style={{ fontSize: "13px", color: "#1E293B", margin: 0, lineHeight: 1.7 }}>
+                    <strong>{topPeer.name}</strong> achieves{" "}
+                    <strong className="strong">{gap} points higher</strong> performance in{" "}
+                    <strong>{focusPillar.name}</strong> despite having comparable overall OIC DEI scores. This suggests targeted policy intervention in this specific pillar可 yield significant competitive gains for {country.name}. Target learning areas include regulatory frameworks, infrastructure investments, and institutional capacity building.
+                  </p>
+                </div>
+              );
+            })()}
+        </>
+      ) : (
+        <>
+          {/* Success Stories View */}
+          <div style={styles.card}>
+            <div style={styles.cardTitle}>Success Stories — {focusPillar.name} Excellence</div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "16px",
+              }}
+            >
+              {[
+                CASE_STUDIES[pillarFocus],
+                CASE_STUDIES[pillarFocus === "p4" ? "p1" : "p4"],
+              ]
+                .filter(Boolean)
+                .map((cs, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      background: "#1B433210",
+                      borderRadius: "10px",
+                      padding: "16px",
+                      border: "1px solid #40916C40",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 700,
+                        color: "#1B4332",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      {cs.country}'s Approach
+                    </div>
+                    <p
+                      style={{
+                        fontSize: "13px",
+                        color: "#1E293B",
+                        lineHeight: 1.7,
+                        margin: 0,
+                      }}
+                    >
+                      {cs.lesson}
+                    </p>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <div style={{ ...styles.card, background: "#E8F5E915" }}>
+            <div style={{ fontSize: "13px", fontWeight: 700, color: "#1B4332", marginBottom: "8px" }}>
+              Implementation Roadmap
+            </div>
+            <ol
+              style={{
+                fontSize: "13px",
+                color: "#1E293B",
+                lineHeight: 1.8,
+                margin: 0,
+                paddingLeft: "20px",
+              }}
+            >
+              <li>Study regulatory and policy frameworks from peer leaders in {focusPillar.name}</li>
+              <li>Identify resource gaps and institutional capacity requirements</li>
+              <li>Develop phased implementation plan with clear KPIs and timelines</li>
+              <li>Secure cross-ministry coordination and stakeholder buy-in</li>
+              <li>Monitor progress against peer benchmarks quarterly</li>
+            </ol>
+          </div>
+        </>
+      )}
+
+      {peers.length === 0 && viewMode === "peers" && (
+        <div style={{ ...styles.card, textAlign: "center", padding: "40px" }}>
+          <div style={{ fontSize: "32px", marginBottom: "12px" }}>Achievement</div>
+          <div style={{ fontSize: "16px", color: "#000000", fontWeight: 700 }}>
+            Leading Performance in {focusPillar.name}
+          </div>
+          <div style={{ fontSize: "13px", color: "#64748B", marginTop: "8px" }}>
+            {country.name} is among the top performers in {focusPillar.name} relative to similar OIC DEI countries. Focus on maintaining competitive advantage and thought leadership.
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
                 <Legend
                   wrapperStyle={{
                     fontSize: "11px",
@@ -6551,8 +6724,17 @@ function Methodology() {
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
         <div style={styles.card}>
           <div style={styles.cardTitle}>Index Overview</div>
-          <p style={{ color: "#64748B", fontSize: "14px", lineHeight: 1.8, marginBottom: "16px" }}>
-            The OIC Digital Economy Index (OIC DEI), developed by Al-Khouri (2024), is a comprehensive framework measuring digital economy maturity across all 57 OIC member states.
+          <p
+            style={{
+              color: "#64748B",
+              fontSize: "14px",
+              lineHeight: 1.8,
+              marginBottom: "16px",
+            }}
+          >
+            The OIC Digital Economy Index (OIC DEI), developed by Al-Khouri
+            (2024), is a comprehensive framework measuring digital economy
+            maturity across all 57 OIC member states.
           </p>
           <div
             style={{
@@ -6565,7 +6747,11 @@ function Methodology() {
             {[
               { label: "Pillars", value: "9", desc: "Structural dimensions" },
               { label: "Indicators", value: "32", desc: "Measurable factors" },
-              { label: "Sub-Indicators", value: "21", desc: "Granular metrics" },
+              {
+                label: "Sub-Indicators",
+                value: "21",
+                desc: "Granular metrics",
+              },
             ].map((item) => (
               <div
                 key={item.label}
@@ -6577,10 +6763,24 @@ function Methodology() {
                   border: "1px solid #40916C40",
                 }}
               >
-                <div style={{ fontSize: "28px", fontWeight: 900, color: "#1B4332", marginBottom: "6px" }}>
+                <div
+                  style={{
+                    fontSize: "28px",
+                    fontWeight: 900,
+                    color: "#1B4332",
+                    marginBottom: "6px",
+                  }}
+                >
                   {item.value}
                 </div>
-                <div style={{ fontSize: "13px", fontWeight: 600, color: "#1B4332", marginBottom: "4px" }}>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    color: "#1B4332",
+                    marginBottom: "4px",
+                  }}
+                >
                   {item.label}
                 </div>
                 <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
@@ -6593,7 +6793,13 @@ function Methodology() {
 
         <div style={styles.card}>
           <div style={styles.cardTitle}>9 Pillars of Digital Economy</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "12px",
+            }}
+          >
             {PILLARS.map((p) => (
               <div
                 key={p.key}
@@ -6614,7 +6820,13 @@ function Methodology() {
                 >
                   {p.name}
                 </div>
-                <div style={{ fontSize: "11px", color: "#64748B", marginBottom: "6px" }}>
+                <div
+                  style={{
+                    fontSize: "11px",
+                    color: "#64748B",
+                    marginBottom: "6px",
+                  }}
+                >
                   {p.dim}
                 </div>
                 <div
@@ -6650,7 +6862,13 @@ function Methodology() {
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
         <div style={styles.card}>
           <div style={styles.cardTitle}>Data Processing & Normalization</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+            }}
+          >
             <div>
               <div
                 style={{
@@ -6662,8 +6880,16 @@ function Methodology() {
               >
                 Missing Value Imputation
               </div>
-              <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.7, marginBottom: "10px" }}>
-                For incomplete data across OIC member states, missing values are computed using:
+              <p
+                style={{
+                  color: "#64748B",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  marginBottom: "10px",
+                }}
+              >
+                For incomplete data across OIC member states, missing values are
+                computed using:
               </p>
               <div
                 style={{
@@ -6679,8 +6905,11 @@ function Methodology() {
               >
                 Min - (5% × Min)
               </div>
-              <p style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}>
-                This conservative approach ensures data integrity while preventing underestimation of emerging markets.
+              <p
+                style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}
+              >
+                This conservative approach ensures data integrity while
+                preventing underestimation of emerging markets.
               </p>
             </div>
             <div>
@@ -6694,7 +6923,14 @@ function Methodology() {
               >
                 Min-Max Normalization
               </div>
-              <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.7, marginBottom: "10px" }}>
+              <p
+                style={{
+                  color: "#64748B",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  marginBottom: "10px",
+                }}
+              >
                 All indicators are normalized to a standardized 0-100 scale:
               </p>
               <div
@@ -6712,8 +6948,11 @@ function Methodology() {
               >
                 (Value - Min) / (Max - Min) × 100
               </div>
-              <p style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}>
-                Enables fair comparison across diverse indicators and geographic contexts.
+              <p
+                style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}
+              >
+                Enables fair comparison across diverse indicators and geographic
+                contexts.
               </p>
             </div>
           </div>
@@ -6721,7 +6960,9 @@ function Methodology() {
 
         <div style={styles.card}>
           <div style={styles.cardTitle}>Performance Clusters</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}
+          >
             {[
               {
                 title: "Advanced Digital Economies",
@@ -6777,10 +7018,22 @@ function Methodology() {
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: "14px", fontWeight: 700, color: cluster.color }}>
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: cluster.color,
+                        }}
+                      >
                         {cluster.title}
                       </div>
-                      <div style={{ fontSize: "12px", color: "#64748B", marginTop: "2px" }}>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          color: "#64748B",
+                          marginTop: "2px",
+                        }}
+                      >
                         {cluster.range}
                       </div>
                     </div>
@@ -6797,7 +7050,14 @@ function Methodology() {
                       {cluster.count}
                     </div>
                   </div>
-                  <p style={{ color: "#1E293B", fontSize: "13px", lineHeight: 1.6, margin: 0 }}>
+                  <p
+                    style={{
+                      color: "#1E293B",
+                      fontSize: "13px",
+                      lineHeight: 1.6,
+                      margin: 0,
+                    }}
+                  >
                     {cluster.desc}
                   </p>
                 </div>
@@ -6810,8 +7070,17 @@ function Methodology() {
     sources: (
       <div style={styles.card}>
         <div style={styles.cardTitle}>Primary Data Sources</div>
-        <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.8, marginBottom: "16px" }}>
-          All data sourced from internationally recognized organizations. The 2025 edition uses lagged data from 2023–2024 reporting periods for accuracy.
+        <p
+          style={{
+            color: "#64748B",
+            fontSize: "13px",
+            lineHeight: 1.8,
+            marginBottom: "16px",
+          }}
+        >
+          All data sourced from internationally recognized organizations. The
+          2025 edition uses lagged data from 2023–2024 reporting periods for
+          accuracy.
         </p>
         <table
           style={{

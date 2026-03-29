@@ -1510,15 +1510,14 @@ function GlobalOverview() {
     },
   ];
 
+  const avg = (COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length);
   const globalStats = {
-    average: (
-      COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length
-    ).toFixed(1),
+    average: avg.toFixed(1),
     max: sorted[0].adei.toFixed(1),
     min: sorted[sorted.length - 1].adei.toFixed(1),
     stdDev: Math.sqrt(
       COUNTRIES.reduce(
-        (s, c) => s + Math.pow(c.adei - globalStats.average, 2),
+        (s, c) => s + Math.pow(c.adei - avg, 2),
         0,
       ) / COUNTRIES.length,
     ).toFixed(1),

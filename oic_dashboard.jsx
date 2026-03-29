@@ -21,6 +21,8 @@ import {
   PolarRadiusAxis,
   ReferenceLine,
 } from "recharts";
+import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import { scaleLinear } from "d3-scale";
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const PILLARS = [
@@ -1217,6 +1219,211 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
+// ─── WORLD MAP COMPONENT ────────────────────────────────────────────────────
+function WorldMap() {
+  const [hoveredCountry, setHoveredCountry] = useState(null);
+  const [geoData, setGeoData] = useState(null);
+
+  useEffect(() => {
+    fetch(
+      "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        const countries = data.objects.countries.geometries.map((geom, idx) => ({
+          ...geom,
+          id: idx,
+        }));
+        setGeoData({
+          type: "FeatureCollection",
+          features: countries.map((geom) => ({
+            type: "Feature",
+            properties: { id: geom.id },
+            geometry: geom,
+          })),
+        });
+      })
+      .catch((err) => console.error("Failed to load map data:", err));
+  }, []);
+
+  const getCountryColor = (countryName) => {
+    const country = COUNTRIES.find(
+      (c) =>
+        c.name.toLowerCase() === countryName.toLowerCase() ||
+        (countryName === "United States of America" && c.name === "United States") ||
+        (countryName.includes("Tanzania") && c.name === "Tanzania") ||
+        (countryName.includes("Democratic Republic of the Congo") && c.name === "Cameroon")
+    );
+
+    if (!country) return "#E2E8F0";
+
+    const cluster = getCluster(country.adei);
+    if (cluster.label === "Advanced Digital Economies") return "#10B981";
+    if (cluster.label === "Emerging Digital Economies") return "#F59E0B";
+    return "#EF4444";
+  };
+
+  const getCountryInfo = (countryName) => {
+    return COUNTRIES.find(
+      (c) =>
+        c.name.toLowerCase() === countryName.toLowerCase() ||
+        (countryName === "United States of America" && c.name === "United States")
+    );
+  };
+
+  const geoUrl =
+    "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
+
+  return (
+    <div style={styles.card}>
+      <div style={styles.cardTitle}>OIC Countries Map</div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "16px",
+          gap: "20px",
+        }}
+      >
+        <div style={{ flex: 1 }}>
+          <svg width="100%" height="400" style={{ border: "1px solid #E2E8F0", borderRadius: "8px" }}>
+            <ComposableMap projection="geoEqualEarth">
+              <Geographies geography={geoUrl}>
+                {({ geographies }) =>
+                  geographies.map((geo) => {
+                    const countryName = geo.properties.name;
+                    const country = getCountryInfo(countryName);
+                    const fill = country
+                      ? getCountryColor(countryName)
+                      : "#F1F5F9";
+
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        onMouseEnter={() => setHoveredCountry(countryName)}
+                        onMouseLeave={() => setHoveredCountry(null)}
+                        style={{
+                          default: {
+                            fill: fill,
+                            stroke: "#FFFFFF",
+                            strokeWidth: 0.75,
+                            outline: "none",
+                            cursor: country ? "pointer" : "default",
+                            transition: "fill 0.2s ease",
+                          },
+                          hover: {
+                            fill: country ? fill : "#F1F5F9",
+                            stroke: "#B8922A",
+                            strokeWidth: 1.5,
+                            outline: "none",
+                            cursor: country ? "pointer" : "default",
+                            filter: "brightness(1.1)",
+                          },
+                          pressed: {
+                            fill: fill,
+                            stroke: "#B8922A",
+                            strokeWidth: 1.5,
+                            outline: "none",
+                          },
+                        }}
+                      />
+                    );
+                  })
+                }
+              </Geographies>
+            </ComposableMap>
+          </svg>
+        </div>
+        <div
+          style={{
+            width: "200px",
+            padding: "16px",
+            background: "#F8FAFC",
+            borderRadius: "8px",
+            border: "1px solid #E2E8F0",
+          }}
+        >
+          <div style={{ fontSize: "12px", fontWeight: 600, color: "#64748B", marginBottom: "12px" }}>
+            Legend
+          </div>
+          {[
+            {
+              label: "Advanced",
+              color: "#10B981",
+              count: COUNTRIES.filter((c) => getCluster(c.adei).label === "Advanced Digital Economies").length,
+            },
+            {
+              label: "Emerging",
+              color: "#F59E0B",
+              count: COUNTRIES.filter((c) => getCluster(c.adei).label === "Emerging Digital Economies").length,
+            },
+            {
+              label: "Foundational",
+              color: "#EF4444",
+              count: COUNTRIES.filter((c) => getCluster(c.adei).label === "Foundational Digital Economies").length,
+            },
+            {
+              label: "Non-OIC",
+              color: "#F1F5F9",
+              count: "Other",
+            },
+          ].map((item) => (
+            <div
+              key={item.label}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
+                fontSize: "11px",
+              }}
+            >
+              <div
+                style={{
+                  width: "12px",
+                  height: "12px",
+                  borderRadius: "2px",
+                  background: item.color,
+                  border: "1px solid #CBD5E1",
+                }}
+              />
+              <span style={{ color: "#1E293B", fontWeight: 500 }}>
+                {item.label}
+              </span>
+              {typeof item.count === "number" && (
+                <span style={{ color: "#64748B", marginLeft: "auto" }}>
+                  ({item.count})
+                </span>
+              )}
+            </div>
+          ))}
+          {hoveredCountry && getCountryInfo(hoveredCountry) && (
+            <div
+              style={{
+                marginTop: "16px",
+                paddingTop: "12px",
+                borderTop: "1px solid #E2E8F0",
+              }}
+            >
+              <div style={{ fontSize: "12px", fontWeight: 600, color: "#000000", marginBottom: "4px" }}>
+                {hoveredCountry}
+              </div>
+              <div style={{ fontSize: "11px", color: "#64748B" }}>
+                Score: <strong>{getCountryInfo(hoveredCountry).adei.toFixed(1)}</strong>
+              </div>
+              <div style={{ fontSize: "11px", color: "#64748B" }}>
+                Rank: <strong>#{getCountryInfo(hoveredCountry).rank}</strong>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── GLOBAL OVERVIEW TAB ────────────────────────────────────────────────────
 function GlobalOverview() {
   const sorted = [...COUNTRIES].sort((a, b) => a.rank - b.rank);
@@ -1266,6 +1473,9 @@ function GlobalOverview() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* World Map */}
+      <WorldMap />
+
       <div style={styles.grid2}>
         {/* Leaderboard Leading 10 */}
         <div style={styles.card}>

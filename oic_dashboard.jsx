@@ -1510,16 +1510,14 @@ function GlobalOverview() {
     },
   ];
 
-  const avg = (COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length);
+  const avg = COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length;
   const globalStats = {
     average: avg.toFixed(1),
     max: sorted[0].adei.toFixed(1),
     min: sorted[sorted.length - 1].adei.toFixed(1),
     stdDev: Math.sqrt(
-      COUNTRIES.reduce(
-        (s, c) => s + Math.pow(c.adei - avg, 2),
-        0,
-      ) / COUNTRIES.length,
+      COUNTRIES.reduce((s, c) => s + Math.pow(c.adei - avg, 2), 0) /
+        COUNTRIES.length,
     ).toFixed(1),
   };
 
@@ -3439,26 +3437,26 @@ function GeographicAnalysis() {
     .sort((a, b) => b.avg - a.avg);
 
   const REGION_COLORS = {
-    GCC: "#F59E0B",
-    "Southeast Asia": "#10B981",
-    "Central Asia": "#3B82F6",
-    "South Asia": "#8B5CF6",
-    "Middle East": "#EF4444",
-    "North Africa": "#06B6D4",
-    "West Africa": "#F97316",
-    "East Africa": "#EC4899",
-    "Central Africa": "#D946EF",
-    "Southeastern Africa": "#FB7185",
-    "South America": "#A78BFA",
-    Europe: "#14B8A6",
-    Americas: "#A78BFA",
+    GCC: "#1B4332",
+    "Southeast Asia": "#2D6A4F",
+    "Central Asia": "#40916C",
+    "South Asia": "#52B788",
+    "Middle East": "#74C69D",
+    "North Africa": "#95D5B2",
+    "West Africa": "#1F4E38",
+    "East Africa": "#388E7F",
+    "Central Africa": "#2D6A4F",
+    "Southeastern Africa": "#40916C",
+    "South America": "#52B788",
+    Europe: "#74C69D",
+    Americas: "#1B4332",
   };
 
   const clusterByRegion = regionStats.map((r) => ({
     name: r.region,
-    Leaders: r.countries.filter((c) => c.adei >= 60).length,
-    Adopters: r.countries.filter((c) => c.adei >= 40 && c.adei < 60).length,
-    Emerging: r.countries.filter((c) => c.adei < 40).length,
+    Advanced: r.countries.filter((c) => c.adei >= 60).length,
+    Emerging: r.countries.filter((c) => c.adei >= 40 && c.adei < 60).length,
+    Foundational: r.countries.filter((c) => c.adei < 40).length,
   }));
 
   const GEO_COORDS = {
@@ -3526,12 +3524,12 @@ function GeographicAnalysis() {
     x: GEO_COORDS[c.name][1],
     y: GEO_COORDS[c.name][0],
     score: parseFloat(c.adei.toFixed(1)),
-    color: c.adei >= 60 ? "#10B981" : c.adei >= 40 ? "#F59E0B" : "#EF4444",
+    color: c.adei >= 60 ? "#1B4332" : c.adei >= 40 ? "#52B788" : "#95D5B2",
   }));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      {/* Region Summary Cards */}
+      {/* Regional Summary Cards */}
       <div
         style={{
           display: "grid",
@@ -3544,13 +3542,16 @@ function GeographicAnalysis() {
             key={r.region}
             style={{
               ...styles.card,
-              borderColor: `${REGION_COLORS[r.region] || "#CBD5E1"}40`,
+              background:
+                REGION_COLORS[r.region] === "#1B4332" ? "#D8F3DC" : "#F8FDFC",
+              borderColor: REGION_COLORS[r.region],
+              borderWidth: "2px",
             }}
           >
             <div
               style={{
-                fontSize: "10px",
-                color: REGION_COLORS[r.region] || "#B8922A",
+                fontSize: "11px",
+                color: REGION_COLORS[r.region],
                 fontWeight: 700,
                 marginBottom: "8px",
               }}
@@ -3561,7 +3562,7 @@ function GeographicAnalysis() {
               style={{
                 fontSize: "24px",
                 fontWeight: 900,
-                color: REGION_COLORS[r.region] || "#1E293B",
+                color: REGION_COLORS[r.region],
               }}
             >
               {r.avg.toFixed(1)}
@@ -3570,7 +3571,12 @@ function GeographicAnalysis() {
               {r.count} countries
             </div>
             <div
-              style={{ fontSize: "10px", color: "#64748B", marginTop: "4px" }}
+              style={{
+                fontSize: "10px",
+                color: "#64748B",
+                marginTop: "6px",
+                fontWeight: 500,
+              }}
             >
               Range: {r.min.toFixed(0)}–{r.max.toFixed(0)}
             </div>
@@ -3581,25 +3587,50 @@ function GeographicAnalysis() {
       {/* Geographic Scatter Map */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          OIC Member States — Geographic Score Map
+          Geographic Distribution of OIC Digital Performance
         </div>
         <div
           style={{
             display: "flex",
-            gap: "12px",
+            gap: "16px",
             fontSize: "11px",
-            color: "#1E293B",
-            marginBottom: "8px",
+            color: "#1B4332",
+            marginBottom: "12px",
+            flexWrap: "wrap",
           }}
         >
-          <span>
-            <span style={{ color: "#10B981" }}>●</span> Advanced (≥60)
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span
+              style={{
+                width: "12px",
+                height: "12px",
+                background: "#1B4332",
+                borderRadius: "50%",
+              }}
+            />
+            Advanced (60+)
           </span>
-          <span>
-            <span style={{ color: "#F59E0B" }}>●</span> Emerging (40–60)
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span
+              style={{
+                width: "12px",
+                height: "12px",
+                background: "#52B788",
+                borderRadius: "50%",
+              }}
+            />
+            Emerging (40–60)
           </span>
-          <span>
-            <span style={{ color: "#EF4444" }}>●</span> Foundational (&lt;40)
+          <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span
+              style={{
+                width: "12px",
+                height: "12px",
+                background: "#95D5B2",
+                borderRadius: "50%",
+              }}
+            />
+            Foundational (&lt;40)
           </span>
         </div>
         <ResponsiveContainer width="100%" height={300}>
@@ -3610,11 +3641,12 @@ function GeographicAnalysis() {
               dataKey="x"
               domain={[-70, 130]}
               name="Longitude"
-              tick={{ fill: "#64748B", fontSize: 9, fontWeight: 500 }}
+              tick={{ fill: "#1B4332", fontSize: 9, fontWeight: 600 }}
               label={{
-                value: "← West   Longitude   East →",
-                fill: "#64748B",
-                fontSize: 9,
+                value: "West   Longitude   East",
+                fill: "#1B4332",
+                fontSize: 10,
+                fontWeight: 600,
                 position: "insideBottom",
                 offset: -2,
               }}
@@ -3624,11 +3656,12 @@ function GeographicAnalysis() {
               dataKey="y"
               domain={[-25, 55]}
               name="Latitude"
-              tick={{ fill: "#64748B", fontSize: 9 }}
+              tick={{ fill: "#1B4332", fontSize: 9, fontWeight: 600 }}
               label={{
                 value: "Latitude",
-                fill: "#64748B",
-                fontSize: 9,
+                fill: "#1B4332",
+                fontSize: 10,
+                fontWeight: 600,
                 angle: -90,
                 position: "insideLeft",
               }}
@@ -3653,14 +3686,20 @@ function GeographicAnalysis() {
             />
             <Scatter data={mapData} name="Countries">
               {mapData.map((d, i) => (
-                <Cell key={i} fill={d.color} fillOpacity={0.8} />
+                <Cell key={i} fill={d.color} fillOpacity={0.85} />
               ))}
             </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
-        <div style={{ fontSize: "11px", color: "#64748B", marginTop: "4px" }}>
-          Dot position = approximate geographic location · Dot size = OIC DEI
-          score magnitude
+        <div
+          style={{
+            fontSize: "11px",
+            color: "#64748B",
+            marginTop: "8px",
+            fontStyle: "italic",
+        }}
+        >
+          Bubble position represents approximate geographic location; bubble size indicates OIC DEI score magnitude.
         </div>
         {(() => {
           const advanced = mapData.filter((d) => d.score >= 60);
@@ -3674,10 +3713,10 @@ function GeographicAnalysis() {
           return (
             <div
               style={{
-                background: "#FDF6E3",
-                border: "1px solid #F0C96A",
+                background: "#D8F3DC",
+                border: "1px solid #1B4332",
                 borderRadius: "8px",
-                padding: "10px 14px",
+                padding: "12px 14px",
                 marginTop: "12px",
               }}
             >
@@ -3685,11 +3724,11 @@ function GeographicAnalysis() {
                 style={{
                   fontSize: "11px",
                   fontWeight: 700,
-                  color: "#000000",
-                  marginBottom: "4px",
+                  color: "#1B4332",
+                  marginBottom: "6px",
                 }}
               >
-                Key insight
+                Strategic Insight
               </div>
               <p
                 style={{
@@ -3699,15 +3738,14 @@ function GeographicAnalysis() {
                   lineHeight: 1.6,
                 }}
               >
-                The map reveals a clear{" "}
-                <strong>geographic concentration of digital leaders</strong> in
+                The map reveals a clear <strong>geographic concentration of digital leaders</strong> in
                 the Gulf and Southeast Asia, while Sub-Saharan Africa and parts
                 of Central Asia remain predominantly foundational.{" "}
-                <strong>{advanced.length} countries</strong> (green) score above
-                60, <strong>{foundational.length}</strong> (red) score below 40.{" "}
+                <strong>{advanced.length} countries</strong> (dark green) score above
+                60, with <strong>{foundational.length}</strong> (light green) scoring below 40.{" "}
                 <strong>{topCountry.name}</strong> ({topCountry.score}) and{" "}
                 <strong>{bottomCountry.name}</strong> ({bottomCountry.score})
-                represent the two poles of the OIC digital divide.
+                represent the geographic extremes of the OIC digital divide.
               </p>
             </div>
           );
@@ -3717,34 +3755,44 @@ function GeographicAnalysis() {
       {/* Regional Average Chart */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>Regional Average OIC DEI Scores</div>
-        <ResponsiveContainer width="100%" height={250}>
+        <ResponsiveContainer width="100%" height={280}>
           <BarChart
             data={regionStats.map((r) => ({
               name: r.region,
               avg: parseFloat(r.avg.toFixed(1)),
             }))}
-            barSize={35}
+            barSize={40}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="#E2E8F0"
+              vertical={false}
+            />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1E293B", fontSize: 10 }}
+              tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
-            <YAxis domain={[0, 80]} tick={{ fill: "#1E293B", fontSize: 11 }} />
+            <YAxis domain={[0, 80]} tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="avg" name="Regional Average">
+            <Bar dataKey="avg" name="Regional Average" radius={[6, 6, 0, 0]}>
               {regionStats.map((r, i) => (
-                <Cell key={i} fill={REGION_COLORS[r.region] || "#CBD5E1"} />
+                <Cell key={i} fill={REGION_COLORS[r.region] || "#1B4332"} />
               ))}
             </Bar>
             <ReferenceLine
               y={OIC_AVERAGE}
-              stroke="#B8922A"
+              stroke="#1B4332"
               strokeDasharray="4 4"
-              label={{ value: "OIC Average", fill: "#B8922A", fontSize: 11 }}
+              strokeWidth={2}
+              label={{
+                value: `OIC Average: ${OIC_AVERAGE}`,
+                fill: "#1B4332",
+                fontSize: 11,
+                fontWeight: 700,
+              }}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -3758,10 +3806,10 @@ function GeographicAnalysis() {
           return (
             <div
               style={{
-                background: "#FDF6E3",
-                border: "1px solid #F0C96A",
+                background: "#D8F3DC",
+                border: "1px solid #1B4332",
                 borderRadius: "8px",
-                padding: "10px 14px",
+                padding: "12px 14px",
                 marginTop: "12px",
               }}
             >
@@ -3769,11 +3817,11 @@ function GeographicAnalysis() {
                 style={{
                   fontSize: "11px",
                   fontWeight: 700,
-                  color: "#000000",
-                  marginBottom: "4px",
+                  color: "#1B4332",
+                  marginBottom: "6px",
                 }}
               >
-                Key insight
+                Strategic Insight
               </div>
               <p
                 style={{
@@ -3788,14 +3836,14 @@ function GeographicAnalysis() {
                 <strong>{bottomRegion.region}</strong> scores lowest (avg{" "}
                 {bottomRegion.avg.toFixed(1)}). The inter-regional gap of{" "}
                 <strong>
-                  {(topRegion.avg - bottomRegion.avg).toFixed(1)} pts
+                  {(topRegion.avg - bottomRegion.avg).toFixed(1)} points
                 </strong>{" "}
                 highlights significant geographic disparity within the OIC.{" "}
                 <strong>
                   {regionStats.filter((r) => r.avg >= OIC_AVERAGE).length} of{" "}
                   {regionStats.length}
                 </strong>{" "}
-                regions exceed the OIC average of {OIC_AVERAGE.toFixed(1)}.
+                regions exceed the OIC average.
               </p>
             </div>
           );
@@ -3805,7 +3853,7 @@ function GeographicAnalysis() {
       {/* Cluster Distribution by Region */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>Cluster Distribution by Region</div>
-        <ResponsiveContainer width="100%" height={250}>
+        <ResponsiveContainer width="100%" height={280}>
           <BarChart data={clusterByRegion} barSize={20}>
             <CartesianGrid
               strokeDasharray="0"
@@ -3814,38 +3862,38 @@ function GeographicAnalysis() {
             />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#64748B", fontSize: 10, fontWeight: 500 }}
+              tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
-            <YAxis tick={{ fill: "#64748B", fontSize: 11 }} />
+            <YAxis tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
-            <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "12px" }} />
+            <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "12px", fontWeight: 600 }} />
             <Bar
-              dataKey="Leaders"
-              fill="#10B981"
+              dataKey="Advanced"
+              fill="#1B4332"
               stackId="a"
               radius={[4, 4, 0, 0]}
             />
-            <Bar dataKey="Adopters" fill="#F59E0B" stackId="a" />
-            <Bar dataKey="Emerging" fill="#EF4444" stackId="a" />
+            <Bar dataKey="Emerging" fill="#52B788" stackId="a" />
+            <Bar dataKey="Foundational" fill="#95D5B2" stackId="a" />
           </BarChart>
         </ResponsiveContainer>
         {(() => {
           const mostAdvanced = [...clusterByRegion].sort(
-            (a, b) => b.Leaders - a.Leaders,
+            (a, b) => b.Advanced - a.Advanced,
           )[0];
           const mostEmerging = [...clusterByRegion].sort(
-            (a, b) => b.Emerging - a.Emerging,
+            (a, b) => b.Foundational - a.Foundational,
           )[0];
           return (
             <div
               style={{
-                background: "#FDF6E3",
-                border: "1px solid #F0C96A",
+                background: "#D8F3DC",
+                border: "1px solid #1B4332",
                 borderRadius: "8px",
-                padding: "10px 14px",
+                padding: "12px 14px",
                 marginTop: "12px",
               }}
             >
@@ -3853,11 +3901,11 @@ function GeographicAnalysis() {
                 style={{
                   fontSize: "11px",
                   fontWeight: 700,
-                  color: "#000000",
-                  marginBottom: "4px",
+                  color: "#1B4332",
+                  marginBottom: "6px",
                 }}
               >
-                Key insight
+                Strategic Insight
               </div>
               <p
                 style={{
@@ -3869,26 +3917,27 @@ function GeographicAnalysis() {
               >
                 <strong>{mostAdvanced.name}</strong> has the highest
                 concentration of Advanced Digital Economies (
-                {mostAdvanced.Leaders} countries).{" "}
+                {mostAdvanced.Advanced} countries).{" "}
                 <strong>{mostEmerging.name}</strong> has the most Foundational
-                Digital Economies ({mostEmerging.Emerging} countries),
-                indicating the greatest need for targeted development support.
+                Digital Economies ({mostEmerging.Foundational} countries),
+                indicating the region's greatest need for targeted development
+                support and capacity-building initiatives.
               </p>
             </div>
           );
         })()}
       </div>
 
-      {/* Country Table by Region */}
+      {/* Regional Country Tables */}
       {regionStats.map((r) => (
         <div key={r.region} style={styles.card}>
           <div
             style={{
               ...styles.cardTitle,
-              color: REGION_COLORS[r.region] || "#B8922A",
+              color: REGION_COLORS[r.region],
             }}
           >
-            {r.region} ({r.count} countries, avg: {r.avg.toFixed(1)})
+            {r.region} ({r.count} countries • Avg: {r.avg.toFixed(1)})
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
             {[...r.countries]
@@ -3899,33 +3948,41 @@ function GeographicAnalysis() {
                   <div
                     key={c.name}
                     style={{
-                      background: "#F1F5F9",
+                      background: cl.bg,
                       borderRadius: "8px",
-                      padding: "8px 12px",
-                      border: `1px solid ${cl.color}30`,
-                      minWidth: "130px",
+                      padding: "10px 14px",
+                      border: `1px solid ${cl.color}`,
+                      minWidth: "140px",
                     }}
                   >
                     <div
                       style={{
                         fontSize: "12px",
                         fontWeight: 700,
-                        color: "#1E293B",
+                        color: "#1B4332",
                       }}
                     >
                       {c.name}
                     </div>
                     <div
                       style={{
-                        fontSize: "16px",
+                        fontSize: "18px",
                         fontWeight: 900,
                         color: cl.color,
+                        marginTop: "4px",
                       }}
                     >
                       {c.adei.toFixed(1)}
                     </div>
-                    <div style={{ fontSize: "10px", color: "#64748B" }}>
-                      #{c.rank}
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        color: "#2D6A4F",
+                        fontWeight: 600,
+                        marginTop: "2px",
+                      }}
+                    >
+                      Rank #{c.rank}
                     </div>
                   </div>
                 );

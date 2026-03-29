@@ -7839,13 +7839,42 @@ function Acknowledgement() {
             usability of the project's data and findings.
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
-            {["Haitham Alnaeb", "Abdullahi Ahmad Babura", "Amnan Hanani"].map(
-              (name) => (
-                <span key={name} style={nameStyle}>
-                  {name}
-                </span>
-              ),
-            )}
+            {[
+              { name: "Haitham Alnaeb", url: null },
+              {
+                name: "Abdullahi Ahmad Babura",
+                url: "https://abdull6771.github.io/aahmad.github.io/",
+              },
+              { name: "Amnan Hanani", url: null },
+            ].map((person) => (
+              <span key={person.name} style={nameStyle}>
+                {person.url ? (
+                  <a
+                    href={person.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: "inherit",
+                      textDecoration: "none",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.color = "#B8922A";
+                      e.target.style.textDecoration = "underline";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.color = "inherit";
+                      e.target.style.textDecoration = "none";
+                    }}
+                  >
+                    {person.name}
+                  </a>
+                ) : (
+                  person.name
+                )}
+              </span>
+            ))}
           </div>
         </div>
 

@@ -1269,7 +1269,7 @@ function GlobalOverview() {
       <div style={styles.grid2}>
         {/* Leaderboard Leading 10 */}
         <div style={styles.card}>
-          <div style={styles.cardTitle}>🏆 Leading 10 Countries</div>
+          <div style={styles.cardTitle}>Leading 10 Countries</div>
           {top10.map((c, i) => {
             const cluster = getCluster(c.adei);
             return (
@@ -1394,7 +1394,7 @@ function GlobalOverview() {
 
       {/* Cluster Distribution */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>📊 Performance Cluster Distribution</div>
+        <div style={styles.cardTitle}>Performance Cluster Distribution</div>
         <div
           style={{
             display: "grid",
@@ -1492,7 +1492,7 @@ function GlobalOverview() {
               marginBottom: "4px",
             }}
           >
-            💡 Key insight
+            Key insight
           </div>
           <p
             style={{
@@ -2001,7 +2001,7 @@ function CountryProfiles() {
                 marginBottom: "4px",
               }}
             >
-              💡 Key insight
+              Key insight
             </div>
             <p
               style={{
@@ -2045,7 +2045,7 @@ function CountryProfiles() {
 
         {/* Pillar Scores */}
         <div style={styles.card}>
-          <div style={styles.cardTitle}>📊 Pillar Score Breakdown</div>
+          <div style={styles.cardTitle}>Pillar Score Breakdown</div>
           {PILLARS.map((p) => (
             <div key={p.id} style={{ marginBottom: "12px" }}>
               <div
@@ -2129,7 +2129,7 @@ function CountryProfiles() {
         </div>
         <div style={{ ...styles.card, borderColor: "#B8922A40" }}>
           <div style={{ ...styles.cardTitle, color: "#000000" }}>
-            🎯 Headline Recommendation
+            Headline Recommendation
           </div>
           <p
             style={{
@@ -2192,7 +2192,7 @@ function CountryProfiles() {
       {/* Regional Peer Comparison */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          🌍 Regional Peer Comparison — {region}
+          Regional Peer Comparison — {region}
         </div>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={peerCompData} barSize={40}>
@@ -2225,7 +2225,7 @@ function CountryProfiles() {
               marginBottom: "4px",
             }}
           >
-            💡 Key insight
+            Key insight
           </div>
           <p
             style={{
@@ -2399,7 +2399,7 @@ function CompareCountries() {
           <div style={styles.grid2}>
             {/* Bar Chart */}
             <div style={styles.card}>
-              <div style={styles.cardTitle}>📊 Pillar Bar Comparison</div>
+              <div style={styles.cardTitle}>Pillar Bar Comparison</div>
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={barData} layout="vertical" barSize={8}>
                   <CartesianGrid
@@ -2472,7 +2472,7 @@ function CompareCountries() {
                           marginBottom: "4px",
                         }}
                       >
-                        💡 Key insight
+                        Key insight
                       </div>
                       <p
                         style={{
@@ -2561,7 +2561,7 @@ function CompareCountries() {
                           marginBottom: "4px",
                         }}
                       >
-                        💡 Key insight
+                        Key insight
                       </div>
                       <p
                         style={{
@@ -2676,7 +2676,7 @@ function PillarAnalysis() {
         }}
       >
         <div style={{ ...styles.cardTitle, color: pillar.color }}>
-          💡 Key insight
+          Key insight
         </div>
         <p
           style={{
@@ -2693,7 +2693,7 @@ function PillarAnalysis() {
       {/* Full Rankings Bar Chart */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          📊 All Countries — {pillar.name} Rankings
+          All Countries — {pillar.name} Rankings
         </div>
         <ResponsiveContainer width="100%" height={400}>
           <BarChart
@@ -2759,7 +2759,7 @@ function PillarAnalysis() {
               marginBottom: "4px",
             }}
           >
-            💡 Key insight
+            Key insight
           </div>
           <p
             style={{
@@ -2955,7 +2955,7 @@ function GeographicAnalysis() {
       {/* Geographic Scatter Map */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          🗺 OIC Member States — Geographic Score Map
+          OIC Member States — Geographic Score Map
         </div>
         <div
           style={{
@@ -3063,7 +3063,7 @@ function GeographicAnalysis() {
                   marginBottom: "4px",
                 }}
               >
-                💡 Key insight
+                Key insight
               </div>
               <p
                 style={{
@@ -3090,7 +3090,7 @@ function GeographicAnalysis() {
 
       {/* Regional Average Chart */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>📊 Regional Average OIC DEI Scores</div>
+        <div style={styles.cardTitle}>Regional Average OIC DEI Scores</div>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart
             data={regionStats.map((r) => ({
@@ -3147,7 +3147,7 @@ function GeographicAnalysis() {
                   marginBottom: "4px",
                 }}
               >
-                💡 Key insight
+                Key insight
               </div>
               <p
                 style={{
@@ -3178,7 +3178,7 @@ function GeographicAnalysis() {
 
       {/* Cluster Distribution by Region */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>🗺 Cluster Distribution by Region</div>
+        <div style={styles.cardTitle}>Cluster Distribution by Region</div>
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={clusterByRegion} barSize={20}>
             <CartesianGrid
@@ -3231,7 +3231,7 @@ function GeographicAnalysis() {
                   marginBottom: "4px",
                 }}
               >
-                💡 Key insight
+                Key insight
               </div>
               <p
                 style={{
@@ -3453,7 +3453,7 @@ function TrendsProgress() {
 
       {/* Trend Lines */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>📈 OIC DEI Score Trends 2021–2025</div>
+        <div style={styles.cardTitle}>OIC DEI Score Trends 2021–2025</div>
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={lineData}>
             <CartesianGrid
@@ -3526,7 +3526,7 @@ function TrendsProgress() {
                     marginBottom: "4px",
                   }}
                 >
-                  💡 Key insight
+                  Key insight
                 </div>
                 <p
                   style={{
@@ -3571,7 +3571,7 @@ function TrendsProgress() {
       <div style={styles.grid2}>
         {/* Score Distribution */}
         <div style={styles.card}>
-          <div style={styles.cardTitle}>📊 Score Distribution (2025)</div>
+          <div style={styles.cardTitle}>Score Distribution (2025)</div>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={bins} barSize={28}>
               <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -3610,7 +3610,7 @@ function TrendsProgress() {
                     marginBottom: "4px",
                   }}
                 >
-                  💡 Key insight
+                  Key insight
                 </div>
                 <p
                   style={{
@@ -3883,7 +3883,7 @@ function PolicyRecommendations() {
         }}
       >
         <div style={{ ...styles.cardTitle, color: cluster.color }}>
-          🎯 Strategic Context for {country.name}
+          Strategic Context for {country.name}
         </div>
         <p
           style={{
@@ -3991,7 +3991,7 @@ function PolicyRecommendations() {
 
       {/* OIC-wide Recommendations */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>🌍 OIC-Wide Strategic Priorities</div>
+        <div style={styles.cardTitle}>OIC-Wide Strategic Priorities</div>
         {[
           {
             icon: "📶",
@@ -4106,7 +4106,7 @@ function DigitalDivide() {
 
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          📊 Gap from OIC Average (All 57 Countries)
+          Gap from OIC Average (All 57 Countries)
         </div>
         <ResponsiveContainer width="100%" height={360}>
           <BarChart data={gapData} barSize={10}>
@@ -4150,7 +4150,7 @@ function DigitalDivide() {
               marginBottom: "4px",
             }}
           >
-            💡 Key insight
+            Key insight
           </div>
           <p
             style={{
@@ -4273,7 +4273,7 @@ function IslamicDigitalSpecial() {
       {/* Innovation vs Financial Markets Scatter */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          💡 Innovation vs. Financial Market Development (Scatter)
+          Innovation vs. Financial Market Development (Scatter)
         </div>
         <ResponsiveContainer width="100%" height={320}>
           <ScatterChart>
@@ -4362,7 +4362,7 @@ function IslamicDigitalSpecial() {
                   marginBottom: "4px",
                 }}
               >
-                💡 Key insight
+                Key insight
               </div>
               <p
                 style={{
@@ -4441,7 +4441,7 @@ function IslamicDigitalSpecial() {
         {/* Leading Innovators */}
         <div style={styles.card}>
           <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            🔬 Leading 15 — Innovation Leaders
+            Leading 15 — Innovation Leaders
           </div>
           {innovators.map((c, i) => (
             <div
@@ -4617,7 +4617,7 @@ function CustomIndexBuilder() {
         }}
       >
         <div style={{ ...styles.cardTitle, color: "#8B5CF6" }}>
-          ⚗ Custom Index Builder — Sensitivity Analysis Tool
+          Custom Index Builder — Sensitivity Analysis Tool
         </div>
         <p
           style={{
@@ -4749,7 +4749,7 @@ function CustomIndexBuilder() {
       <div style={styles.grid2}>
         <div style={{ ...styles.card, borderColor: "#10B98140" }}>
           <div style={{ ...styles.cardTitle, color: "#10B981" }}>
-            📈 Rank Gainers
+            Rank Gainers
           </div>
           {topMoverUp.map((c) => (
             <div
@@ -4842,7 +4842,7 @@ function CustomIndexBuilder() {
       </div>
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          📊 Official vs Custom Score — Leading 20 Countries
+          Official vs Custom Score — Leading 20 Countries
         </div>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={compData} barSize={12}>
@@ -4894,7 +4894,7 @@ function CustomIndexBuilder() {
                   marginBottom: "4px",
                 }}
               >
-                💡 Key insight
+                Key insight
               </div>
               <p
                 style={{
@@ -4919,7 +4919,7 @@ function CustomIndexBuilder() {
         })()}
       </div>
       <div style={styles.card}>
-        <div style={styles.cardTitle}>🏆 Full Custom Rankings</div>
+        <div style={styles.cardTitle}>Full Custom Rankings</div>
         <div
           style={{ overflowX: "auto", maxHeight: "400px", overflowY: "auto" }}
         >
@@ -5433,7 +5433,7 @@ function PeerLearning() {
       <div style={styles.grid2}>
         <div style={{ ...styles.card, borderColor: `${focusPillar.color}40` }}>
           <div style={{ ...styles.cardTitle, color: focusPillar.color }}>
-            🎯 {country.name} — Current Status
+            {country.name} — Current Status
           </div>
           <div
             style={{
@@ -5484,7 +5484,7 @@ function PeerLearning() {
         <>
           <div style={styles.card}>
             <div style={styles.cardTitle}>
-              🤝 Best Peer Learners — Similar OIC DEI, Stronger in{" "}
+              Best Peer Learners — Similar OIC DEI, Stronger in{" "}
               {focusPillar.name}
             </div>
             <div
@@ -5646,7 +5646,7 @@ function PeerLearning() {
                         marginBottom: "4px",
                       }}
                     >
-                      💡 Key insight
+                      Key insight
                     </div>
                     <p
                       style={{
@@ -5738,7 +5738,7 @@ function ProgressTracker({ hideTrajectory = false }) {
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {!hideTrajectory && (
         <div style={styles.card}>
-          <div style={styles.cardTitle}>📈 Score Trajectory 2021–2025</div>
+          <div style={styles.cardTitle}>Score Trajectory 2021–2025</div>
           <ResponsiveContainer width="100%" height={340}>
             <LineChart data={lineData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -5787,7 +5787,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                     marginBottom: "4px",
                   }}
                 >
-                  💡 Key insight
+                  Key insight
                 </div>
                 <p
                   style={{
@@ -5982,7 +5982,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                   marginBottom: "4px",
                 }}
               >
-                💡 Key insight
+                Key insight
               </div>
               <p
                 style={{
@@ -6076,7 +6076,7 @@ function StatisticalAnalysis() {
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          📊 Descriptive Statistics — All 9 Pillars (n=57)
+          Descriptive Statistics — All 9 Pillars (n=57)
         </div>
         <div style={{ overflowX: "auto" }}>
           <table
@@ -6306,7 +6306,7 @@ function Methodology() {
   ];
   const sections = {
     index: {
-      title: "📐 Index Structure",
+      title: "Index Structure",
       content: (
         <div>
           <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.8 }}>
@@ -6352,7 +6352,7 @@ function Methodology() {
       ),
     },
     normalization: {
-      title: "⚗ Normalization",
+      title: "Normalization",
       content: (
         <div>
           <p
@@ -6978,35 +6978,35 @@ function Acknowledgement() {
 }
 
 const TABS = [
-  { id: "overview", label: "🌍 Global Overview", component: GlobalOverview },
-  { id: "profiles", label: "📄 Country Profiles", component: CountryProfiles },
-  { id: "compare", label: "🆚 Compare Countries", component: CompareCountries },
-  { id: "pillar", label: "🏛 Pillar Analysis", component: PillarAnalysis },
-  { id: "geo", label: "🗺 Geographic Analysis", component: GeographicAnalysis },
-  { id: "trends", label: "📈 Trends & Progress", component: TrendsProgress },
-  { id: "divide", label: "⚡ Digital Divide", component: DigitalDivide },
+  { id: "overview", label: "Global Overview", component: GlobalOverview },
+  { id: "profiles", label: "Country Profiles", component: CountryProfiles },
+  { id: "compare", label: "Compare Countries", component: CompareCountries },
+  { id: "pillar", label: "Pillar Analysis", component: PillarAnalysis },
+  { id: "geo", label: "Geographic Analysis", component: GeographicAnalysis },
+  { id: "trends", label: "Trends & Progress", component: TrendsProgress },
+  { id: "divide", label: "Digital Divide", component: DigitalDivide },
   /* {
     id: "islamic",
-    label: "🕌 Islamic Digital Special",
+    label: "Islamic Digital Special",
     component: IslamicDigitalSpecial,
   }, */
   {
     id: "builder",
-    label: "⚗ Custom Index Builder",
+    label: "Custom Index Builder",
     component: CustomIndexBuilder,
   },
-  /* { id: "matrix", label: "📌 Priority Matrix", component: PriorityMatrix }, */
-  { id: "peers", label: "🤝 Peer Learning", component: PeerLearning },
-  /* { id: "progress", label: "📈 Progress Tracker", component: ProgressTracker }, */
+  /* { id: "matrix", label: "Priority Matrix", component: PriorityMatrix }, */
+  { id: "peers", label: "Peer Learning", component: PeerLearning },
+  /* { id: "progress", label: "Progress Tracker", component: ProgressTracker }, */
   {
     id: "stats",
-    label: "📐 Statistical Analysis",
+    label: "Statistical Analysis",
     component: StatisticalAnalysis,
   },
-  { id: "methodology", label: "🔬 Methodology", component: Methodology },
+  { id: "methodology", label: "Methodology", component: Methodology },
   {
     id: "acknowledgement",
-    label: "🤝 Acknowledgements",
+    label: "Acknowledgements",
     component: Acknowledgement,
   },
 ];

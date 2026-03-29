@@ -4131,7 +4131,9 @@ function TrendsProgress() {
                   ? "#1B4332"
                   : "#F0F9F7",
                 color: selectedCountries.includes(c) ? "#FFFFFF" : "#1B4332",
-                border: selectedCountries.includes(c) ? "none" : "1px solid #D8F3DC",
+                border: selectedCountries.includes(c)
+                  ? "none"
+                  : "1px solid #D8F3DC",
                 padding: "6px 12px",
                 borderRadius: "20px",
                 fontSize: "12px",
@@ -4160,7 +4162,10 @@ function TrendsProgress() {
               dataKey="year"
               tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
             />
-            <YAxis domain={[25, 80]} tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
+            <YAxis
+              domain={[25, 80]}
+              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{
@@ -4269,9 +4274,18 @@ function TrendsProgress() {
           <div style={styles.cardTitle}>Score Distribution (2025)</div>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={bins} barSize={28}>
-              <CartesianGrid strokeDasharray="0" stroke="#E2E8F0" vertical={false} />
-              <XAxis dataKey="range" tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }} />
-              <YAxis tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
+              <CartesianGrid
+                strokeDasharray="0"
+                stroke="#E2E8F0"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="range"
+                tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
+              />
+              <YAxis
+                tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+              />
               <Tooltip content={<CustomTooltip />} />
               <Bar
                 dataKey="count"
@@ -4402,7 +4416,14 @@ function TrendsProgress() {
                   >
                     {i + 1}
                   </div>
-                  <div style={{ flex: 1, fontSize: "12px", color: "#2D6A4F", fontWeight: 500 }}>
+                  <div
+                    style={{
+                      flex: 1,
+                      fontSize: "12px",
+                      color: "#2D6A4F",
+                      fontWeight: 500,
+                    }}
+                  >
                     {c.name}
                   </div>
                   <div
@@ -4766,33 +4787,42 @@ function DigitalDivide() {
           {
             label: "Countries Above OIC Avg",
             value: above.length,
-            color: "#10B981",
+            color: "#40916C",
           },
           {
             label: "Countries Below OIC Avg",
             value: below.length,
-            color: "#EF4444",
+            color: "#74C69D",
           },
           {
             label: "OIC Average Score",
             value: oicAvg.toFixed(1),
-            color: "#000000",
+            color: "#1B4332",
           },
           {
             label: "Max Digital Divide",
             value: `${(sorted[0].adei - sorted[56].adei).toFixed(0)} pts`,
-            color: "#EF4444",
+            color: "#52B788",
           },
         ].map((k, i) => (
-          <div key={i} style={{ ...styles.card, textAlign: "center" }}>
+          <div
+            key={i}
+            style={{
+              ...styles.card,
+              textAlign: "center",
+              background: i === 0 ? "#D8F3DC" : "#F0F9F7",
+              border: `1px solid ${k.color}`,
+            }}
+          >
             <div style={{ fontSize: "28px", fontWeight: 900, color: k.color }}>
               {k.value}
             </div>
             <div
               style={{
                 fontSize: "11px",
-                color: "#1E293B",
+                color: "#1B4332",
                 marginTop: "4px",
+                fontWeight: 600,
               }}
             >
               {k.label}
@@ -4807,35 +4837,45 @@ function DigitalDivide() {
         </div>
         <ResponsiveContainer width="100%" height={360}>
           <BarChart data={gapData} barSize={10}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="#E2E8F0"
+              vertical={false}
+            />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1E293B", fontSize: 9 }}
+              tick={{ fill: "#1B4332", fontSize: 9, fontWeight: 600 }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
-            <YAxis tick={{ fill: "#1E293B", fontSize: 11 }} />
+            <YAxis tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
               y={0}
-              stroke="#B8922A"
+              stroke="#1B4332"
+              strokeDasharray="4 4"
               strokeWidth={2}
-              label={{ value: "OIC Average", fill: "#B8922A", fontSize: 11 }}
+              label={{
+                value: "OIC Average",
+                fill: "#1B4332",
+                fontSize: 11,
+                fontWeight: 700,
+              }}
             />
             <Bar dataKey="gap" name="Gap from OIC Avg">
               {gapData.map((d, i) => (
-                <Cell key={i} fill={d.gap >= 0 ? "#10B981" : "#EF4444"} />
+                <Cell key={i} fill={d.gap >= 0 ? "#40916C" : "#95D5B2"} />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
         <div
           style={{
-            background: "#FDF6E3",
-            border: "1px solid #F0C96A",
+            background: "#D8F3DC",
+            border: "1px solid #1B4332",
             borderRadius: "8px",
-            padding: "10px 14px",
+            padding: "12px 14px",
             marginTop: "12px",
           }}
         >
@@ -4843,11 +4883,11 @@ function DigitalDivide() {
             style={{
               fontSize: "11px",
               fontWeight: 700,
-              color: "#000000",
-              marginBottom: "4px",
+              color: "#1B4332",
+              marginBottom: "6px",
             }}
           >
-            Key insight
+            Strategic Insight
           </div>
           <p
             style={{
@@ -4874,9 +4914,11 @@ function DigitalDivide() {
       </div>
 
       <div style={styles.grid2}>
-        <div style={styles.card}>
-          <div style={{ ...styles.cardTitle, color: "#10B981" }}>
-            🌟 Above OIC Average ({above.length})
+        <div
+          style={{ ...styles.card, borderColor: "#40916C", borderWidth: "2px" }}
+        >
+          <div style={{ ...styles.cardTitle, color: "#40916C" }}>
+            Above OIC Average ({above.length})
           </div>
           {above.map((c) => (
             <div
@@ -4884,21 +4926,25 @@ function DigitalDivide() {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                padding: "5px 0",
-                borderBottom: "1px solid #F1F5F9",
+                padding: "8px 0",
+                borderBottom: "1px solid #D8F3DC",
                 fontSize: "12px",
               }}
             >
-              <span style={{ color: "#64748B" }}>{c.name}</span>
-              <span style={{ color: "#10B981", fontWeight: 700 }}>
+              <span style={{ color: "#2D6A4F", fontWeight: 500 }}>
+                {c.name}
+              </span>
+              <span style={{ color: "#40916C", fontWeight: 700 }}>
                 +{(c.adei - oicAvg).toFixed(1)}
               </span>
             </div>
           ))}
         </div>
-        <div style={styles.card}>
-          <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            ⚠ Below OIC Average ({below.length})
+        <div
+          style={{ ...styles.card, borderColor: "#95D5B2", borderWidth: "2px" }}
+        >
+          <div style={{ ...styles.cardTitle, color: "#74C69D" }}>
+            Below OIC Average ({below.length})
           </div>
           {below.map((c) => (
             <div
@@ -4906,13 +4952,15 @@ function DigitalDivide() {
               style={{
                 display: "flex",
                 justifyContent: "space-between",
-                padding: "5px 0",
-                borderBottom: "1px solid #F1F5F9",
+                padding: "8px 0",
+                borderBottom: "1px solid #D8F3DC",
                 fontSize: "12px",
               }}
             >
-              <span style={{ color: "#64748B" }}>{c.name}</span>
-              <span style={{ color: "#EF4444", fontWeight: 700 }}>
+              <span style={{ color: "#2D6A4F", fontWeight: 500 }}>
+                {c.name}
+              </span>
+              <span style={{ color: "#74C69D", fontWeight: 700 }}>
                 {(c.adei - oicAvg).toFixed(1)}
               </span>
             </div>
@@ -5309,11 +5357,12 @@ function CustomIndexBuilder() {
       <div
         style={{
           ...styles.card,
-          borderColor: "#8B5CF640",
-          background: "linear-gradient(135deg,#FFFFFF,#8B5CF608)",
+          borderColor: "#1B433240",
+          background: "linear-gradient(135deg,#FFFFFF,#D8F3DC40)",
+          borderWidth: "2px",
         }}
       >
-        <div style={{ ...styles.cardTitle, color: "#8B5CF6" }}>
+        <div style={{ ...styles.cardTitle, color: "#1B4332" }}>
           Custom Index Builder — Sensitivity Analysis Tool
         </div>
         <p
@@ -5327,14 +5376,14 @@ function CustomIndexBuilder() {
           Re-weight the 9 pillars to see how rankings shift under alternative
           policy priorities. Use presets or manually adjust sliders. Weights
           auto-normalize to 100%. Essential for{" "}
-          <strong style={{ color: "#000000" }}>
+          <strong style={{ color: "#1B4332" }}>
             academic sensitivity analysis
           </strong>{" "}
-          and <strong style={{ color: "#000000" }}>scenario planning</strong>.
+          and <strong style={{ color: "#1B4332" }}>scenario planning</strong>.
         </p>
       </div>
       <div style={styles.card}>
-        <div style={styles.cardTitle}>📋 Weight Presets</div>
+        <div style={styles.cardTitle}>Weight Presets</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
           {Object.entries(PRESETS).map(([key, p]) => (
             <button
@@ -5347,9 +5396,10 @@ function CustomIndexBuilder() {
                 cursor: "pointer",
                 fontSize: "12px",
                 fontFamily: "'Georgia',serif",
-                background: preset === key ? "#EEF2FF" : "transparent",
-                borderColor: preset === key ? "#8B5CF6" : "#CBD5E1",
-                color: preset === key ? "#8B5CF6" : "#64748B",
+                background: preset === key ? "#D8F3DC" : "#F0F9F7",
+                borderColor: preset === key ? "#1B4332" : "#95D5B2",
+                color: preset === key ? "#1B4332" : "#2D6A4F",
+                fontWeight: preset === key ? 700 : 500,
               }}
             >
               {p.label}
@@ -5366,12 +5416,12 @@ function CustomIndexBuilder() {
             marginBottom: "16px",
           }}
         >
-          <div style={styles.cardTitle}>🎛 Pillar Weights</div>
+          <div style={styles.cardTitle}>Pillar Weights</div>
           <div
             style={{
               fontSize: "13px",
               fontWeight: 700,
-              color: Math.abs(totalWeight - 100) < 1 ? "#10B981" : "#EF4444",
+              color: Math.abs(totalWeight - 100) < 1 ? "#40916C" : "#74C69D",
             }}
           >
             Total: {totalWeight}%{" "}
@@ -5444,8 +5494,8 @@ function CustomIndexBuilder() {
         </div>
       </div>
       <div style={styles.grid2}>
-        <div style={{ ...styles.card, borderColor: "#10B98140" }}>
-          <div style={{ ...styles.cardTitle, color: "#10B981" }}>
+        <div style={{ ...styles.card, borderColor: "#40916C", borderWidth: "2px" }}>
+          <div style={{ ...styles.cardTitle, color: "#40916C" }}>
             Rank Gainers
           </div>
           {topMoverUp.map((c) => (
@@ -5456,9 +5506,12 @@ function CustomIndexBuilder() {
                 alignItems: "center",
                 gap: "10px",
                 marginBottom: "8px",
+                padding: "8px",
+                background: "#D8F3DC",
+                borderRadius: "6px",
               }}
             >
-              <div style={{ fontSize: "18px" }}>🟢</div>
+              <div style={{ fontSize: "18px", color: "#40916C" }}>↑</div>
               <div style={{ flex: 1 }}>
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
@@ -5466,7 +5519,7 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#1E293B",
+                      color: "#1B4332",
                       fontWeight: 600,
                     }}
                   >
@@ -5475,14 +5528,14 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#10B981",
+                      color: "#40916C",
                       fontWeight: 700,
                     }}
                   >
                     +{c.rankChange} places
                   </span>
                 </div>
-                <div style={{ fontSize: "11px", color: "#64748B" }}>
+                <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
                   #{c.rank} → #{c.customRank} | {c.adei.toFixed(1)} →{" "}
                   {c.customScore.toFixed(1)}
                 </div>
@@ -5490,9 +5543,9 @@ function CustomIndexBuilder() {
             </div>
           ))}
         </div>
-        <div style={{ ...styles.card, borderColor: "#EF444440" }}>
-          <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
-            📉 Rank Decliners
+        <div style={{ ...styles.card, borderColor: "#74C69D", borderWidth: "2px" }}>
+          <div style={{ ...styles.cardTitle, color: "#74C69D" }}>
+            Rank Decliners
           </div>
           {topMoverDown.map((c) => (
             <div
@@ -5502,9 +5555,12 @@ function CustomIndexBuilder() {
                 alignItems: "center",
                 gap: "10px",
                 marginBottom: "8px",
+                padding: "8px",
+                background: "#F0F9F7",
+                borderRadius: "6px",
               }}
             >
-              <div style={{ fontSize: "18px" }}>🔴</div>
+              <div style={{ fontSize: "18px", color: "#74C69D" }}>↓</div>
               <div style={{ flex: 1 }}>
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
@@ -5512,7 +5568,7 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#1E293B",
+                      color: "#1B4332",
                       fontWeight: 600,
                     }}
                   >
@@ -5521,14 +5577,14 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#EF4444",
+                      color: "#74C69D",
                       fontWeight: 700,
                     }}
                   >
                     {c.rankChange} places
                   </span>
                 </div>
-                <div style={{ fontSize: "11px", color: "#64748B" }}>
+                <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
                   #{c.rank} → #{c.customRank} | {c.adei.toFixed(1)} →{" "}
                   {c.customScore.toFixed(1)}
                 </div>
@@ -5543,24 +5599,25 @@ function CustomIndexBuilder() {
         </div>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={compData} barSize={12}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <CartesianGrid strokeDasharray="0" stroke="#E2E8F0" vertical={false} />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1E293B", fontSize: 10 }}
+              tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
               angle={-30}
               textAnchor="end"
               height={60}
             />
-            <YAxis domain={[0, 100]} tick={{ fill: "#1E293B", fontSize: 11 }} />
+            <YAxis domain={[0, 100]} tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{
                 fontSize: "12px",
                 fontFamily: "'Georgia', serif",
+                fontWeight: 600,
               }}
             />
-            <Bar dataKey="Official" fill="#CBD5E1" />
-            <Bar dataKey="Custom" fill="#8B5CF6" />
+            <Bar dataKey="Official" fill="#95D5B2" />
+            <Bar dataKey="Custom" fill="#40916C" />
           </BarChart>
         </ResponsiveContainer>
         {(() => {
@@ -5576,10 +5633,10 @@ function CustomIndexBuilder() {
           return (
             <div
               style={{
-                background: "#FDF6E3",
-                border: "1px solid #F0C96A",
+                background: "#D8F3DC",
+                border: "1px solid #1B4332",
                 borderRadius: "8px",
-                padding: "10px 14px",
+                padding: "12px 14px",
                 marginTop: "12px",
               }}
             >
@@ -5587,11 +5644,11 @@ function CustomIndexBuilder() {
                 style={{
                   fontSize: "11px",
                   fontWeight: 700,
-                  color: "#000000",
-                  marginBottom: "4px",
+                  color: "#1B4332",
+                  marginBottom: "6px",
                 }}
               >
-                Key insight
+                Strategic Insight
               </div>
               <p
                 style={{

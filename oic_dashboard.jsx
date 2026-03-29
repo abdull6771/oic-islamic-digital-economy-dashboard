@@ -1489,149 +1489,91 @@ function GlobalOverview() {
       count: leaders.length,
       score: leaders.reduce((s, c) => s + c.adei, 0) / leaders.length,
       color: "#1B4332",
+      bg: "#D8F3DC",
+      shortName: "Advanced",
     },
     {
       name: "Emerging Digital Economies",
       count: adopters.length,
       score: adopters.reduce((s, c) => s + c.adei, 0) / adopters.length,
       color: "#52B788",
+      bg: "#E8F5E9",
+      shortName: "Emerging",
     },
     {
       name: "Foundational Digital Economies",
       count: emerging.length,
       score: emerging.reduce((s, c) => s + c.adei, 0) / emerging.length,
       color: "#95D5B2",
+      bg: "#F1F8F6",
+      shortName: "Foundational",
     },
   ];
+
+  const globalStats = {
+    average: (
+      COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length
+    ).toFixed(1),
+    max: sorted[0].adei.toFixed(1),
+    min: sorted[sorted.length - 1].adei.toFixed(1),
+    stdDev: Math.sqrt(
+      COUNTRIES.reduce(
+        (s, c) => s + Math.pow(c.adei - globalStats.average, 2),
+        0,
+      ) / COUNTRIES.length,
+    ).toFixed(1),
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {/* World Map */}
       <WorldMap />
 
-      <div style={styles.grid2}>
-        {/* Leaderboard Leading 10 */}
+      {/* Global Statistics Cards */}
+      <div style={styles.grid4}>
         <div style={styles.card}>
-          <div style={styles.cardTitle}>Leading 10 Countries</div>
-          {top10.map((c, i) => {
-            const cluster = getCluster(c.adei);
-            return (
-              <div
-                key={c.name}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  marginBottom: "10px",
-                }}
-              >
-                <div
-                  style={{
-                    ...styles.rankBadge,
-                    background:
-                      i === 0
-                        ? "linear-gradient(135deg,#FFD700,#FFA500)"
-                        : i === 1
-                          ? "linear-gradient(135deg,#C0C0C0,#A0A0A0)"
-                          : i === 2
-                            ? "linear-gradient(135deg,#CD7F32,#A05A00)"
-                            : "linear-gradient(135deg,#475569,#CBD5E1)",
-                    color: i < 3 ? "#F8FAFC" : "#475569",
-                    fontSize: "11px",
-                  }}
-                >
-                  {i + 1}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginBottom: "3px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: "13px",
-                        fontWeight: 600,
-                        color: "#1E293B",
-                      }}
-                    >
-                      {c.name}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "13px",
-                        fontWeight: 700,
-                        color: "#000000",
-                      }}
-                    >
-                      {c.adei.toFixed(1)}
-                    </span>
-                  </div>
-                  <div style={styles.scoreBar(c.adei, cluster.color)} />
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Emerging 10 */}
-        <div style={styles.card}>
-          <div style={styles.cardTitle}>
-            🌱 Emerging 10 Countries (Development Focus)
+          <div style={{ fontSize: "24px", fontWeight: 900, color: "#1B4332" }}>
+            {sorted[0].adei.toFixed(1)}
           </div>
-          {bottom10.map((c, i) => (
-            <div
-              key={c.name}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "10px",
-              }}
-            >
-              <div
-                style={{
-                  ...styles.rankBadge,
-                  background: "#FEE2E2",
-                  color: "#EF4444",
-                  fontSize: "10px",
-                }}
-              >
-                {c.rank}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "3px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: "#1E293B",
-                    }}
-                  >
-                    {c.name}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      color: "#EF4444",
-                    }}
-                  >
-                    {c.adei.toFixed(1)}
-                  </span>
-                </div>
-                <div style={styles.scoreBar(c.adei, "#EF4444")} />
-              </div>
-            </div>
-          ))}
+          <div style={{ fontSize: "12px", color: "#64748B", marginTop: "4px" }}>
+            Highest Score
+          </div>
+          <div style={{ fontSize: "11px", color: "#2D6A4F", fontWeight: 600 }}>
+            {sorted[0].name}
+          </div>
+        </div>
+        <div style={styles.card}>
+          <div style={{ fontSize: "24px", fontWeight: 900, color: "#2D6A4F" }}>
+            {globalStats.average}
+          </div>
+          <div style={{ fontSize: "12px", color: "#64748B", marginTop: "4px" }}>
+            OIC Average
+          </div>
+          <div style={{ fontSize: "11px", color: "#2D6A4F", fontWeight: 600 }}>
+            All 57 Countries
+          </div>
+        </div>
+        <div style={styles.card}>
+          <div style={{ fontSize: "24px", fontWeight: 900, color: "#40916C" }}>
+            {sorted[sorted.length - 1].adei.toFixed(1)}
+          </div>
+          <div style={{ fontSize: "12px", color: "#64748B", marginTop: "4px" }}>
+            Lowest Score
+          </div>
+          <div style={{ fontSize: "11px", color: "#2D6A4F", fontWeight: 600 }}>
+            {sorted[sorted.length - 1].name}
+          </div>
+        </div>
+        <div style={styles.card}>
+          <div style={{ fontSize: "24px", fontWeight: 900, color: "#52B788" }}>
+            {globalStats.stdDev}
+          </div>
+          <div style={{ fontSize: "12px", color: "#64748B", marginTop: "4px" }}>
+            Standard Deviation
+          </div>
+          <div style={{ fontSize: "11px", color: "#2D6A4F", fontWeight: 600 }}>
+            Score Variability
+          </div>
         </div>
       </div>
 
@@ -1643,52 +1585,240 @@ function GlobalOverview() {
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
             gap: "16px",
-            marginBottom: "20px",
+            marginBottom: "24px",
           }}
         >
           {clusterData.map((cl) => (
             <div
               key={cl.name}
               style={{
-                background: "#F1F5F9",
-                borderRadius: "10px",
-                padding: "16px",
-                border: `1px solid ${cl.color}40`,
+                background: cl.bg,
+                borderRadius: "12px",
+                padding: "20px 16px",
+                border: `2px solid ${cl.color}`,
                 textAlign: "center",
+                transition: "all 0.3s ease",
               }}
             >
               <div
-                style={{ fontSize: "36px", fontWeight: 900, color: cl.color }}
+                style={{ fontSize: "40px", fontWeight: 900, color: cl.color }}
               >
                 {cl.count}
               </div>
               <div
                 style={{
-                  fontSize: "14px",
+                  fontSize: "12px",
                   fontWeight: 700,
-                  color: "#1E293B",
-                  margin: "4px 0",
+                  color: "#1B4332",
+                  margin: "8px 0 4px",
                 }}
               >
-                {cl.name}
+                {cl.shortName}
               </div>
-              <div style={{ fontSize: "12px", color: "#64748B" }}>
-                Avg: {cl.score.toFixed(1)}
+              <div
+                style={{ fontSize: "11px", color: "#2D6A4F", fontWeight: 500 }}
+              >
+                Avg Score: {cl.score.toFixed(1)}
               </div>
               <div
                 style={{
-                  marginTop: "8px",
-                  height: "4px",
+                  marginTop: "12px",
+                  height: "3px",
                   borderRadius: "2px",
                   background: cl.color,
-                  opacity: 0.6,
                 }}
               />
             </div>
           ))}
         </div>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={pillarAvgs} barSize={30}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            padding: "12px",
+            background: "#D8F3DC",
+            border: "1px solid #1B4332",
+            borderRadius: "8px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "11px",
+              fontWeight: 700,
+              color: "#1B4332",
+            }}
+          >
+            Strategic Insight
+          </div>
+          <div style={{ fontSize: "12px", color: "#1E293B", lineHeight: 1.6 }}>
+            The OIC's digital economy shows a pyramid structure with{" "}
+            <strong>{leaders.length} advanced economies</strong> leading growth,
+            <strong> {adopters.length} emerging economies</strong>{" "}
+            transitioning, and{" "}
+            <strong>{emerging.length} foundational economies</strong> with
+            significant capacity-building opportunities. Focused peer learning
+            programs can accelerate collective digital transformation.
+          </div>
+        </div>
+      </div>
+
+      {/* Top and Emerging Countries */}
+      <div style={styles.grid2}>
+        {/* Leading 10 */}
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Top 10 Performers</div>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          >
+            {top10.map((c, i) => {
+              const cluster = getCluster(c.adei);
+              const medalColors = {
+                0: {
+                  bg: "linear-gradient(135deg,#FFD700,#FFA500)",
+                  label: "1",
+                },
+                1: {
+                  bg: "linear-gradient(135deg,#C0C0C0,#A0A0A0)",
+                  label: "2",
+                },
+                2: {
+                  bg: "linear-gradient(135deg,#CD7F32,#A05A00)",
+                  label: "3",
+                },
+              };
+              const isMedal = i < 3;
+              return (
+                <div
+                  key={c.name}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "10px 12px",
+                    background: i % 2 === 0 ? "transparent" : "#F8FDFC",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <div
+                    style={{
+                      ...styles.rankBadge,
+                      background: isMedal ? medalColors[i].bg : "#E2E8F0",
+                      color: isMedal ? "#FFFFFF" : "#1B4332",
+                      fontSize: "12px",
+                      fontWeight: isMedal ? 900 : 700,
+                      minWidth: "36px",
+                    }}
+                  >
+                    {i + 1}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          color: "#1B4332",
+                        }}
+                      >
+                        {c.name}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: 700,
+                          color: cluster.color,
+                        }}
+                      >
+                        {c.adei.toFixed(1)}
+                      </span>
+                    </div>
+                    <div style={styles.scoreBar(c.adei, cluster.color)} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Opportunity Focus: Emerging 10 */}
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Opportunity Focus: Foundation 10</div>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          >
+            {bottom10.map((c) => (
+              <div
+                key={c.name}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  padding: "10px 12px",
+                  background: c.adei < 25 ? "#F1F8F6" : "transparent",
+                  borderRadius: "6px",
+                }}
+              >
+                <div
+                  style={{
+                    ...styles.rankBadge,
+                    background: "#E8F5E9",
+                    color: "#52B788",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    minWidth: "36px",
+                  }}
+                >
+                  {c.rank}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        color: "#1B4332",
+                      }}
+                    >
+                      {c.name}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        color: "#95D5B2",
+                      }}
+                    >
+                      {c.adei.toFixed(1)}
+                    </span>
+                  </div>
+                  <div style={styles.scoreBar(c.adei, "#95D5B2")} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Pillar Performance Analysis */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>Pillar Performance Across OIC</div>
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={pillarAvgs} barSize={40}>
             <CartesianGrid
               strokeDasharray="0"
               stroke="#E2E8F0"
@@ -1696,75 +1826,106 @@ function GlobalOverview() {
             />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#64748B", fontSize: 11, fontWeight: 500 }}
+              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
             />
             <YAxis domain={[0, 100]} tick={{ fill: "#64748B", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="avg" name="OIC Average Score" radius={[4, 4, 0, 0]}>
+            <Bar dataKey="avg" radius={[6, 6, 0, 0]}>
               {pillarAvgs.map((p, i) => (
                 <Cell key={i} fill={p.color} />
               ))}
             </Bar>
             <ReferenceLine
               y={OIC_AVERAGE}
-              stroke="#B8922A"
+              stroke="#1B4332"
               strokeDasharray="4 4"
+              strokeWidth={2}
               label={{
-                value: "OIC Avg",
-                fill: "#B8922A",
+                value: `OIC Avg: ${OIC_AVERAGE}`,
+                fill: "#1B4332",
                 fontSize: 11,
-                fontWeight: 600,
+                fontWeight: 700,
               }}
             />
           </BarChart>
         </ResponsiveContainer>
         <div
           style={{
-            background: "#FDF6E3",
-            border: "1px solid #F0C96A",
-            borderRadius: "8px",
-            padding: "10px 14px",
-            marginTop: "12px",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "12px",
+            marginTop: "16px",
           }}
         >
           <div
             style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              color: "#000000",
-              marginBottom: "4px",
+              padding: "12px",
+              background: "#D8F3DC",
+              border: "1px solid #1B4332",
+              borderRadius: "8px",
             }}
           >
-            Key insight
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "#1B4332",
+                marginBottom: "4px",
+              }}
+            >
+              Strongest Pillar
+            </div>
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: 700,
+                color: bestPillar.color,
+              }}
+            >
+              {bestPillar.name}: {bestPillar.avg}/100
+            </div>
           </div>
-          <p
+          <div
             style={{
-              fontSize: "12px",
-              color: "#1E293B",
-              margin: 0,
-              lineHeight: 1.6,
+              padding: "12px",
+              background: "#F1F8F6",
+              border: "1px solid #95D5B2",
+              borderRadius: "8px",
             }}
           >
-            The OIC's strongest pillar is <strong>{bestPillar.name}</strong>{" "}
-            (avg {bestPillar.avg}/100), while{" "}
-            <strong>{weakestPillar.name}</strong> (avg {weakestPillar.avg}/100)
-            represents the most critical area for collective improvement. The{" "}
-            <strong>
-              {(bestPillar.avg - weakestPillar.avg).toFixed(0)}-point spread
-            </strong>{" "}
-            across pillars reveals significant structural unevenness in OIC
-            digital development.
-          </p>
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "#1B4332",
+                marginBottom: "4px",
+              }}
+            >
+              Greatest Opportunity
+            </div>
+            <div
+              style={{
+                fontSize: "14px",
+                fontWeight: 700,
+                color: weakestPillar.color,
+              }}
+            >
+              {weakestPillar.name}: {weakestPillar.avg}/100
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Pillar Correlation Heatmap */}
+      {/* Comprehensive Score Heatmap */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>
-          🔥 Pillar Score Heatmap (All 57 Countries)
+        <div style={styles.cardTitle}>Comprehensive Score Heatmap</div>
+        <div
+          style={{ fontSize: "13px", color: "#64748B", marginBottom: "12px" }}
+        >
+          All 57 OIC member states performance across 9 pillars
         </div>
         <div
-          style={{ overflowX: "auto", maxHeight: "420px", overflowY: "auto" }}
+          style={{ overflowX: "auto", maxHeight: "500px", overflowY: "auto" }}
         >
           <table
             style={{
@@ -1777,17 +1938,18 @@ function GlobalOverview() {
               style={{
                 position: "sticky",
                 top: 0,
-                background: "#FFFFFF",
+                background: "#F8FDFC",
                 zIndex: 1,
               }}
             >
-              <tr>
+              <tr style={{ borderBottom: "2px solid #1B4332" }}>
                 <th
                   style={{
                     textAlign: "left",
-                    padding: "6px 8px",
-                    color: "#000000",
-                    borderBottom: "1px solid #CBD5E1",
+                    padding: "8px 10px",
+                    color: "#1B4332",
+                    borderRight: "1px solid #E2E8F0",
+                    fontWeight: 700,
                   }}
                 >
                   Country
@@ -1795,23 +1957,25 @@ function GlobalOverview() {
                 <th
                   style={{
                     textAlign: "center",
-                    padding: "6px 8px",
-                    color: "#000000",
-                    borderBottom: "1px solid #CBD5E1",
-                    fontSize: "10px",
+                    padding: "8px 6px",
+                    color: "#1B4332",
+                    borderRight: "1px solid #E2E8F0",
+                    fontSize: "11px",
+                    fontWeight: 700,
                   }}
                 >
-                  OIC DEI
+                  Score
                 </th>
                 {PILLARS.map((p) => (
                   <th
                     key={p.id}
                     style={{
-                      padding: "6px 4px",
+                      padding: "8px 4px",
                       color: p.color,
-                      borderBottom: "1px solid #CBD5E1",
+                      borderRight: "1px solid #E2E8F0",
                       textAlign: "center",
                       fontSize: "10px",
+                      fontWeight: 700,
                     }}
                   >
                     {p.short}
@@ -1820,24 +1984,32 @@ function GlobalOverview() {
               </tr>
             </thead>
             <tbody>
-              {sorted.map((c) => (
-                <tr key={c.name} style={{ borderBottom: "1px solid #FFFFFF" }}>
+              {sorted.map((c, idx) => (
+                <tr
+                  key={c.name}
+                  style={{
+                    borderBottom: "1px solid #E2E8F0",
+                    background: idx % 2 === 0 ? "transparent" : "#F8FDFC",
+                  }}
+                >
                   <td
                     style={{
-                      padding: "5px 8px",
-                      color: "#1E293B",
+                      padding: "8px 10px",
+                      color: "#1B4332",
                       fontWeight: 600,
                       whiteSpace: "nowrap",
+                      borderRight: "1px solid #E2E8F0",
                     }}
                   >
                     {c.name}
                   </td>
                   <td
                     style={{
-                      padding: "5px 8px",
+                      padding: "8px 6px",
                       textAlign: "center",
                       fontWeight: 700,
                       color: getCluster(c.adei).color,
+                      borderRight: "1px solid #E2E8F0",
                     }}
                   >
                     {c.adei.toFixed(1)}
@@ -1845,20 +2017,21 @@ function GlobalOverview() {
                   {PILLARS.map((p) => {
                     const val = c[p.key];
                     const intensity = val / 100;
-                    const r = Math.round(3 + intensity * 6);
-                    const g = Math.round(11 + intensity * 89);
-                    const b = Math.round(26 + intensity * 150);
                     return (
                       <td
                         key={p.id}
-                        style={{ padding: "4px", textAlign: "center" }}
+                        style={{
+                          padding: "6px 2px",
+                          textAlign: "center",
+                          borderRight: "1px solid #E2E8F0",
+                        }}
                       >
                         <div
                           style={{
-                            background: `rgba(${Math.round(intensity * 16)}, ${Math.round(intensity * 185)}, ${Math.round(intensity * 129)}, ${0.2 + intensity * 0.8})`,
+                            background: `rgba(27, 67, 50, ${0.1 + intensity * 0.9})`,
                             borderRadius: "4px",
-                            padding: "3px",
-                            color: intensity > 0.5 ? "#1E293B" : "#64748B",
+                            padding: "4px 2px",
+                            color: intensity > 0.6 ? "#FFFFFF" : "#1B4332",
                             fontWeight: 600,
                             fontSize: "10px",
                           }}
@@ -1872,9 +2045,6 @@ function GlobalOverview() {
               ))}
             </tbody>
           </table>
-          <div style={{ color: "#64748B", fontSize: "11px", marginTop: "8px" }}>
-            All 57 OIC member states · scroll to explore
-          </div>
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ const PILLARS = [
     name: "Institutions",
     short: "Institutions",
     weight: 15,
-    color: "#F59E0B",
+    color: "#1B4332",
     dim: "Digital Foundation",
   },
   {
@@ -41,7 +41,7 @@ const PILLARS = [
     name: "Infrastructure",
     short: "Infrastructure",
     weight: 15,
-    color: "#10B981",
+    color: "#2D6A4F",
     dim: "Digital Foundation",
   },
   {
@@ -50,7 +50,7 @@ const PILLARS = [
     name: "Workforce",
     short: "Workforce",
     weight: 10,
-    color: "#3B82F6",
+    color: "#40916C",
     dim: "Digital Works",
   },
   {
@@ -59,7 +59,7 @@ const PILLARS = [
     name: "E-Government",
     short: "E-Gov",
     weight: 10,
-    color: "#8B5CF6",
+    color: "#52B788",
     dim: "E-Government",
   },
   {
@@ -68,7 +68,7 @@ const PILLARS = [
     name: "Innovation",
     short: "Innovation",
     weight: 5,
-    color: "#EF4444",
+    color: "#74C69D",
     dim: "Innovation",
   },
   {
@@ -77,7 +77,7 @@ const PILLARS = [
     name: "Future Tech",
     short: "Future Tech",
     weight: 15,
-    color: "#06B6D4",
+    color: "#95D5B2",
     dim: "Digital Readiness",
   },
   {
@@ -86,7 +86,7 @@ const PILLARS = [
     name: "Market Development",
     short: "Market Dev",
     weight: 10,
-    color: "#F97316",
+    color: "#2D6A4F",
     dim: "Digital Readiness",
   },
   {
@@ -95,7 +95,7 @@ const PILLARS = [
     name: "Financial Markets",
     short: "Fin. Markets",
     weight: 10,
-    color: "#EC4899",
+    color: "#388E7F",
     dim: "Digital Readiness",
   },
   {
@@ -104,7 +104,7 @@ const PILLARS = [
     name: "SDG Impact",
     short: "SDG",
     weight: 10,
-    color: "#14B8A6",
+    color: "#1F4E38",
     dim: "Digital Readiness",
   },
 ];
@@ -1000,19 +1000,19 @@ const getCluster = (adei) => {
   if (adei >= 60)
     return {
       label: "Advanced Digital Economies",
-      color: "#10B981",
-      bg: "#D1FAE5",
+      color: "#1B4332",
+      bg: "#D8F3DC",
     };
   if (adei >= 40)
     return {
       label: "Emerging Digital Economies",
-      color: "#F59E0B",
-      bg: "#FEF3C7",
+      color: "#52B788",
+      bg: "#E8F5E9",
     };
   return {
     label: "Foundational Digital Economies",
-    color: "#EF4444",
-    bg: "#FEE2E2",
+    color: "#95D5B2",
+    bg: "#F1F8F6",
   };
 };
 
@@ -1225,15 +1225,15 @@ function WorldMap() {
   const [geoData, setGeoData] = useState(null);
 
   useEffect(() => {
-    fetch(
-      "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json"
-    )
+    fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json")
       .then((res) => res.json())
       .then((data) => {
-        const countries = data.objects.countries.geometries.map((geom, idx) => ({
-          ...geom,
-          id: idx,
-        }));
+        const countries = data.objects.countries.geometries.map(
+          (geom, idx) => ({
+            ...geom,
+            id: idx,
+          }),
+        );
         setGeoData({
           type: "FeatureCollection",
           features: countries.map((geom) => ({
@@ -1250,9 +1250,11 @@ function WorldMap() {
     const country = COUNTRIES.find(
       (c) =>
         c.name.toLowerCase() === countryName.toLowerCase() ||
-        (countryName === "United States of America" && c.name === "United States") ||
+        (countryName === "United States of America" &&
+          c.name === "United States") ||
         (countryName.includes("Tanzania") && c.name === "Tanzania") ||
-        (countryName.includes("Democratic Republic of the Congo") && c.name === "Cameroon")
+        (countryName.includes("Democratic Republic of the Congo") &&
+          c.name === "Cameroon"),
     );
 
     if (!country) return "#E2E8F0";
@@ -1267,7 +1269,8 @@ function WorldMap() {
     return COUNTRIES.find(
       (c) =>
         c.name.toLowerCase() === countryName.toLowerCase() ||
-        (countryName === "United States of America" && c.name === "United States")
+        (countryName === "United States of America" &&
+          c.name === "United States"),
     );
   };
 
@@ -1287,7 +1290,11 @@ function WorldMap() {
         }}
       >
         <div style={{ flex: 1 }}>
-          <svg width="100%" height="400" style={{ border: "1px solid #E2E8F0", borderRadius: "8px" }}>
+          <svg
+            width="100%"
+            height="400"
+            style={{ border: "1px solid #E2E8F0", borderRadius: "8px" }}
+          >
             <ComposableMap projection="geoEqualEarth">
               <Geographies geography={geoUrl}>
                 {({ geographies }) =>
@@ -1345,24 +1352,40 @@ function WorldMap() {
             border: "1px solid #E2E8F0",
           }}
         >
-          <div style={{ fontSize: "12px", fontWeight: 600, color: "#64748B", marginBottom: "12px" }}>
+          <div
+            style={{
+              fontSize: "12px",
+              fontWeight: 600,
+              color: "#64748B",
+              marginBottom: "12px",
+            }}
+          >
             Legend
           </div>
           {[
             {
               label: "Advanced",
               color: "#10B981",
-              count: COUNTRIES.filter((c) => getCluster(c.adei).label === "Advanced Digital Economies").length,
+              count: COUNTRIES.filter(
+                (c) =>
+                  getCluster(c.adei).label === "Advanced Digital Economies",
+              ).length,
             },
             {
               label: "Emerging",
               color: "#F59E0B",
-              count: COUNTRIES.filter((c) => getCluster(c.adei).label === "Emerging Digital Economies").length,
+              count: COUNTRIES.filter(
+                (c) =>
+                  getCluster(c.adei).label === "Emerging Digital Economies",
+              ).length,
             },
             {
               label: "Foundational",
               color: "#EF4444",
-              count: COUNTRIES.filter((c) => getCluster(c.adei).label === "Foundational Digital Economies").length,
+              count: COUNTRIES.filter(
+                (c) =>
+                  getCluster(c.adei).label === "Foundational Digital Economies",
+              ).length,
             },
             {
               label: "Non-OIC",
@@ -1407,11 +1430,21 @@ function WorldMap() {
                 borderTop: "1px solid #E2E8F0",
               }}
             >
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "#000000", marginBottom: "4px" }}>
+              <div
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "#000000",
+                  marginBottom: "4px",
+                }}
+              >
                 {hoveredCountry}
               </div>
               <div style={{ fontSize: "11px", color: "#64748B" }}>
-                Score: <strong>{getCountryInfo(hoveredCountry).adei.toFixed(1)}</strong>
+                Score:{" "}
+                <strong>
+                  {getCountryInfo(hoveredCountry).adei.toFixed(1)}
+                </strong>
               </div>
               <div style={{ fontSize: "11px", color: "#64748B" }}>
                 Rank: <strong>#{getCountryInfo(hoveredCountry).rank}</strong>
@@ -1455,19 +1488,19 @@ function GlobalOverview() {
       name: "Advanced Digital Economies",
       count: leaders.length,
       score: leaders.reduce((s, c) => s + c.adei, 0) / leaders.length,
-      color: "#10B981",
+      color: "#1B4332",
     },
     {
       name: "Emerging Digital Economies",
       count: adopters.length,
       score: adopters.reduce((s, c) => s + c.adei, 0) / adopters.length,
-      color: "#F59E0B",
+      color: "#52B788",
     },
     {
       name: "Foundational Digital Economies",
       count: emerging.length,
       score: emerging.reduce((s, c) => s + c.adei, 0) / emerging.length,
-      color: "#EF4444",
+      color: "#95D5B2",
     },
   ];
 
@@ -2401,9 +2434,7 @@ function CountryProfiles() {
 
       {/* Regional Peer Comparison */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>
-          Regional Peer Comparison — {region}
-        </div>
+        <div style={styles.cardTitle}>Regional Peer Comparison — {region}</div>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={peerCompData} barSize={40}>
             <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />

@@ -6491,7 +6491,7 @@ function StatisticalAnalysis() {
 
 // ─── METHODOLOGY ──────────────────────────────────────────────────────────────
 function Methodology() {
-  const [openSection, setOpenSection] = useState("index");
+  const [activeTab, setActiveTab] = useState("overview");
   const SOURCES = [
     {
       indicator: "Political Stability & Security",
@@ -6545,310 +6545,370 @@ function Methodology() {
       source: "UN SDG Global Database; ITU, 2025",
     },
   ];
-  const sections = {
-    index: {
-      title: "Index Structure",
-      content: (
-        <div>
-          <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.8 }}>
-            The OIC DEI, developed by Al-Khouri (2024), measures digital economy
-            maturity of OIC member states through{" "}
-            <strong style={{ color: "#000000" }}>
-              9 pillars, 32 indicators, and 21 sub-indicators
-            </strong>
-            . The 2025 edition covers all 57 OIC member states using lagged
-            annual data.
-          </p>
-          {PILLARS.map((p) => (
-            <div
-              key={p.key}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                padding: "8px 0",
-                borderBottom: "1px solid #F1F5F9",
-              }}
-            >
-              <div
-                style={{
-                  width: "6px",
-                  height: "6px",
-                  borderRadius: "50%",
-                  background: p.color,
-                  flexShrink: 0,
-                }}
-              />
-              <div style={{ flex: 1, fontSize: "13px", color: "#64748B" }}>
-                <strong style={{ color: p.color }}>Pillar {p.id}:</strong>{" "}
-                {p.name}
-              </div>
-              <div style={{ fontSize: "12px", color: "#64748B" }}>
-                Weight: {p.weight}%
-              </div>
-              <div style={{ fontSize: "11px", color: "#64748B" }}>{p.dim}</div>
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    normalization: {
-      title: "Normalization",
-      content: (
-        <div>
-          <p
-            style={{
-              color: "#000000",
-              fontSize: "13px",
-              lineHeight: 1.8,
-              fontWeight: 600,
-              marginBottom: "8px",
-            }}
-          >
-            Missing Value Imputation
-          </p>
-          <p
-            style={{
-              color: "#64748B",
-              fontSize: "13px",
-              lineHeight: 1.8,
-              marginBottom: "8px",
-            }}
-          >
-            Due to incomplete data for several of the 57 OIC member states,
-            missing values are estimated using:
-          </p>
-          <div
-            style={{
-              background: "#F1F5F9",
-              borderRadius: "8px",
-              padding: "16px",
-              margin: "12px 0",
-              fontFamily: "monospace",
-              fontSize: "13px",
-              color: "#10B981",
-              border: "1px solid #CBD5E1",
-            }}
-          >
-            Missing Value = Minimum value − (5% × Minimum value)
-          </div>
 
-          <p
-            style={{
-              color: "#000000",
-              fontSize: "13px",
-              lineHeight: 1.8,
-              fontWeight: 600,
-              marginBottom: "8px",
-            }}
-          >
-            Min–Max Normalization
-          </p>
-          <p
-            style={{
-              color: "#64748B",
-              fontSize: "13px",
-              lineHeight: 1.8,
-              marginBottom: "8px",
-            }}
-          >
-            All indicators and sub-indicators are normalized to a{" "}
-            <strong style={{ color: "#000000" }}>0–100 scale</strong>:
+  const tabContents = {
+    overview: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Index Overview</div>
+          <p style={{ color: "#64748B", fontSize: "14px", lineHeight: 1.8, marginBottom: "16px" }}>
+            The OIC Digital Economy Index (OIC DEI), developed by Al-Khouri (2024), is a comprehensive framework measuring digital economy maturity across all 57 OIC member states.
           </p>
           <div
             style={{
-              background: "#F1F5F9",
-              borderRadius: "8px",
-              padding: "16px",
-              margin: "12px 0",
-              fontFamily: "monospace",
-              fontSize: "13px",
-              color: "#10B981",
-              border: "1px solid #CBD5E1",
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "16px",
+              marginTop: "16px",
             }}
           >
-            Normalized Value = (Actual Value − Minimum Value) / (Maximum Value −
-            Minimum Value) × 100
-          </div>
-        </div>
-      ),
-    },
-    clusters: {
-      title: "🗂 Cluster Methodology",
-      content: (
-        <div>
-          <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.8 }}>
-            Countries classified into three clusters based on 2025 Index scores:
-          </p>
-          {[
-            {
-              label: "Advanced Digital Economies",
-              range: "Score ≥ 60",
-              color: "#10B981",
-              desc: "Leading 6 states with global competitiveness in AI, E-Government, and digital infrastructure. Strategic priority: global innovation leadership.",
-            },
-            {
-              label: "Emerging Digital Economies",
-              range: "Score 40–59",
-              color: "#F59E0B",
-              desc: "15 member states with solid digital foundations but bottlenecked by limited R&D, advanced skills, and venture capital. Priority: scaling private-sector digital adoption.",
-            },
-            {
-              label: "Emerging Digital Economies",
-              range: "Score < 40",
-              color: "#EF4444",
-              desc: "Majority of OIC states (36) in early transformation. Constrained by infrastructure deficits and low digital literacy. Priority: foundational digital infrastructure.",
-            },
-          ].map((cl) => (
-            <div
-              key={cl.label}
-              style={{
-                background: "#F1F5F9",
-                borderRadius: "8px",
-                padding: "14px",
-                marginBottom: "10px",
-                border: `1px solid ${cl.color}30`,
-              }}
-            >
+            {[
+              { label: "Pillars", value: "9", desc: "Structural dimensions" },
+              { label: "Indicators", value: "32", desc: "Measurable factors" },
+              { label: "Sub-Indicators", value: "21", desc: "Granular metrics" },
+            ].map((item) => (
               <div
+                key={item.label}
                 style={{
-                  display: "flex",
-                  gap: "12px",
-                  alignItems: "center",
-                  marginBottom: "6px",
+                  background: "#D8F3DC",
+                  borderRadius: "10px",
+                  padding: "16px",
+                  textAlign: "center",
+                  border: "1px solid #40916C40",
                 }}
               >
-                <span
+                <div style={{ fontSize: "28px", fontWeight: 900, color: "#1B4332", marginBottom: "6px" }}>
+                  {item.value}
+                </div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "#1B4332", marginBottom: "4px" }}>
+                  {item.label}
+                </div>
+                <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
+                  {item.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>9 Pillars of Digital Economy</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+            {PILLARS.map((p) => (
+              <div
+                key={p.key}
+                style={{
+                  background: `${p.color}15`,
+                  borderRadius: "8px",
+                  padding: "14px",
+                  border: `2px solid ${p.color}40`,
+                }}
+              >
+                <div
                   style={{
-                    ...styles.badge(cl.color, `${cl.color}20`),
-                    fontSize: "11px",
+                    fontSize: "18px",
+                    fontWeight: 700,
+                    color: p.color,
+                    marginBottom: "4px",
                   }}
                 >
-                  {cl.label}
-                </span>
-                <span style={{ fontSize: "12px", color: "#64748B" }}>
-                  {cl.range}
-                </span>
+                  {p.name}
+                </div>
+                <div style={{ fontSize: "11px", color: "#64748B", marginBottom: "6px" }}>
+                  {p.dim}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span style={{ fontSize: "11px", color: "#64748B" }}>
+                    Weight: <strong>{p.weight}%</strong>
+                  </span>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      background: p.color,
+                      color: "#FFFFFF",
+                      padding: "2px 8px",
+                      borderRadius: "4px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    P{p.id}
+                  </span>
+                </div>
               </div>
-              <p
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+    methodology: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Data Processing & Normalization</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+            <div>
+              <div
                 style={{
-                  color: "#1E293B",
-                  fontSize: "12px",
-                  lineHeight: 1.7,
-                  margin: 0,
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  color: "#1B4332",
+                  marginBottom: "12px",
                 }}
               >
-                {cl.desc}
+                Missing Value Imputation
+              </div>
+              <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.7, marginBottom: "10px" }}>
+                For incomplete data across OIC member states, missing values are computed using:
+              </p>
+              <div
+                style={{
+                  background: "#1B433210",
+                  border: "1px solid #40916C40",
+                  borderRadius: "6px",
+                  padding: "12px",
+                  fontFamily: "monospace",
+                  fontSize: "12px",
+                  color: "#1B4332",
+                  marginBottom: "12px",
+                }}
+              >
+                Min - (5% × Min)
+              </div>
+              <p style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}>
+                This conservative approach ensures data integrity while preventing underestimation of emerging markets.
               </p>
             </div>
-          ))}
+            <div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  color: "#1B4332",
+                  marginBottom: "12px",
+                }}
+              >
+                Min-Max Normalization
+              </div>
+              <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.7, marginBottom: "10px" }}>
+                All indicators are normalized to a standardized 0-100 scale:
+              </p>
+              <div
+                style={{
+                  background: "#1B433210",
+                  border: "1px solid #40916C40",
+                  borderRadius: "6px",
+                  padding: "12px",
+                  fontFamily: "monospace",
+                  fontSize: "12px",
+                  color: "#1B4332",
+                  marginBottom: "12px",
+                  lineHeight: 1.6,
+                }}
+              >
+                (Value - Min) / (Max - Min) × 100
+              </div>
+              <p style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}>
+                Enables fair comparison across diverse indicators and geographic contexts.
+              </p>
+            </div>
+          </div>
         </div>
-      ),
-    },
-    sources: {
-      title: "📚 Data Sources",
-      content: (
-        <div>
-          <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.8 }}>
-            All data sourced from internationally recognized, publicly available
-            datasets. The 2025 edition uses lagged data primarily from 2023–2024
-            reporting periods.
-          </p>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: "12px",
-              marginTop: "12px",
-            }}
-          >
-            <thead>
-              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
-                {["Indicator", "Code", "Source"].map((h) => (
-                  <th
-                    key={h}
+
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Performance Clusters</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}>
+            {[
+              {
+                title: "Advanced Digital Economies",
+                range: "Score ≥ 60",
+                color: "#1B4332",
+                bgColor: "#D8F3DC",
+                count: "6 States",
+                desc: "Global-competitive leaders with strong AI, E-Government, and digital infrastructure capabilities.",
+              },
+              {
+                title: "Emerging Digital Economies",
+                range: "Score 40–59",
+                color: "#52B788",
+                bgColor: "#E8F5E9",
+                count: "15 States",
+                desc: "Solid digital foundations but constrained by R&D, advanced skills, and venture capital gaps.",
+              },
+              {
+                title: "Foundational Digital Economies",
+                range: "Score < 40",
+                color: "#95D5B2",
+                bgColor: "#F1F8F6",
+                count: "36 States",
+                desc: "Early-stage transformation facing infrastructure deficits and limited digital literacy.",
+              },
+            ].map((cluster) => (
+              <div
+                key={cluster.title}
+                style={{
+                  background: cluster.bgColor,
+                  border: `1px solid ${cluster.color}40`,
+                  borderRadius: "8px",
+                  padding: "16px",
+                  display: "flex",
+                  gap: "14px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "4px",
+                    background: cluster.color,
+                    borderRadius: "2px",
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ flex: 1 }}>
+                  <div
                     style={{
-                      padding: "8px",
-                      color: "#000000",
-                      textAlign: "left",
-                      fontFamily: "'Georgia',serif",
-                      fontSize: "11px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      marginBottom: "8px",
                     }}
                   >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {SOURCES.map((s, i) => (
-                <tr
-                  key={i}
+                    <div>
+                      <div style={{ fontSize: "14px", fontWeight: 700, color: cluster.color }}>
+                        {cluster.title}
+                      </div>
+                      <div style={{ fontSize: "12px", color: "#64748B", marginTop: "2px" }}>
+                        {cluster.range}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        color: cluster.color,
+                        background: "rgba(255,255,255,0.5)",
+                        padding: "4px 10px",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      {cluster.count}
+                    </div>
+                  </div>
+                  <p style={{ color: "#1E293B", fontSize: "13px", lineHeight: 1.6, margin: 0 }}>
+                    {cluster.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+    sources: (
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>Primary Data Sources</div>
+        <p style={{ color: "#64748B", fontSize: "13px", lineHeight: 1.8, marginBottom: "16px" }}>
+          All data sourced from internationally recognized organizations. The 2025 edition uses lagged data from 2023–2024 reporting periods for accuracy.
+        </p>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            fontSize: "13px",
+            marginTop: "16px",
+          }}
+        >
+          <thead>
+            <tr style={{ borderBottom: "2px solid #40916C40" }}>
+              {["Indicator", "Code", "Source"].map((h) => (
+                <th
+                  key={h}
                   style={{
-                    borderBottom: "1px solid #F1F5F9",
-                    background: i % 2 === 0 ? "transparent" : "#64748B10",
+                    padding: "12px 8px",
+                    color: "#1B4332",
+                    textAlign: "left",
+                    fontWeight: 700,
+                    fontSize: "12px",
                   }}
                 >
-                  <td style={{ padding: "7px 8px", color: "#64748B" }}>
-                    {s.indicator}
-                  </td>
-                  <td
-                    style={{
-                      padding: "7px 8px",
-                      color: "#000000",
-                      fontFamily: "monospace",
-                    }}
-                  >
-                    {s.code}
-                  </td>
-                  <td style={{ padding: "7px 8px", color: "#64748B" }}>
-                    {s.source}
-                  </td>
-                </tr>
+                  {h}
+                </th>
               ))}
-            </tbody>
-          </table>
-        </div>
-      ),
-    },
+            </tr>
+          </thead>
+          <tbody>
+            {SOURCES.map((s, i) => (
+              <tr
+                key={i}
+                style={{
+                  borderBottom: "1px solid #E8F5E9",
+                  background: i % 2 === 0 ? "transparent" : "#F1F8F615",
+                }}
+              >
+                <td style={{ padding: "10px 8px", color: "#1E293B" }}>
+                  {s.indicator}
+                </td>
+                <td
+                  style={{
+                    padding: "10px 8px",
+                    color: "#1B4332",
+                    fontFamily: "monospace",
+                    fontWeight: 600,
+                  }}
+                >
+                  {s.code}
+                </td>
+                <td style={{ padding: "10px 8px", color: "#64748B" }}>
+                  {s.source}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ),
   };
 
   return (
-    <div style={{ display: "flex", gap: "16px" }}>
-      <div style={{ width: "220px", flexShrink: 0 }}>
-        <div style={styles.card}>
-          {Object.entries(sections).map(([key, s]) => (
-            <button
-              key={key}
-              onClick={() => setOpenSection(key)}
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "left",
-                padding: "10px 12px",
-                border: "none",
-                borderRadius: "6px",
-                cursor: "pointer",
-                fontSize: "12px",
-                fontFamily: "'Georgia',serif",
-                background: openSection === key ? "#EEF2FF" : "transparent",
-                color: openSection === key ? "#B8922A" : "#64748B",
-                borderLeft:
-                  openSection === key
-                    ? "3px solid #B8922A"
-                    : "3px solid transparent",
-                marginBottom: "4px",
-              }}
-            >
-              {s.title}
-            </button>
-          ))}
-        </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          borderBottom: "2px solid #E8F5E9",
+          paddingBottom: "12px",
+        }}
+      >
+        {[
+          { id: "overview", label: "Overview" },
+          { id: "methodology", label: "Methodology" },
+          { id: "sources", label: "Data Sources" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              padding: "12px 20px",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: 600,
+              fontFamily: "'Georgia', serif",
+              background: activeTab === tab.id ? "#1B433210" : "transparent",
+              color: activeTab === tab.id ? "#1B4332" : "#64748B",
+              borderBottom: activeTab === tab.id ? "3px solid #1B4332" : "none",
+              transition: "all 0.2s ease",
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-      <div style={{ flex: 1, ...styles.card }}>
-        <div style={styles.cardTitle}>{sections[openSection].title}</div>
-        {sections[openSection].content}
-      </div>
+      {tabContents[activeTab]}
     </div>
   );
 }

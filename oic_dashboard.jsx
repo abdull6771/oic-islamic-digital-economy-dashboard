@@ -3697,9 +3697,10 @@ function GeographicAnalysis() {
             color: "#64748B",
             marginTop: "8px",
             fontStyle: "italic",
-        }}
+          }}
         >
-          Bubble position represents approximate geographic location; bubble size indicates OIC DEI score magnitude.
+          Bubble position represents approximate geographic location; bubble
+          size indicates OIC DEI score magnitude.
         </div>
         {(() => {
           const advanced = mapData.filter((d) => d.score >= 60);
@@ -3738,14 +3739,16 @@ function GeographicAnalysis() {
                   lineHeight: 1.6,
                 }}
               >
-                The map reveals a clear <strong>geographic concentration of digital leaders</strong> in
+                The map reveals a clear{" "}
+                <strong>geographic concentration of digital leaders</strong> in
                 the Gulf and Southeast Asia, while Sub-Saharan Africa and parts
                 of Central Asia remain predominantly foundational.{" "}
-                <strong>{advanced.length} countries</strong> (dark green) score above
-                60, with <strong>{foundational.length}</strong> (light green) scoring below 40.{" "}
-                <strong>{topCountry.name}</strong> ({topCountry.score}) and{" "}
-                <strong>{bottomCountry.name}</strong> ({bottomCountry.score})
-                represent the geographic extremes of the OIC digital divide.
+                <strong>{advanced.length} countries</strong> (dark green) score
+                above 60, with <strong>{foundational.length}</strong> (light
+                green) scoring below 40. <strong>{topCountry.name}</strong> (
+                {topCountry.score}) and <strong>{bottomCountry.name}</strong> (
+                {bottomCountry.score}) represent the geographic extremes of the
+                OIC digital divide.
               </p>
             </div>
           );
@@ -3775,7 +3778,10 @@ function GeographicAnalysis() {
               textAnchor="end"
               height={60}
             />
-            <YAxis domain={[0, 80]} tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
+            <YAxis
+              domain={[0, 80]}
+              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="avg" name="Regional Average" radius={[6, 6, 0, 0]}>
               {regionStats.map((r, i) => (
@@ -3869,7 +3875,13 @@ function GeographicAnalysis() {
             />
             <YAxis tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
-            <Legend wrapperStyle={{ fontSize: "12px", paddingTop: "12px", fontWeight: 600 }} />
+            <Legend
+              wrapperStyle={{
+                fontSize: "12px",
+                paddingTop: "12px",
+                fontWeight: 600,
+              }}
+            />
             <Bar
               dataKey="Advanced"
               fill="#1B4332"
@@ -4019,18 +4031,18 @@ function TrendsProgress() {
   const deselectAll = () => setSelectedCountries([]);
 
   const trendColors = {
-    "United Arab Emirates": "#B8922A",
-    "Saudi Arabia": "#F59E0B",
-    Malaysia: "#10B981",
-    Indonesia: "#3B82F6",
-    Qatar: "#8B5CF6",
-    Türkiye: "#06B6D4",
-    Kazakhstan: "#EF4444",
-    Jordan: "#F97316",
-    "OIC Average": "#1E293B",
+    "United Arab Emirates": "#1B4332",
+    "Saudi Arabia": "#2D6A4F",
+    Malaysia: "#40916C",
+    Indonesia: "#52B788",
+    Qatar: "#74C69D",
+    Türkiye: "#95D5B2",
+    Kazakhstan: "#1F4E38",
+    Jordan: "#388E7F",
+    "OIC Average": "#1B4332",
   };
 
-  const OTHER_COLORS = ["#EC4899", "#14B8A6", "#EAB308", "#F43F5E", "#8B5CF6"];
+  const OTHER_COLORS = ["#2D6A4F", "#40916C", "#52B788", "#74C69D", "#95D5B2"];
   const getColor = (c, i) =>
     trendColors[c] || OTHER_COLORS[i % OTHER_COLORS.length];
 
@@ -4080,7 +4092,7 @@ function TrendsProgress() {
             <button
               onClick={selectAll}
               style={{
-                background: "#10B981",
+                background: "#40916C",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "6px 12px",
@@ -4095,8 +4107,8 @@ function TrendsProgress() {
             <button
               onClick={deselectAll}
               style={{
-                background: "#EF4444",
-                color: "#FFFFFF",
+                background: "#95D5B2",
+                color: "#1B4332",
                 border: "none",
                 padding: "6px 12px",
                 borderRadius: "6px",
@@ -4116,15 +4128,15 @@ function TrendsProgress() {
               onClick={() => toggleCountry(c)}
               style={{
                 background: selectedCountries.includes(c)
-                  ? "#B8922A"
-                  : "#F1F5F9",
-                color: selectedCountries.includes(c) ? "#FFFFFF" : "#475569",
-                border: "none",
+                  ? "#1B4332"
+                  : "#F0F9F7",
+                color: selectedCountries.includes(c) ? "#FFFFFF" : "#1B4332",
+                border: selectedCountries.includes(c) ? "none" : "1px solid #D8F3DC",
                 padding: "6px 12px",
                 borderRadius: "20px",
                 fontSize: "12px",
                 cursor: "pointer",
-                fontWeight: selectedCountries.includes(c) ? 600 : 400,
+                fontWeight: selectedCountries.includes(c) ? 600 : 500,
                 transition: "all 0.2s ease",
               }}
             >
@@ -4146,9 +4158,9 @@ function TrendsProgress() {
             />
             <XAxis
               dataKey="year"
-              tick={{ fill: "#64748B", fontSize: 11, fontWeight: 500 }}
+              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
             />
-            <YAxis domain={[25, 80]} tick={{ fill: "#64748B", fontSize: 11 }} />
+            <YAxis domain={[25, 80]} tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{
@@ -4194,10 +4206,10 @@ function TrendsProgress() {
             return (
               <div
                 style={{
-                  background: "#FDF6E3",
-                  border: "1px solid #F0C96A",
+                  background: "#D8F3DC",
+                  border: "1px solid #1B4332",
                   borderRadius: "8px",
-                  padding: "10px 14px",
+                  padding: "12px 14px",
                   marginTop: "12px",
                 }}
               >
@@ -4205,11 +4217,11 @@ function TrendsProgress() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#000000",
-                    marginBottom: "4px",
+                    color: "#1B4332",
+                    marginBottom: "6px",
                   }}
                 >
-                  Key insight
+                  Strategic Insight
                 </div>
                 <p
                   style={{
@@ -4257,15 +4269,15 @@ function TrendsProgress() {
           <div style={styles.cardTitle}>Score Distribution (2025)</div>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={bins} barSize={28}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
-              <XAxis dataKey="range" tick={{ fill: "#1E293B", fontSize: 10 }} />
-              <YAxis tick={{ fill: "#1E293B", fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="0" stroke="#E2E8F0" vertical={false} />
+              <XAxis dataKey="range" tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }} />
+              <YAxis tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
               <Tooltip content={<CustomTooltip />} />
               <Bar
                 dataKey="count"
                 name="Countries"
-                fill="#B8922A"
-                fillOpacity={0.8}
+                fill="#40916C"
+                radius={[4, 4, 0, 0]}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -4278,10 +4290,10 @@ function TrendsProgress() {
             return (
               <div
                 style={{
-                  background: "#FDF6E3",
-                  border: "1px solid #F0C96A",
+                  background: "#D8F3DC",
+                  border: "1px solid #1B4332",
                   borderRadius: "8px",
-                  padding: "10px 14px",
+                  padding: "12px 14px",
                   marginTop: "12px",
                 }}
               >
@@ -4289,11 +4301,11 @@ function TrendsProgress() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#000000",
-                    marginBottom: "4px",
+                    color: "#1B4332",
+                    marginBottom: "6px",
                   }}
                 >
-                  Key insight
+                  Strategic Insight
                 </div>
                 <p
                   style={{
@@ -4317,8 +4329,9 @@ function TrendsProgress() {
             style={{
               marginTop: "12px",
               padding: "12px",
-              background: "#F1F5F9",
+              background: "#F0F9F7",
               borderRadius: "8px",
+              border: "1px solid #D8F3DC",
             }}
           >
             <div
@@ -4347,12 +4360,12 @@ function TrendsProgress() {
                     style={{
                       fontSize: "18px",
                       fontWeight: 900,
-                      color: "#000000",
+                      color: "#1B4332",
                     }}
                   >
                     {s.value}
                   </div>
-                  <div style={{ fontSize: "11px", color: "#64748B" }}>
+                  <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
                     {s.label}
                   </div>
                 </div>
@@ -4363,7 +4376,7 @@ function TrendsProgress() {
 
         {/* Country Ladder */}
         <div style={styles.card}>
-          <div style={styles.cardTitle}>🪜 Country Ladder (2025 Rankings)</div>
+          <div style={styles.cardTitle}>Country Ladder (2025 Rankings)</div>
           <div style={{ maxHeight: "280px", overflowY: "auto" }}>
             {sorted.map((c, i) => {
               const cl = getCluster(c.adei);
@@ -4374,21 +4387,22 @@ function TrendsProgress() {
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    padding: "5px 0",
-                    borderBottom: "1px solid #F1F5F9",
+                    padding: "8px 0",
+                    borderBottom: "1px solid #D8F3DC",
                   }}
                 >
                   <div
                     style={{
                       fontSize: "11px",
-                      color: "#1E293B",
+                      fontWeight: 700,
+                      color: "#1B4332",
                       width: "20px",
                       textAlign: "right",
                     }}
                   >
                     {i + 1}
                   </div>
-                  <div style={{ flex: 1, fontSize: "12px", color: "#64748B" }}>
+                  <div style={{ flex: 1, fontSize: "12px", color: "#2D6A4F", fontWeight: 500 }}>
                     {c.name}
                   </div>
                   <div
@@ -4405,7 +4419,7 @@ function TrendsProgress() {
                       width: "60px",
                       height: "4px",
                       borderRadius: "2px",
-                      background: "#F1F5F9",
+                      background: "#D8F3DC",
                       overflow: "hidden",
                     }}
                   >

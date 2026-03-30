@@ -1247,8 +1247,17 @@ function WorldMap() {
   }, []);
 
   const getCountryColor = (countryName) => {
+    // Map geographic data names to COUNTRIES array names
+    const nameMapping = {
+      Turkey: "Türkiye",
+      Syria: "Syrian Arab Republic",
+    };
+    
+    const normalizedName = nameMapping[countryName] || countryName;
+    
     const country = COUNTRIES.find(
       (c) =>
+        c.name.toLowerCase() === normalizedName.toLowerCase() ||
         c.name.toLowerCase() === countryName.toLowerCase() ||
         (countryName === "United States of America" &&
           c.name === "United States") ||

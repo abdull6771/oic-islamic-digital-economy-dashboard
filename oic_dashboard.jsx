@@ -1266,8 +1266,17 @@ function WorldMap() {
   };
 
   const getCountryInfo = (countryName) => {
+    // Map geographic data names to COUNTRIES array names
+    const nameMapping = {
+      Turkey: "Türkiye",
+      Syria: "Syrian Arab Republic",
+    };
+
+    const normalizedName = nameMapping[countryName] || countryName;
+
     return COUNTRIES.find(
       (c) =>
+        c.name.toLowerCase() === normalizedName.toLowerCase() ||
         c.name.toLowerCase() === countryName.toLowerCase() ||
         (countryName === "United States of America" &&
           c.name === "United States"),
@@ -1291,8 +1300,8 @@ function WorldMap() {
       >
         <div style={{ flex: 1 }}>
           <svg
-            width="100%"
-            height="400"
+            width="120%"
+            height="600"
             style={{ border: "1px solid #E2E8F0", borderRadius: "8px" }}
           >
             <ComposableMap projection="geoEqualEarth">
@@ -1961,6 +1970,18 @@ function GlobalOverview() {
                     fontWeight: 700,
                   }}
                 >
+                  Rank
+                </th>
+                <th
+                  style={{
+                    textAlign: "center",
+                    padding: "8px 6px",
+                    color: "#1B4332",
+                    borderRight: "1px solid #E2E8F0",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                  }}
+                >
                   Score
                 </th>
                 {PILLARS.map((p) => (
@@ -1999,6 +2020,17 @@ function GlobalOverview() {
                     }}
                   >
                     {c.name}
+                  </td>
+                  <td
+                    style={{
+                      padding: "8px 6px",
+                      textAlign: "center",
+                      fontWeight: 700,
+                      color: "#1B4332",
+                      borderRight: "1px solid #E2E8F0",
+                    }}
+                  >
+                    #{c.rank}
                   </td>
                   <td
                     style={{
@@ -5494,7 +5526,9 @@ function CustomIndexBuilder() {
         </div>
       </div>
       <div style={styles.grid2}>
-        <div style={{ ...styles.card, borderColor: "#40916C", borderWidth: "2px" }}>
+        <div
+          style={{ ...styles.card, borderColor: "#40916C", borderWidth: "2px" }}
+        >
           <div style={{ ...styles.cardTitle, color: "#40916C" }}>
             Rank Gainers
           </div>
@@ -5543,7 +5577,9 @@ function CustomIndexBuilder() {
             </div>
           ))}
         </div>
-        <div style={{ ...styles.card, borderColor: "#74C69D", borderWidth: "2px" }}>
+        <div
+          style={{ ...styles.card, borderColor: "#74C69D", borderWidth: "2px" }}
+        >
           <div style={{ ...styles.cardTitle, color: "#74C69D" }}>
             Rank Decliners
           </div>
@@ -5599,7 +5635,11 @@ function CustomIndexBuilder() {
         </div>
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={compData} barSize={12}>
-            <CartesianGrid strokeDasharray="0" stroke="#E2E8F0" vertical={false} />
+            <CartesianGrid
+              strokeDasharray="0"
+              stroke="#E2E8F0"
+              vertical={false}
+            />
             <XAxis
               dataKey="name"
               tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
@@ -5607,7 +5647,10 @@ function CustomIndexBuilder() {
               textAnchor="end"
               height={60}
             />
-            <YAxis domain={[0, 100]} tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
+            <YAxis
+              domain={[0, 100]}
+              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+            />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{
@@ -8281,10 +8324,6 @@ function Acknowledgement() {
           >
             <p style={{ margin: "0 0 8px 0" }}>
               © 2025{" "}
-              <strong style={{ color: "#000000" }}>
-                Islamic Development Bank
-              </strong>
-              . All rights reserved. |{" "}
               <strong style={{ color: "#000000" }}>INCEIF University</strong> —
               The Global University of Islamic Finance
             </p>
@@ -8337,8 +8376,7 @@ const TABS = [
 function Footer() {
   return (
     <div style={styles.footer}>
-      © 2025 Islamic Development Bank. All rights reserved. | INCEIF University
-      — The Global University of Islamic Finance
+      © 2025 INCEIF University — The Global University of Islamic Finance
     </div>
   );
 }

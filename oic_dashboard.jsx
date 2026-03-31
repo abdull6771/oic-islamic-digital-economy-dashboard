@@ -109,6 +109,159 @@ const PILLARS = [
   },
 ];
 
+// ─── INDICATORS & SUB-INDICATORS ────────────────────────────────────────────
+const PILLAR_INDICATORS = {
+  p1: {
+    name: "Institutions",
+    indicators: [
+      {
+        code: "1.1",
+        name: "Governance Quality",
+        subIndicators: [
+          { code: "1.1.1", name: "Political Stability & Security" },
+          { code: "1.1.2", name: "Government Effectiveness" },
+          { code: "1.1.3", name: "Voice & Accountability" },
+        ],
+      },
+      {
+        code: "1.2",
+        name: "Regulatory Framework",
+        subIndicators: [
+          { code: "1.2.1", name: "Regulatory Quality" },
+          { code: "1.2.2", name: "Rule of Law" },
+        ],
+      },
+    ],
+  },
+  p2: {
+    name: "Infrastructure",
+    indicators: [
+      {
+        code: "2.1",
+        name: "Connectivity",
+        subIndicators: [
+          { code: "2.1.1", name: "Mobile Subscriptions" },
+          { code: "2.1.2", name: "Internet Access" },
+        ],
+      },
+      {
+        code: "2.2",
+        name: "Bandwidth & Speed",
+        subIndicators: [
+          { code: "2.2.1", name: "Broadband Coverage" },
+          { code: "2.2.2", name: "Network Quality" },
+        ],
+      },
+    ],
+  },
+  p3: {
+    name: "Workforce",
+    indicators: [
+      {
+        code: "3.1",
+        name: "Digital Skills",
+        subIndicators: [
+          { code: "3.1.1", name: "ICT Education" },
+          { code: "3.1.2", name: "Workforce Training" },
+        ],
+      },
+      {
+        code: "3.2",
+        name: "Human Capital Development",
+        subIndicators: [
+          { code: "3.2.1", name: "Tertiary Education (STEM)" },
+          { code: "3.2.2", name: "Professional Certifications" },
+        ],
+      },
+    ],
+  },
+  p4: {
+    name: "E-Government",
+    indicators: [
+      {
+        code: "4.1",
+        name: "E-Government Development",
+        subIndicators: [
+          { code: "4.1.1", name: "Online Service Index" },
+          { code: "4.1.2", name: "Telecom Infrastructure" },
+          { code: "4.1.3", name: "Human Capital" },
+        ],
+      },
+    ],
+  },
+  p5: {
+    name: "Innovation",
+    indicators: [
+      {
+        code: "5.1",
+        name: "R&D Investment",
+        subIndicators: [{ code: "5.1.1", name: "R&D Business Financing" }],
+      },
+      {
+        code: "5.2",
+        name: "Innovation Partnerships",
+        subIndicators: [
+          { code: "5.2.1", name: "University-Industry Collaboration" },
+        ],
+      },
+    ],
+  },
+  p6: {
+    name: "Future Tech",
+    indicators: [
+      {
+        code: "6.1",
+        name: "AI & Advanced Technologies",
+        subIndicators: [
+          { code: "6.1.1", name: "AI Readiness" },
+          { code: "6.1.2", name: "Tech Adoption Strategy" },
+        ],
+      },
+    ],
+  },
+  p7: {
+    name: "Market Development",
+    indicators: [
+      {
+        code: "7.1",
+        name: "Digital Market Maturity",
+        subIndicators: [
+          { code: "7.1.1", name: "E-Commerce Penetration" },
+          { code: "7.1.2", name: "Startup Ecosystem" },
+        ],
+      },
+    ],
+  },
+  p8: {
+    name: "Financial Markets",
+    indicators: [
+      {
+        code: "8.1",
+        name: "Financial Market Development",
+        subIndicators: [
+          { code: "8.1.1", name: "FinTech Adoption" },
+          { code: "8.1.2", name: "Financial Inclusion" },
+        ],
+      },
+    ],
+  },
+  p9: {
+    name: "SDG Impact",
+    indicators: [
+      {
+        code: "9.1",
+        name: "SDG ICT Indicators",
+        subIndicators: [
+          { code: "9.1.1", name: "SDG 9: Industry & Innovation" },
+          { code: "9.1.2", name: "SDG 3: Health & Well-being" },
+          { code: "9.1.3", name: "SDG 4: Quality Education" },
+          { code: "9.1.4", name: "SDG 5: Gender Equality" },
+        ],
+      },
+    ],
+  },
+};
+
 const REGIONS = {
   "United Arab Emirates": "GCC",
   "Saudi Arabia": "GCC",
@@ -1252,9 +1405,9 @@ function WorldMap() {
       Turkey: "Türkiye",
       Syria: "Syrian Arab Republic",
     };
-    
+
     const normalizedName = nameMapping[countryName] || countryName;
-    
+
     const country = COUNTRIES.find(
       (c) =>
         c.name.toLowerCase() === normalizedName.toLowerCase() ||
@@ -1302,15 +1455,15 @@ function WorldMap() {
         style={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "16px",
-          gap: "20px",
+          alignItems: "flex-start",
+          marginBottom: "0px",
+          gap: "0px",
         }}
       >
         <div style={{ flex: 1 }}>
           <svg
-            width="120%"
-            height="600"
+            width="100%"
+            height="800"
             style={{ border: "1px solid #E2E8F0", borderRadius: "8px" }}
           >
             <ComposableMap projection="geoEqualEarth">
@@ -1363,19 +1516,21 @@ function WorldMap() {
         </div>
         <div
           style={{
-            width: "200px",
-            padding: "16px",
+            width: "80px",
+            padding: "4px",
             background: "#F8FAFC",
-            borderRadius: "8px",
+            borderRadius: "0px 8px 8px 0px",
             border: "1px solid #E2E8F0",
+            borderLeft: "none",
+            flexShrink: 0,
           }}
         >
           <div
             style={{
-              fontSize: "12px",
+              fontSize: "8px",
               fontWeight: 600,
               color: "#64748B",
-              marginBottom: "12px",
+              marginBottom: "3px",
             }}
           >
             Legend
@@ -1416,25 +1571,41 @@ function WorldMap() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "8px",
-                marginBottom: "8px",
-                fontSize: "11px",
+                gap: "3px",
+                marginBottom: "2px",
+                fontSize: "8px",
               }}
             >
               <div
                 style={{
-                  width: "12px",
-                  height: "12px",
+                  width: "10px",
+                  height: "10px",
                   borderRadius: "2px",
                   background: item.color,
                   border: "1px solid #CBD5E1",
+                  flexShrink: 0,
                 }}
               />
-              <span style={{ color: "#1E293B", fontWeight: 500 }}>
+              <span
+                style={{
+                  color: "#1E293B",
+                  fontWeight: 500,
+                  minWidth: 0,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {item.label}
               </span>
               {typeof item.count === "number" && (
-                <span style={{ color: "#64748B", marginLeft: "auto" }}>
+                <span
+                  style={{
+                    color: "#64748B",
+                    marginLeft: "auto",
+                    fontSize: "8px",
+                  }}
+                >
                   ({item.count})
                 </span>
               )}
@@ -1443,28 +1614,28 @@ function WorldMap() {
           {hoveredCountry && getCountryInfo(hoveredCountry) && (
             <div
               style={{
-                marginTop: "16px",
-                paddingTop: "12px",
+                marginTop: "6px",
+                paddingTop: "4px",
                 borderTop: "1px solid #E2E8F0",
               }}
             >
               <div
                 style={{
-                  fontSize: "12px",
+                  fontSize: "9px",
                   fontWeight: 600,
                   color: "#000000",
-                  marginBottom: "4px",
+                  marginBottom: "2px",
                 }}
               >
                 {hoveredCountry}
               </div>
-              <div style={{ fontSize: "11px", color: "#64748B" }}>
+              <div style={{ fontSize: "8px", color: "#64748B" }}>
                 Score:{" "}
                 <strong>
                   {getCountryInfo(hoveredCountry).adei.toFixed(1)}
                 </strong>
               </div>
-              <div style={{ fontSize: "11px", color: "#64748B" }}>
+              <div style={{ fontSize: "8px", color: "#64748B" }}>
                 Rank: <strong>#{getCountryInfo(hoveredCountry).rank}</strong>
               </div>
             </div>
@@ -1659,12 +1830,31 @@ function GlobalOverview() {
         >
           <div
             style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              color: "#1B4332",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "8px",
             }}
           >
-            Strategic Insight
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "#1B4332",
+              }}
+            >
+              Strategic Insight
+            </div>
+            <div
+              style={{
+                fontSize: "9px",
+                fontWeight: 400,
+                color: "#94A3B8",
+                whiteSpace: "nowrap",
+              }}
+            >
+              AI-assisted insight
+            </div>
           </div>
           <div style={{ fontSize: "12px", color: "#1E293B", lineHeight: 1.6 }}>
             The OIC's digital economy shows a pyramid structure with{" "}
@@ -2446,13 +2636,32 @@ function CountryProfiles() {
           >
             <div
               style={{
-                fontSize: "11px",
-                fontWeight: 700,
-                color: "#000000",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "8px",
                 marginBottom: "4px",
               }}
             >
-              Key insight
+              <div
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  color: "#000000",
+                }}
+              >
+                Key insight
+              </div>
+              <div
+                style={{
+                  fontSize: "9px",
+                  fontWeight: 400,
+                  color: "#94A3B8",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                AI-assisted insight
+              </div>
             </div>
             <p
               style={{
@@ -2579,8 +2788,27 @@ function CountryProfiles() {
           ))}
         </div>
         <div style={{ ...styles.card, borderColor: "#B8922A40" }}>
-          <div style={{ ...styles.cardTitle, color: "#000000" }}>
-            Headline Recommendation
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "8px",
+              ...styles.cardTitle,
+              color: "#000000",
+            }}
+          >
+            <div>Headline Recommendation</div>
+            <div
+              style={{
+                fontSize: "9px",
+                fontWeight: 400,
+                color: "#94A3B8",
+                whiteSpace: "nowrap",
+              }}
+            >
+              AI-assisted insight
+            </div>
           </div>
           <p
             style={{
@@ -2668,13 +2896,32 @@ function CountryProfiles() {
         >
           <div
             style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              color: "#000000",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "8px",
               marginBottom: "4px",
             }}
           >
-            Key insight
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "#000000",
+              }}
+            >
+              Key insight
+            </div>
+            <div
+              style={{
+                fontSize: "9px",
+                fontWeight: 400,
+                color: "#94A3B8",
+                whiteSpace: "nowrap",
+              }}
+            >
+              AI-assisted insight
+            </div>
           </div>
           <p
             style={{
@@ -3005,13 +3252,32 @@ function CompareCountries() {
                   >
                     <div
                       style={{
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        color: "#1B4332",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "8px",
                         marginBottom: "6px",
                       }}
                     >
-                      Strategic Insight
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          color: "#1B4332",
+                        }}
+                      >
+                        Strategic Insight
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "9px",
+                          fontWeight: 400,
+                          color: "#94A3B8",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        AI-assisted insight
+                      </div>
                     </div>
                     <p
                       style={{
@@ -3093,13 +3359,32 @@ function CompareCountries() {
                   >
                     <div
                       style={{
-                        fontSize: "11px",
-                        fontWeight: 700,
-                        color: "#1B4332",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        gap: "8px",
                         marginBottom: "6px",
                       }}
                     >
-                      Strategic Insight
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          color: "#1B4332",
+                        }}
+                      >
+                        Strategic Insight
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "9px",
+                          fontWeight: 400,
+                          color: "#94A3B8",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        AI-assisted insight
+                      </div>
                     </div>
                     <p
                       style={{
@@ -3261,15 +3546,15 @@ function PillarAnalysis() {
     COUNTRIES.reduce((s, c) => s + c[pillar.key], 0) / COUNTRIES.length;
 
   const INSIGHTS = {
-    p1: "Institutions form the governance bedrock of digital transformation. GCC states lead, with the UAE, Malaysia, and Qatar demonstrating strong political stability and regulatory quality.",
+    p1: "Institutions form the governance bedrock of digital transformation. Malaysia leads with the strongest governance framework (78.77), followed by UAE and Qatar, demonstrating robust political stability and regulatory quality across diverse contexts.",
     p2: "Infrastructure underpins all digital activity. The UAE and Malaysia have near-perfect scores driven by fiber and 5G investments. Many African states score below 20, indicating opportunities for foundational infrastructure investment.",
-    p3: "Workforce capability remains a major area of focus. Senegal and Jordan lead in human capital, while conflict-affected states show substantial room for development.",
-    p4: "E-Government is the OIC's standout strength. State-led digitization has resulted in high scores across diverse economies, with Saudi Arabia and Kazakhstan leading.",
-    p5: "Innovation is the OIC's key area for growth. Even leading countries score below 65, reflecting dependence on state R&D over private-sector investment.",
-    p6: "Technological Readiness (Future Tech) varies widely. GCC states score high due to AI and advanced tech adoption strategies.",
-    p7: "Market Development shows the strongest performers in Southeast Asia. Malaysia leads due to its vibrant digital economy and startup ecosystem.",
-    p8: "Financial Market Development is prominently led by Iran's unique position. Islamic Fintech is an emerging strategic advantage for GCC and Malaysia.",
-    p9: "SDG Impact scores reflect access and inclusion progress. Countries with strong public health systems and connectivity score highest.",
+    p3: "Workforce capability remains a major area of focus. UAE leads in human capital development (57.74), with Tunisia (52.24) and Kyrgyz Republic (52.18) also demonstrating strong performance. Many conflict-affected states show substantial room for capacity building.",
+    p4: "E-Government is the OIC's standout strength. Saudi Arabia (96.02) and UAE (95.33) lead in digital service delivery, with state-led digitization resulting in high scores across diverse economies.",
+    p5: "Innovation is the OIC's key area for growth. Malaysia leads at 46.02, but even the strongest performers score below 65, reflecting dependence on state R&D over private-sector investment.",
+    p6: "Technological Readiness (Future Tech) varies widely. GCC states score high due to AI and advanced tech adoption strategies, with UAE (92.88) and Saudi Arabia (85.63) leading.",
+    p7: "Market Development shows strong performance in Southeast Asia and the Levant. Malaysia leads (74.36) due to its vibrant digital economy and startup ecosystem.",
+    p8: "Financial Market Development is prominently led by Iran's unique position (92.89). Islamic Fintech is an emerging strategic advantage for GCC and Malaysia.",
+    p9: "SDG Impact scores reflect access and inclusion progress. Türkiye (78.5) and UAE (78.44) demonstrate the strongest public health system integration and connectivity.",
   };
 
   return (
@@ -3340,8 +3625,27 @@ function PillarAnalysis() {
           background: `linear-gradient(135deg, #FFFFFF 0%, ${pillar.color}08 100%)`,
         }}
       >
-        <div style={{ ...styles.cardTitle, color: pillar.color }}>
-          Key insight
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "8px",
+            ...styles.cardTitle,
+            color: pillar.color,
+          }}
+        >
+          <div>Key insight</div>
+          <div
+            style={{
+              fontSize: "9px",
+              fontWeight: 400,
+              color: "#94A3B8",
+              whiteSpace: "nowrap",
+            }}
+          >
+            AI-assisted insight
+          </div>
         </div>
         <p
           style={{
@@ -3418,13 +3722,32 @@ function PillarAnalysis() {
         >
           <div
             style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              color: "#000000",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "8px",
               marginBottom: "4px",
             }}
           >
-            Key insight
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "#000000",
+              }}
+            >
+              Key insight
+            </div>
+            <div
+              style={{
+                fontSize: "9px",
+                fontWeight: 400,
+                color: "#94A3B8",
+                whiteSpace: "nowrap",
+              }}
+            >
+              AI-assisted insight
+            </div>
           </div>
           <p
             style={{
@@ -3764,13 +4087,32 @@ function GeographicAnalysis() {
             >
               <div
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "#1B4332",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
                   marginBottom: "6px",
                 }}
               >
-                Strategic Insight
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#1B4332",
+                  }}
+                >
+                  Strategic Insight
+                </div>
+                <div
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 400,
+                    color: "#94A3B8",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  AI-assisted insight
+                </div>
               </div>
               <p
                 style={{
@@ -3862,13 +4204,32 @@ function GeographicAnalysis() {
             >
               <div
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "#1B4332",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
                   marginBottom: "6px",
                 }}
               >
-                Strategic Insight
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#1B4332",
+                  }}
+                >
+                  Strategic Insight
+                </div>
+                <div
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 400,
+                    color: "#94A3B8",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  AI-assisted insight
+                </div>
               </div>
               <p
                 style={{
@@ -3952,13 +4313,32 @@ function GeographicAnalysis() {
             >
               <div
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "#1B4332",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
                   marginBottom: "6px",
                 }}
               >
-                Strategic Insight
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#1B4332",
+                  }}
+                >
+                  Strategic Insight
+                </div>
+                <div
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 400,
+                    color: "#94A3B8",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  AI-assisted insight
+                </div>
               </div>
               <p
                 style={{
@@ -4261,13 +4641,32 @@ function TrendsProgress() {
               >
                 <div
                   style={{
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    color: "#1B4332",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "8px",
                     marginBottom: "6px",
                   }}
                 >
-                  Strategic Insight
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      color: "#1B4332",
+                    }}
+                  >
+                    Strategic Insight
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "9px",
+                      fontWeight: 400,
+                      color: "#94A3B8",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    AI-assisted insight
+                  </div>
                 </div>
                 <p
                   style={{
@@ -4922,13 +5321,32 @@ function DigitalDivide() {
         >
           <div
             style={{
-              fontSize: "11px",
-              fontWeight: 700,
-              color: "#1B4332",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "8px",
               marginBottom: "6px",
             }}
           >
-            Strategic Insight
+            <div
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "#1B4332",
+              }}
+            >
+              Strategic Insight
+            </div>
+            <div
+              style={{
+                fontSize: "9px",
+                fontWeight: 400,
+                color: "#94A3B8",
+                whiteSpace: "nowrap",
+              }}
+            >
+              AI-assisted insight
+            </div>
           </div>
           <p
             style={{
@@ -5142,13 +5560,32 @@ function IslamicDigitalSpecial() {
             >
               <div
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "#000000",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
                   marginBottom: "4px",
                 }}
               >
-                Key insight
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#000000",
+                  }}
+                >
+                  Key insight
+                </div>
+                <div
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 400,
+                    color: "#94A3B8",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  AI-assisted insight
+                </div>
               </div>
               <p
                 style={{
@@ -5694,13 +6131,32 @@ function CustomIndexBuilder() {
             >
               <div
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "#1B4332",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
                   marginBottom: "6px",
                 }}
               >
-                Strategic Insight
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#1B4332",
+                  }}
+                >
+                  Strategic Insight
+                </div>
+                <div
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 400,
+                    color: "#94A3B8",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  AI-assisted insight
+                </div>
               </div>
               <p
                 style={{
@@ -6545,13 +7001,32 @@ function PeerLearning() {
                 >
                   <div
                     style={{
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      color: "#1B4332",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "8px",
                       marginBottom: "8px",
                     }}
                   >
-                    Strategic Insight
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: 700,
+                        color: "#1B4332",
+                      }}
+                    >
+                      Strategic Insight
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "9px",
+                        fontWeight: 400,
+                        color: "#94A3B8",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      AI-assisted insight
+                    </div>
                   </div>
                   <p
                     style={{
@@ -6687,26 +7162,27 @@ function PeerLearning() {
 // ─── PROGRESS TRACKER ────────────────────────────────────────────────────────
 function ProgressTracker({ hideTrajectory = false }) {
   const TREND_FULL = {
-    "United Arab Emirates": [63.5, 67.2, 71.0, 73.7, 76.84],
-    "Saudi Arabia": [56.9, 60.0, 62.5, 65.5, 67.77],
-    Malaysia: [60.1, 63.0, 65.0, 67.0, 66.98],
-    Indonesia: [50.2, 53.0, 56.0, 58.6, 61.57],
-    Qatar: [47.0, 49.0, 51.0, 53.0, 55.14],
-    Türkiye: [52.0, 55.0, 57.5, 59.0, 60.99],
-    Kazakhstan: [48.0, 51.0, 54.0, 56.0, 57.86],
-    Jordan: [44.0, 47.0, 49.5, 51.0, 52.94],
-    Tunisia: [43.0, 45.0, 47.5, 49.0, 50.26],
-    Morocco: [40.0, 42.0, 44.5, 46.0, 47.74],
-    Oman: [42.0, 43.5, 44.8, 45.5, 46.42],
-    Uzbekistan: [38.0, 40.0, 42.0, 43.5, 45.34],
-    Bahrain: [40.0, 41.5, 42.8, 43.5, 44.17],
-    Egypt: [35.0, 37.0, 38.5, 39.5, 40.9],
-    Kuwait: [37.0, 38.0, 38.8, 39.0, 39.42],
-    Albania: [40.0, 41.5, 42.5, 43.8, 45.34],
-    Senegal: [28.0, 29.5, 31.0, 32.0, 33.35],
-    Nigeria: [22.0, 23.5, 24.5, 25.5, 26.76],
-    Bangladesh: [18.0, 19.0, 20.0, 20.8, 21.64],
-    Somalia: [9.0, 9.5, 10.0, 10.5, 10.91],
+    "United Arab Emirates": [70.22, 71.05, 73.71, 75.24, 76.84],
+    Malaysia: [71.08, 71.61, 70.68, 72.92, 71.98],
+    "Saudi Arabia": [56.98, 61.0, 68.42, 66.7, 67.77],
+    Qatar: [null, null, null, null, 66.44],
+    Indonesia: [51.46, 55.93, 58.6, 60.08, 61.57],
+    Türkiye: [54.96, 55.86, 48.44, 59.07, 60.71],
+    Kazakhstan: [50.07, 53.58, 57.16, 57.07, 57.78],
+    Jordan: [47.0, 46.57, 48.94, 49.46, 52.94],
+    Tunisia: [48.44, 55.3, 51.41, 51.04, 52.59],
+    Morocco: [49.69, 48.12, 51.22, 49.76, 52.43],
+    Oman: [48.23, 52.36, 50.9, 51.38, 52.4],
+    Uzbekistan: [32.66, 43.13, 41.45, 47.24, 51.72],
+    Bahrain: [52.7, 51.69, 48.48, 50.26, 50.81],
+    Egypt: [35.31, 43.48, 47.42, 48.96, 50.61],
+    Kuwait: [51.15, 47.91, 49.67, 48.8, 47.47],
+    Albania: [38.38, 43.68, 44.27, 43.6, 45.34],
+    Senegal: [33.66, 39.91, 39.2, 41.17, 43.07],
+    "Kyrgyz Republic": [29.94, 26.27, 25.96, 25.63, 41.84],
+    Azerbaijan: [39.64, 43.07, 44.37, 43.35, 41.78],
+    Algeria: [33.6, 35.21, 39.12, 38.27, 40.77],
+    "OIC Average": [30.66, 32.96, 33.03, 33.13, 34.44],
   };
   const YEARS_L = ["2021", "2022", "2023", "2024", "2025"];
   const scoreChange = (name) => {
@@ -6773,13 +7249,32 @@ function ProgressTracker({ hideTrajectory = false }) {
               >
                 <div
                   style={{
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    color: "#000000",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "8px",
                     marginBottom: "4px",
                   }}
                 >
-                  Key insight
+                  <div
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      color: "#000000",
+                    }}
+                  >
+                    Key insight
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "9px",
+                      fontWeight: 400,
+                      color: "#94A3B8",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    AI-assisted insight
+                  </div>
                 </div>
                 <p
                   style={{
@@ -6905,7 +7400,11 @@ function ProgressTracker({ hideTrajectory = false }) {
                         fontFamily: "monospace",
                       }}
                     >
-                      {hist ? hist.map((v) => v.toFixed(0)).join("→") : "N/A"}
+                      {hist
+                        ? hist
+                            .map((v) => (v !== null ? v.toFixed(0) : "—"))
+                            .join("→")
+                        : "N/A"}
                     </td>
                     <td style={{ padding: "8px", textAlign: "center" }}>
                       <span
@@ -6968,13 +7467,32 @@ function ProgressTracker({ hideTrajectory = false }) {
             >
               <div
                 style={{
-                  fontSize: "11px",
-                  fontWeight: 700,
-                  color: "#000000",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "8px",
                   marginBottom: "4px",
                 }}
               >
-                Key insight
+                <div
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#000000",
+                  }}
+                >
+                  Key insight
+                </div>
+                <div
+                  style={{
+                    fontSize: "9px",
+                    fontWeight: 400,
+                    color: "#94A3B8",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  AI-assisted insight
+                </div>
               </div>
               <p
                 style={{
@@ -7507,9 +8025,12 @@ function Methodology() {
               marginBottom: "16px",
             }}
           >
-            The OIC Digital Economy Index (OIC DEI), developed by Al-Khouri
-            (2024), is a comprehensive framework measuring digital economy
-            maturity across all 57 OIC member states.
+            The OIC Digital Economy Index (OIC DEI) is a comprehensive framework
+            measuring digital economy maturity across all 57 OIC member states.
+            It applies the Arab Digital Economy Index (ADEI) structure to
+            compute index scores for 2025 using lagged annual data. The index
+            comprises nine pillars, 32 indicators, and 21 sub-indicators
+            (Al-Khouri, 2024)*.
           </p>
           <div
             style={{
@@ -7567,68 +8088,158 @@ function Methodology() {
         </div>
 
         <div style={styles.card}>
-          <div style={styles.cardTitle}>9 Pillars of Digital Economy</div>
+          <div style={styles.cardTitle}>
+            9 Pillars, 32 Indicators & 21 Sub-Indicators
+          </div>
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "12px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
             }}
           >
-            {PILLARS.map((p) => (
-              <div
-                key={p.key}
-                style={{
-                  background: `${p.color}15`,
-                  borderRadius: "8px",
-                  padding: "14px",
-                  border: `2px solid ${p.color}40`,
-                }}
-              >
+            {PILLARS.map((p) => {
+              const pillarData = PILLAR_INDICATORS[p.key];
+              return (
                 <div
+                  key={p.key}
                   style={{
-                    fontSize: "18px",
-                    fontWeight: 700,
-                    color: p.color,
-                    marginBottom: "4px",
+                    background: `${p.color}10`,
+                    borderRadius: "10px",
+                    border: `2px solid ${p.color}50`,
+                    overflow: "hidden",
                   }}
                 >
-                  {p.name}
-                </div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    color: "#64748B",
-                    marginBottom: "6px",
-                  }}
-                >
-                  {p.dim}
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span style={{ fontSize: "11px", color: "#64748B" }}>
-                    Weight: <strong>{p.weight}%</strong>
-                  </span>
-                  <span
+                  {/* Pillar Header */}
+                  <div
                     style={{
-                      fontSize: "10px",
-                      background: p.color,
-                      color: "#FFFFFF",
-                      padding: "2px 8px",
-                      borderRadius: "4px",
-                      fontWeight: 600,
+                      background: `${p.color}25`,
+                      padding: "14px",
+                      borderBottom: `2px solid ${p.color}50`,
                     }}
                   >
-                    P{p.id}
-                  </span>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: 700,
+                            color: p.color,
+                            marginBottom: "4px",
+                          }}
+                        >
+                          P{p.id}: {p.name}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            color: "#64748B",
+                          }}
+                        >
+                          {p.dim}
+                        </div>
+                      </div>
+                      <span
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: p.color,
+                          background: "#FFFFFF",
+                          padding: "6px 12px",
+                          borderRadius: "6px",
+                          border: `2px solid ${p.color}`,
+                        }}
+                      >
+                        {p.weight}%
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Indicators & Sub-Indicators */}
+                  <div style={{ padding: "12px" }}>
+                    {pillarData?.indicators?.map((indicator, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          marginBottom:
+                            idx < pillarData.indicators.length - 1
+                              ? "12px"
+                              : "0",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            color: p.color,
+                            marginBottom: "6px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              background: p.color,
+                              color: "#FFFFFF",
+                              borderRadius: "4px",
+                              padding: "2px 8px",
+                              fontSize: "10px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            {indicator.code}
+                          </span>
+                          {indicator.name}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "6px",
+                            marginLeft: "12px",
+                          }}
+                        >
+                          {indicator.subIndicators?.map((sub, subIdx) => (
+                            <div
+                              key={subIdx}
+                              style={{
+                                background: "#FFFFFF",
+                                border: `1px solid ${p.color}40`,
+                                borderRadius: "6px",
+                                padding: "6px 10px",
+                                fontSize: "11px",
+                                color: "#1E293B",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "9px",
+                                  fontWeight: 600,
+                                  color: p.color,
+                                }}
+                              >
+                                {sub.code}
+                              </span>
+                              {sub.name}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -8548,6 +9159,22 @@ export default function App() {
       </div>
 
       {/* Footer */}
+      <div
+        style={{
+          padding: "20px",
+          textAlign: "center",
+          fontSize: "12px",
+          color: "#64748B",
+          borderTop: "1px solid #E2E8F0",
+          marginTop: "40px",
+        }}
+      >
+        <p>
+          *Al-Khouri, A. M. (2024). Arab Digital Economy Index 2024: The rise of
+          artificial intelligence applications in the Arab economy. Arab
+          Federation for Digital Economy.
+        </p>
+      </div>
       <Footer />
     </div>
   );

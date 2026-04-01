@@ -74,38 +74,38 @@ const PILLARS = [
   {
     id: "6",
     key: "p6",
-    name: "Future Tech",
+    name: "Future Technologies",
     short: "Future Tech",
     weight: 15,
     color: "#95D5B2",
-    dim: "Digital Readiness",
+    dim: "Readiness in Digital for the Citizen",
   },
   {
     id: "7",
     key: "p7",
-    name: "Market Development",
+    name: "Market Development & Sophistication",
     short: "Market Dev",
     weight: 10,
     color: "#2D6A4F",
-    dim: "Digital Readiness",
+    dim: "Readiness in Digital for the Citizen",
   },
   {
     id: "8",
     key: "p8",
-    name: "Financial Markets",
+    name: "Financial Market Development",
     short: "Fin. Markets",
     weight: 10,
     color: "#388E7F",
-    dim: "Digital Readiness",
+    dim: "Readiness in Digital for the Citizen",
   },
   {
     id: "9",
     key: "p9",
-    name: "SDG Impact",
-    short: "SDG",
+    name: "Sustainable Development Goals",
+    short: "SDGs",
     weight: 10,
     color: "#1F4E38",
-    dim: "Digital Readiness",
+    dim: "Readiness in Digital for the Citizen",
   },
 ];
 
@@ -116,19 +116,36 @@ const PILLAR_INDICATORS = {
     indicators: [
       {
         code: "1.1",
-        name: "Governance Quality",
+        name: "Political Environment",
         subIndicators: [
-          { code: "1.1.1", name: "Political Stability & Security" },
+          { code: "1.1.1", name: "Political Stability and Security" },
           { code: "1.1.2", name: "Government Effectiveness" },
-          { code: "1.1.3", name: "Voice & Accountability" },
+          { code: "1.1.3", name: "Voice and Accountability" },
         ],
       },
       {
         code: "1.2",
-        name: "Regulatory Framework",
+        name: "Regulatory Environment",
         subIndicators: [
           { code: "1.2.1", name: "Regulatory Quality" },
           { code: "1.2.2", name: "Rule of Law" },
+          { code: "1.2.3", name: "Control of Corruption" },
+        ],
+      },
+      {
+        code: "1.3",
+        name: "Technology Governance",
+        subIndicators: [
+          { code: "1.3.1", name: "Secure Internet Servers" },
+          { code: "1.3.2", name: "E-Security" },
+          { code: "1.3.3", name: "Online Shopping" },
+          { code: "1.3.4", name: "ICT Regulatory Environment" },
+          { code: "1.3.5", name: "Regulation of Emerging Technologies" },
+          { code: "1.3.6", name: "E-commerce Legislation" },
+          {
+            code: "1.3.7",
+            name: "Protection of content privacy under the law",
+          },
         ],
       },
     ],
@@ -138,19 +155,29 @@ const PILLAR_INDICATORS = {
     indicators: [
       {
         code: "2.1",
-        name: "Connectivity",
-        subIndicators: [
-          { code: "2.1.1", name: "Mobile Subscriptions" },
-          { code: "2.1.2", name: "Internet Access" },
-        ],
+        name: "Access to ICT",
       },
       {
         code: "2.2",
-        name: "Bandwidth & Speed",
+        name: "Use of ICT",
+      },
+      {
+        code: "2.3",
+        name: "Technological Inclusion",
         subIndicators: [
-          { code: "2.2.1", name: "Broadband Coverage" },
-          { code: "2.2.2", name: "Network Quality" },
+          { code: "2.3.1", name: "E-Participation" },
+          {
+            code: "2.3.2",
+            name: "Socioeconomic gap in the use of digital payments",
+          },
+          { code: "2.3.3", name: "Availability of local content online" },
+          { code: "2.3.4", name: "Gender gap in internet use" },
+          { code: "2.3.5", name: "Rural gap in the use of digital payments" },
         ],
+      },
+      {
+        code: "2.4",
+        name: "Logistical Performance",
       },
     ],
   },
@@ -159,19 +186,15 @@ const PILLAR_INDICATORS = {
     indicators: [
       {
         code: "3.1",
-        name: "Digital Skills",
-        subIndicators: [
-          { code: "3.1.1", name: "ICT Education" },
-          { code: "3.1.2", name: "Workforce Training" },
-        ],
+        name: "Expenditure on education as a % of GDP",
       },
       {
         code: "3.2",
-        name: "Human Capital Development",
-        subIndicators: [
-          { code: "3.2.1", name: "Tertiary Education (STEM)" },
-          { code: "3.2.2", name: "Professional Certifications" },
-        ],
+        name: "Knowledge-intensive employment %",
+      },
+      {
+        code: "3.3",
+        name: "ICT skills in the education system",
       },
     ],
   },
@@ -180,12 +203,15 @@ const PILLAR_INDICATORS = {
     indicators: [
       {
         code: "4.1",
-        name: "E-Government Development",
-        subIndicators: [
-          { code: "4.1.1", name: "Online Service Index" },
-          { code: "4.1.2", name: "Telecom Infrastructure" },
-          { code: "4.1.3", name: "Human Capital" },
-        ],
+        name: "Government services online",
+      },
+      {
+        code: "4.2",
+        name: "Telecommunication Infrastructure",
+      },
+      {
+        code: "4.3",
+        name: "Human Capital Component",
       },
     ],
   },
@@ -194,69 +220,113 @@ const PILLAR_INDICATORS = {
     indicators: [
       {
         code: "5.1",
-        name: "R&D Investment",
-        subIndicators: [{ code: "5.1.1", name: "R&D Business Financing" }],
+        name: "R&D expenditure financed by business sector (%)",
       },
       {
         code: "5.2",
-        name: "Innovation Partnerships",
-        subIndicators: [
-          { code: "5.2.1", name: "University-Industry Collaboration" },
-        ],
+        name: "University-industry collaboration in R&D",
+      },
+      {
+        code: "5.3",
+        name: "Knowledge impact",
+      },
+      {
+        code: "5.4",
+        name: "Knowledge absorption",
       },
     ],
   },
   p6: {
-    name: "Future Tech",
+    name: "Future Technologies",
     indicators: [
       {
         code: "6.1",
-        name: "AI & Advanced Technologies",
-        subIndicators: [
-          { code: "6.1.1", name: "AI Readiness" },
-          { code: "6.1.2", name: "Tech Adoption Strategy" },
-        ],
+        name: "Adoption of emerging technologies",
+      },
+      {
+        code: "6.2",
+        name: "Investment in emerging technologies",
+      },
+      {
+        code: "6.3",
+        name: "Artificial Intelligence (AI) strategy",
       },
     ],
   },
   p7: {
-    name: "Market Development",
+    name: "Market Development and Sophistication",
     indicators: [
       {
         code: "7.1",
-        name: "Digital Market Maturity",
-        subIndicators: [
-          { code: "7.1.1", name: "E-Commerce Penetration" },
-          { code: "7.1.2", name: "Startup Ecosystem" },
-        ],
+        name: "Financing of start-ups and ease of access",
+      },
+      {
+        code: "7.2",
+        name: "Domestic credit to private sector, % of GDP",
+      },
+      {
+        code: "7.3",
+        name: "Diversification of local industry",
       },
     ],
   },
   p8: {
-    name: "Financial Markets",
+    name: "Financial Market Development",
     indicators: [
       {
         code: "8.1",
-        name: "Financial Market Development",
+        name: "FinTech and Financial Inclusion",
         subIndicators: [
-          { code: "8.1.1", name: "FinTech Adoption" },
-          { code: "8.1.2", name: "Financial Inclusion" },
+          {
+            code: "8.1.1",
+            name: "Population (age 15+) with bank accounts (%)",
+          },
+          {
+            code: "8.1.2",
+            name: "Population (age 15+) with debit or credit card (%)",
+          },
+          {
+            code: "8.1.3",
+            name: "Population (age 15+) made or received digital payment (%)",
+          },
         ],
+      },
+      {
+        code: "8.2",
+        name: "Market capitalization as a % of GDP",
       },
     ],
   },
   p9: {
-    name: "SDG Impact",
+    name: "Sustainable Development Goals",
     indicators: [
       {
         code: "9.1",
-        name: "SDG ICT Indicators",
-        subIndicators: [
-          { code: "9.1.1", name: "SDG 9: Industry & Innovation" },
-          { code: "9.1.2", name: "SDG 3: Health & Well-being" },
-          { code: "9.1.3", name: "SDG 4: Quality Education" },
-          { code: "9.1.4", name: "SDG 5: Gender Equality" },
-        ],
+        name: "Goal 1: No Poverty",
+      },
+      {
+        code: "9.2",
+        name: "Goal 2: Zero Hunger",
+      },
+      {
+        code: "9.3",
+        name: "Goal 3: Good Health and Well-being",
+      },
+      {
+        code: "9.4",
+        name: "Goal 4: Quality Education",
+      },
+      {
+        code: "9.5",
+        name: "Goal 8: Decent Work and Economic Growth",
+      },
+      {
+        code: "9.6",
+        name: "Goal 9: Industry, Innovation and Infrastructure",
+      },
+      {
+        code: "9.7",
+        name: "Goal 17: Partnerships for the Goals",
       },
     ],
   },
@@ -1857,13 +1927,22 @@ function GlobalOverview() {
             </div>
           </div>
           <div style={{ fontSize: "12px", color: "#1E293B", lineHeight: 1.6 }}>
-            The OIC's digital economy shows a pyramid structure with{" "}
-            <strong>{leaders.length} advanced economies</strong> leading growth,
-            <strong> {adopters.length} emerging economies</strong>{" "}
-            transitioning, and{" "}
-            <strong>{emerging.length} foundational economies</strong> with
-            significant capacity-building opportunities. Focused peer learning
-            programs can accelerate collective digital transformation.
+            The 2025 OIC Digital Economy Index reveals a{" "}
+            <strong>
+              {(sorted[0].adei - sorted[sorted.length - 1].adei).toFixed(0)}
+              -point digital divide
+            </strong>{" "}
+            between {sorted[0].name} ({sorted[0].adei.toFixed(0)}) and{" "}
+            {sorted[sorted.length - 1].name} (
+            {sorted[sorted.length - 1].adei.toFixed(0)}).{" "}
+            <strong>E-Government outpaces Innovation:</strong> state-led
+            digitization is the OIC's greatest strength, while private-sector
+            R&D is the critical bottleneck. With{" "}
+            <strong>{leaders.length} advanced</strong>,{" "}
+            <strong>{adopters.length} emerging</strong>, and{" "}
+            <strong>{emerging.length} foundational</strong> economies, tailored
+            strategies aligned to digital maturity are essential — a
+            one-size-fits-all digital policy is fundamentally ineffective.
           </div>
         </div>
       </div>
@@ -4924,7 +5003,7 @@ function PolicyRecommendations() {
         pillar: "Innovation",
         priority: "IMMEDIATE",
         action:
-          "Establish a national R&D incentive framework to attract private-sector investment. Target: Increase business-financed R&D from <1% to 3% of GDP within 5 years. Create public-private innovation hubs at universities.",
+          "Innovation is the primary bottleneck in OIC's digital transformation. R&D activity remains predominantly state-funded with limited private-sector participation. Incentivize private-sector R&D participation, strengthen venture financing ecosystems, and establish structured commercialization pathways linking university research centers with industry and investment capital.",
         icon: "🔬",
       });
     if (p.p3 < 40)
@@ -4932,7 +5011,7 @@ function PolicyRecommendations() {
         pillar: "Workforce",
         priority: "HIGH",
         action:
-          "Launch a national digital skills accelerator program targeting youth and women. Partner with tech giants for upskilling certificates. Integrate AI literacy into national curriculum.",
+          "Many OIC economies remain structurally concentrated in primary sectors rather than knowledge-intensive industries. Launch national digital skills programs targeting youth and women. Expand knowledge-intensive employment through STEM education, professional certifications, and workforce upskilling initiatives.",
         icon: "🎓",
       });
     if (p.p2 < 50)
@@ -4940,7 +5019,7 @@ function PolicyRecommendations() {
         pillar: "Infrastructure",
         priority: "HIGH",
         action:
-          "Accelerate fiber broadband and 5G rollout to rural areas. Pursue public-private partnerships for infrastructure financing. Leverage Islamic Social Finance (Zakat/Waqf) for digital inclusion.",
+          "Expand reliable broadband infrastructure, reduce access costs, and treat digital connectivity as a critical public utility. Pursue public-private partnerships for infrastructure financing and leverage Islamic Social Finance (Zakat/Waqf) for digital inclusion programs in underserved areas.",
         icon: "📡",
       });
     if (p.p1 < 50)
@@ -4961,26 +5040,26 @@ function PolicyRecommendations() {
       });
     if (p.p8 < 30)
       recs.push({
-        pillar: "Financial Markets",
+        pillar: "Financial Market Development",
         priority: "MEDIUM",
         action:
-          "Develop Islamic Fintech regulatory sandbox to attract digital finance innovation. Promote mobile banking and digital wallets for financial inclusion, especially in rural areas.",
+          "Develop Islamic FinTech regulatory sandbox to attract digital finance innovation. In many OIC economies, a substantial population remains outside the formal banking system. Promote mobile banking, digital wallets, and Shariah-compliant FinTech solutions to drive financial inclusion, especially in rural areas.",
         icon: "💰",
       });
     if (p.p6 < 40)
       recs.push({
-        pillar: "Future Tech",
+        pillar: "Future Technologies",
         priority: "MEDIUM",
         action:
-          "Create a national AI strategy and invest in cloud infrastructure. Attract foreign tech FDI through special economic zones and tax incentives for tech firms.",
+          "Many Emerging and Foundational Digital Economies have yet to formalize national AI strategies or mobilize sustained capital toward frontier technologies. Create a national AI strategy with clear governance frameworks and investment incentives for advanced digital sectors to capture value from the next wave of technological transformation.",
         icon: "🤖",
       });
     if (p.p7 < 40)
       recs.push({
-        pillar: "Market Development",
+        pillar: "Market Development & Sophistication",
         priority: "MEDIUM",
         action:
-          "Reduce digital trade barriers and streamline e-commerce regulations. Support SME digital adoption through subsidized digital tools and training programs.",
+          "Limited access to growth-stage financing constrains start-up scaling, while insufficient industrial diversification narrows the domestic demand base. Reduce digital trade barriers, streamline e-commerce regulations, expand start-up financing accessibility, and support SME digital adoption.",
         icon: "🛒",
       });
 
@@ -5149,27 +5228,28 @@ function PolicyRecommendations() {
 
       {/* OIC-wide Recommendations */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>OIC-Wide Strategic Priorities</div>
+        <div style={styles.cardTitle}>OIC-Wide Strategic Recommendations</div>
         {[
           {
-            icon: "📶",
-            title: "Bridging the Digital Divide",
-            desc: "The 65-point gap between UAE (77) and Somalia (11) highlights the importance of intra-OIC knowledge transfer. Establish OIC Digital Solidarity Fund modeled on Islamic Development Bank frameworks.",
-          },
-          {
-            icon: "🕌",
-            title: "Islamic Fintech as Strategic Advantage",
-            desc: "Capitalize on Islamic finance digitalization. Create harmonized OIC Fintech regulatory framework to position the bloc as a global Islamic digital finance hub.",
-          },
-          {
-            icon: "🧠",
-            title: "Human Capital Development",
-            desc: "Launch OIC-wide digital skills initiative targeting 10 million youth by 2030. Leverage intra-OIC scholarship programs for STEM and digital economy fields.",
+            icon: "🎯",
+            title: "1. Aligning Policy with Digital Maturity",
+            desc: "National digital strategies should reflect a country's current digital maturity. Foundational economies: prioritize affordable broadband and digital literacy. Emerging economies: accelerate SME digitalization and workforce upskilling. Advanced economies: scale private-sector R&D and advance frontier technologies.",
           },
           {
             icon: "🔗",
-            title: "Digital Infrastructure Integration",
-            desc: "Develop OIC digital corridor connecting broadband networks across member states. Prioritize last-mile connectivity in Sub-Saharan African members.",
+            title: "2. Transforming the Digital Divide into Intra-OIC Synergy",
+            desc: "Establish structured intra-OIC corridors for knowledge transfer, venture capital mobilization, and digital trade facilitation. Create common standards for e-commerce governance, digital identity recognition, cybersecurity protocols, and Shariah-compliant FinTech solutions.",
+          },
+          {
+            icon: "🧠",
+            title:
+              "3. Shared OIC Digital Talent & Innovation Mobility Framework",
+            desc: "Develop a bloc-level mechanism to facilitate digital talent movement, harmonize skills certification standards, and co-finance regional centers of excellence in AI, data science, and Islamic FinTech. Structured university-industry collaboration can reduce brain drain and position the OIC as a coordinated digital knowledge hub.",
+          },
+          {
+            icon: "🕌",
+            title: "4. Leveraging Islamic Finance for Inclusive Growth",
+            desc: "Deploy Zakat and Waqf-backed microfinance for digital inclusion in Foundational economies. Use Shariah-compliant venture capital and equity crowdfunding for Emerging economy start-ups. Advanced economies should pioneer regulatory standards for digital Sukuk and Shariah-compliant FinTech frameworks.",
           },
         ].map((r, i) => (
           <div
@@ -7960,55 +8040,84 @@ function Methodology() {
   const [activeTab, setActiveTab] = useState("overview");
   const SOURCES = [
     {
-      indicator: "Political Stability & Security",
-      code: "1.1.1",
-      source: "World Bank WGI, 2025",
+      indicator: "Political Environment (1.1)",
+      code: "1.1.1–1.1.3",
+      source: "World Bank Worldwide Governance Indicators (WGI), 2025",
     },
     {
-      indicator: "Government Effectiveness",
-      code: "1.1.2",
-      source: "World Bank WGI, 2025",
+      indicator: "Regulatory Environment (1.2)",
+      code: "1.2.1–1.2.3",
+      source: "World Bank Worldwide Governance Indicators (WGI), 2025",
     },
     {
-      indicator: "Voice & Accountability",
-      code: "1.1.3",
-      source: "World Bank WGI, 2025",
+      indicator: "Technology Governance (1.3)",
+      code: "1.3.1–1.3.7",
+      source:
+        "Portulans Institute & Saïd Business School, University of Oxford (2021–2025)",
     },
     {
-      indicator: "Regulatory Quality",
-      code: "1.2.1",
-      source: "World Bank WGI, 2025",
+      indicator: "Access to ICT / Use of ICT",
+      code: "2.1–2.2",
+      source: "WIPO (2022–2025)",
     },
-    { indicator: "Rule of Law", code: "1.2.2", source: "World Bank WGI, 2025" },
     {
-      indicator: "E-Government Development",
+      indicator: "Technological Inclusion (2.3)",
+      code: "2.3.1–2.3.5",
+      source:
+        "Portulans Institute & Saïd Business School, University of Oxford (2021–2025)",
+    },
+    {
+      indicator: "Logistical Performance",
+      code: "2.4",
+      source: "WIPO (2022–2025)",
+    },
+    {
+      indicator: "Workforce (Education, Employment, ICT Skills)",
+      code: "3.1–3.3",
+      source:
+        "WIPO (2022–2025); Portulans Institute & Saïd Business School (2021–2025)",
+    },
+    {
+      indicator: "E-Government",
       code: "4.1–4.3",
-      source: "UN E-Government Development Index (EGDI), 2025",
+      source: "World Bank (2025a)",
     },
     {
-      indicator: "R&D Business Financing",
-      code: "5.1",
-      source: "UNESCO Institute for Statistics, 2025",
+      indicator: "Innovation (R&D, Collaboration, Knowledge)",
+      code: "5.1–5.4",
+      source: "WIPO (2022–2025)",
     },
     {
-      indicator: "University-Industry Collaboration",
-      code: "5.2",
-      source: "World Economic Forum GCI, 2025",
+      indicator: "Future Technologies (Adoption & Investment)",
+      code: "6.1–6.2",
+      source:
+        "Portulans Institute & Saïd Business School, University of Oxford (2021–2025)",
     },
     {
-      indicator: "Mobile Subscriptions / Internet",
-      code: "2.x",
-      source: "International Telecommunication Union (ITU), 2025",
+      indicator: "AI Strategy",
+      code: "6.3",
+      source: "OECD (2025)",
     },
     {
-      indicator: "Financial Market Development",
-      code: "8.x",
-      source: "IMF Financial Access Survey; World Bank Findex, 2025",
+      indicator: "Market Development & Sophistication",
+      code: "7.1–7.3",
+      source: "WIPO (2022–2025)",
     },
     {
-      indicator: "SDG ICT Indicators",
+      indicator: "FinTech and Financial Inclusion",
+      code: "8.1.1–8.1.3",
+      source: "World Bank (2025)",
+    },
+    {
+      indicator: "Market Capitalization",
+      code: "8.2",
+      source: "WIPO (2022–2025)",
+    },
+    {
+      indicator: "Sustainable Development Goals",
       code: "9.1–9.7",
-      source: "UN SDG Global Database; ITU, 2025",
+      source:
+        "Sustainable Development Solutions Network & Bertelsmann Stiftung (2025)",
     },
   ];
 
@@ -8030,7 +8139,9 @@ function Methodology() {
             It applies the Arab Digital Economy Index (ADEI) structure to
             compute index scores for 2025 using lagged annual data. The index
             comprises nine pillars, 32 indicators, and 21 sub-indicators
-            (Al-Khouri, 2024)*.
+            (Al-Khouri, 2024). Greater weight is assigned to Institutions,
+            Infrastructure, and Technological Readiness (15% each), reflecting
+            their foundational role in digital transformation.
           </p>
           <div
             style={{
@@ -8356,7 +8467,7 @@ function Methodology() {
                 color: "#1B4332",
                 bgColor: "#D8F3DC",
                 count: "6 States",
-                desc: "Global-competitive leaders with strong AI, E-Government, and digital infrastructure capabilities.",
+                desc: "Well positioned to transition from infrastructure expansion toward innovation leadership. Priorities include scaling frontier R&D, strengthening patent commercialization, and contributing to global AI and data governance frameworks.",
               },
               {
                 title: "Emerging Digital Economies",
@@ -8364,7 +8475,7 @@ function Methodology() {
                 color: "#52B788",
                 bgColor: "#E8F5E9",
                 count: "15 States",
-                desc: "Solid digital foundations but constrained by R&D, advanced skills, and venture capital gaps.",
+                desc: "Established core infrastructure but would benefit from strengthening digital skills, institutional capacity, SME digital transformation, and innovation financing to avoid middle digital stagnation.",
               },
               {
                 title: "Foundational Digital Economies",
@@ -8372,7 +8483,7 @@ function Methodology() {
                 color: "#95D5B2",
                 bgColor: "#F1F8F6",
                 count: "36 States",
-                desc: "Early-stage transformation facing infrastructure deficits and limited digital literacy.",
+                desc: "Require continued emphasis on foundational investments: affordable broadband access, digital inclusion, baseline digital literacy, and regulatory modernization to enable broad-based participation.",
               },
             ].map((cluster) => (
               <div
@@ -8464,9 +8575,11 @@ function Methodology() {
             marginBottom: "16px",
           }}
         >
-          All data sourced from internationally recognized organizations. The
-          2025 edition uses lagged data from 2023–2024 reporting periods for
-          accuracy.
+          All data sourced from internationally recognized organizations
+          including World Bank, WIPO, OECD, Portulans Institute & Saïd Business
+          School (University of Oxford), and the Sustainable Development
+          Solutions Network. The 2025 edition uses lagged annual data from
+          multiple reporting periods for accuracy.
         </p>
         <table
           style={{
@@ -8674,7 +8787,8 @@ function Acknowledgement() {
                 fontWeight: 500,
               }}
             >
-              OIC Digital Economy Index (OIC DEI) · 2025 Assessment
+              OIC Digital Economy Index (OIC DEI) · 2025 Assessment · Policy
+              Report
             </p>
           </div>
         </div>
@@ -8943,13 +9057,14 @@ function Acknowledgement() {
             }}
           >
             <p style={{ margin: "0 0 8px 0" }}>
-              © 2025{" "}
+              © 2026{" "}
               <strong style={{ color: "#000000" }}>INCEIF University</strong> —
               The Global University of Islamic Finance
             </p>
             <p style={{ margin: 0, fontSize: "11px", color: "#475569" }}>
               This dashboard is for informational purposes only. Data presented
-              reflects the 2025 OIC Digital Economy Assessment.
+              reflects the 2025 OIC Digital Economy Assessment. The findings do
+              not necessarily reflect the views of INCEIF University.
             </p>
           </div>
         </div>
@@ -8966,6 +9081,11 @@ const TABS = [
   { id: "geo", label: "Geographic Analysis", component: GeographicAnalysis },
   { id: "trends", label: "Trends & Progress", component: TrendsProgress },
   { id: "divide", label: "Digital Divide", component: DigitalDivide },
+  {
+    id: "policy",
+    label: "Strategic Recommendations",
+    component: PolicyRecommendations,
+  },
   /* {
     id: "islamic",
     label: "Islamic Digital Special",
@@ -8996,7 +9116,7 @@ const TABS = [
 function Footer() {
   return (
     <div style={styles.footer}>
-      © 2025 INCEIF University — The Global University of Islamic Finance
+      © 2026 INCEIF University — The Global University of Islamic Finance
     </div>
   );
 }
@@ -9170,9 +9290,10 @@ export default function App() {
         }}
       >
         <p>
-          *Al-Khouri, A. M. (2024). Arab Digital Economy Index 2024: The rise of
-          artificial intelligence applications in the Arab economy. Arab
-          Federation for Digital Economy.
+          *Salim, K., Abdul Hamid, B., Disli, M., Lutfi, K. I., & Cahyono, K. N.
+          (2026). Digital Economy Index: OIC Countries 2025 — Policy Report.
+          INCEIF University. Methodology based on Al-Khouri, A. M. (2024). Arab
+          Digital Economy Index 2024. Arab Federation for Digital Economy.
         </p>
       </div>
       <Footer />

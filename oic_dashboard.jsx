@@ -2124,12 +2124,6 @@ function GlobalOverview() {
               stroke="#1B4332"
               strokeDasharray="4 4"
               strokeWidth={2}
-              label={{
-                value: `OIC Avg: ${OIC_AVERAGE}`,
-                fill: "#1B4332",
-                fontSize: 11,
-                fontWeight: 700,
-              }}
             />
           </BarChart>
         </ResponsiveContainer>
@@ -2457,6 +2451,89 @@ function CountryProfiles() {
     a.click();
   };
 
+  const exportPDF = () => {
+    const script = document.createElement("script");
+    script.src =
+      "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
+    script.onload = () => {
+      const element = document.createElement("div");
+      element.style.padding = "20px";
+      element.style.fontFamily = "Arial, sans-serif";
+      element.innerHTML = `
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #1B4332; margin: 0;">OIC Digital Economy Index</h1>
+          <h2 style="color: #2D6A4F; margin: 10px 0; font-size: 24px;">${country.name}</h2>
+          <p style="color: #64748B; margin: 5px 0;">Country Profile Report · 2025</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
+          <div style="background: #D8F3DC; padding: 15px; border-radius: 8px; border-left: 4px solid #1B4332;">
+            <p style="color: #1B4332; font-weight: bold; margin: 0 0 5px 0;">OIC DEI Score</p>
+            <h3 style="color: #1B4332; margin: 0; font-size: 28px;">${country.adei.toFixed(1)}/100</h3>
+          </div>
+          <div style="background: #EEF2FF; padding: 15px; border-radius: 8px; border-left: 4px solid #6366F1;">
+            <p style="color: #6366F1; font-weight: bold; margin: 0 0 5px 0;">Global Rank</p>
+            <h3 style="color: #6366F1; margin: 0; font-size: 28px;">#${country.rank}</h3>
+          </div>
+          <div style="background: #FEF3C7; padding: 15px; border-radius: 8px; border-left: 4px solid #D97706;">
+            <p style="color: #B45309; font-weight: bold; margin: 0 0 5px 0;">Region</p>
+            <h3 style="color: #B45309; margin: 0; font-size: 20px;">${region}</h3>
+          </div>
+          <div style="background: #DBEAFE; padding: 15px; border-radius: 8px; border-left: 4px solid #2563EB;">
+            <p style="color: #1E40AF; font-weight: bold; margin: 0 0 5px 0;">Rank in Region</p>
+            <h3 style="color: #1E40AF; margin: 0; font-size: 28px;">#${regionRank}</h3>
+          </div>
+        </div>
+
+        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Pillar Scores</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+          <thead>
+            <tr style="background: #1B4332; color: white;">
+              <th style="padding: 10px; text-align: left; border: 1px solid #E2E8F0;">Pillar</th>
+              <th style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">Score</th>
+              <th style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">OIC Avg</th>
+              <th style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">vs Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${PILLARS.map(
+              (p) => `
+              <tr style="background: ${PILLARS.indexOf(p) % 2 === 0 ? "#FFFFFF" : "#F8FAFC"}; border: 1px solid #E2E8F0;">
+                <td style="padding: 10px; border: 1px solid #E2E8F0; color: ${p.color}; font-weight: bold;">${p.name}</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0; font-weight: bold;">${country[p.key].toFixed(1)}</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">${oicAvgByPillar[p.key].toFixed(1)}</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0; color: ${country[p.key] - oicAvgByPillar[p.key] >= 0 ? "#10B981" : "#EF4444"}; font-weight: bold;">
+                  ${(country[p.key] - oicAvgByPillar[p.key]).toFixed(1)}
+                </td>
+              </tr>
+            `,
+            ).join("")}
+          </tbody>
+        </table>
+
+        <div style="page-break-inside: avoid; margin-top: 30px; border-top: 1px solid #E2E8F0; padding-top: 15px;">
+          <p style="color: #64748B; font-size: 12px; margin: 5px 0;">
+            <strong>Report Generated:</strong> ${new Date().toLocaleDateString()} · OIC Digital Economy Index 2025
+          </p>
+          <p style="color: #94A3B8; font-size: 11px; margin: 5px 0;">
+            For more information, visit: OIC Digital Economy Index Dashboard
+          </p>
+        </div>
+      `;
+
+      const opt = {
+        margin: 10,
+        filename: `${country.name.replace(/[^a-z0-9]/gi, "_")}_OIC_DEI_Profile.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { orientation: "portrait", unit: "mm", format: "a4" },
+      };
+
+      window.html2pdf().set(opt).from(element).save();
+    };
+    document.head.appendChild(script);
+  };
+
   const copyLink = () => {
     const hash = `#country=${encodeURIComponent(selected)}&tab=profiles`;
     const url = window.location.href.split("#")[0] + hash;
@@ -2577,6 +2654,18 @@ function CountryProfiles() {
             }}
           >
             ⬇ Export CSV
+          </button>
+          <button
+            onClick={exportPDF}
+            style={{
+              ...styles.select,
+              background: "#FEE2E2",
+              color: "#DC2626",
+              borderColor: "#DC262640",
+              cursor: "pointer",
+            }}
+          >
+            📄 Download PDF
           </button>
           <button
             onClick={copyLink}
@@ -3737,6 +3826,94 @@ function PillarAnalysis() {
           {INSIGHTS[pillar.key]}
         </p>
       </div>
+
+      {/* Indicators & Sub-Indicators */}
+      {PILLAR_INDICATORS[pillar.key] && (
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Indicators & Sub-Indicators</div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+            }}
+          >
+            {PILLAR_INDICATORS[pillar.key].indicators.map((indicator, idx) => (
+              <div
+                key={idx}
+                style={{
+                  marginBottom:
+                    idx < PILLAR_INDICATORS[pillar.key].indicators.length - 1
+                      ? "12px"
+                      : "0",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    color: pillar.color,
+                    marginBottom: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <span
+                    style={{
+                      background: pillar.color,
+                      color: "#FFFFFF",
+                      borderRadius: "4px",
+                      padding: "2px 8px",
+                      fontSize: "10px",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {indicator.code}
+                  </span>
+                  {indicator.name}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "6px",
+                    marginLeft: "12px",
+                  }}
+                >
+                  {indicator.subIndicators?.map((sub, subIdx) => (
+                    <div
+                      key={subIdx}
+                      style={{
+                        background: "#FFFFFF",
+                        border: `1px solid ${pillar.color}40`,
+                        borderRadius: "6px",
+                        padding: "6px 10px",
+                        fontSize: "11px",
+                        color: "#1E293B",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "9px",
+                          fontWeight: 600,
+                          color: pillar.color,
+                        }}
+                      >
+                        {sub.code}
+                      </span>
+                      {sub.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Full Rankings Bar Chart */}
       <div style={styles.card}>

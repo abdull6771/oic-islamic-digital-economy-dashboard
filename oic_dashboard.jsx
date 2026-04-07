@@ -2456,6 +2456,26 @@ function CountryProfiles() {
     script.src =
       "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
     script.onload = () => {
+      // Calculate strongest & weakest pillars
+      const pillarGaps = PILLARS.map((p) => ({
+        pillar: p,
+        gap: country[p.key] - oicAvgByPillar[p.key],
+        score: country[p.key],
+      })).sort((a, b) => b.gap - a.gap);
+      const strongest = pillarGaps[0];
+      const weakest = pillarGaps[pillarGaps.length - 1];
+
+      // Regional comparison
+      const regionPeers = [...COUNTRIES]
+        .filter((c) => REGIONS[c.name] === REGIONS[country.name])
+        .sort((a, b) => b.adei - a.adei);
+      const globalLeader = [...COUNTRIES].sort((a, b) => b.adei - a.adei)[0];
+      const gapToLeader = (globalLeader.adei - country.adei).toFixed(1);
+      const regionLeaderGap = regionPeers[0].name === country.name ? 0 : (regionPeers[0].adei - country.adei).toFixed(1);
+
+      // Get top 3 regional performers
+      const top3Regional = regionPeers.slice(0, 3);
+
       const element = document.createElement("div");
       element.style.padding = "20px";
       element.style.fontFamily = "Arial, sans-serif";
@@ -2485,38 +2505,97 @@ function CountryProfiles() {
           </div>
         </div>
 
-        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Pillar Scores</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Digital Economy Classification</h3>
+        <div style="background: ${cluster.bg}; border: 1px solid ${cluster.color}40; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+          <p style="color: ${cluster.color}; font-weight: bold; margin: 0 0 10px 0; font-size: 16px;">${cluster.label}</p>
+          <p style="color: #1E293B; margin: 0; line-height: 1.6;">${HEADLINE_REC[cluster.label]}</p>
+        </div>
+
+        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Performance Highlights</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+          <div style="background: #D8F3DC; padding: 15px; border-radius: 8px; border-left: 4px solid #10B981;">
+            <p style="color: #10B981; font-weight: bold; margin: 0 0 5px 0; font-size: 12px;">STRONGEST PILLAR</p>
+            <p style="color: #1B4332; font-weight: bold; margin: 0 0 3px 0; font-size: 14px;">${strongest.pillar.name}</p>
+            <p style="color: #64748B; margin: 0; font-size: 12px;">Score: <strong>${strongest.score.toFixed(1)}</strong> (+${strongest.gap.toFixed(1)} vs OIC avg)</p>
+          </div>
+          <div style="background: #FEE2E2; padding: 15px; border-radius: 8px; border-left: 4px solid #EF4444;">
+            <p style="color: #EF4444; font-weight: bold; margin: 0 0 5px 0; font-size: 12px;">AREA FOR IMPROVEMENT</p>
+            <p style="color: #1B4332; font-weight: bold; margin: 0 0 3px 0; font-size: 14px;">${weakest.pillar.name}</p>
+            <p style="color: #64748B; margin: 0; font-size: 12px;">Score: <strong>${weakest.score.toFixed(1)}</strong> (${weakest.gap.toFixed(1)} vs OIC avg)</p>
+          </div>
+        </div>
+
+        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Regional & Global Context</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+          <div style="background: #F0FDF4; padding: 15px; border-radius: 8px; border: 1px solid #86EFAC;">
+            <p style="color: #16A34A; font-weight: bold; margin: 0 0 8px 0;">Regional Position</p>
+            <p style="color: #1E293B; margin: 0 0 5px 0; font-size: 13px;">Ranked <strong>#${regionRank}</strong> in ${region}</p>
+            <p style="color: #1E293B; margin: 0; font-size: 13px;">Gap to regional leader: <strong>${regionLeaderGap === 0 ? "You are the leader!" : "+" + regionLeaderGap}</strong></p>
+          </div>
+          <div style="background: #EFF6FF; padding: 15px; border-radius: 8px; border: 1px solid #93C5FD;">
+            <p style="color: #1E40AF; font-weight: bold; margin: 0 0 8px 0;">Global Benchmark</p>
+            <p style="color: #1E293B; margin: 0 0 5px 0; font-size: 13px;">Global leader: <strong>${globalLeader.name}</strong></p>
+            <p style="color: #1E293B; margin: 0; font-size: 13px;">Gap to close: <strong>${gapToLeader} points</strong></p>
+          </div>
+        </div>
+
+        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Pillar Score Performance</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
           <thead>
             <tr style="background: #1B4332; color: white;">
               <th style="padding: 10px; text-align: left; border: 1px solid #E2E8F0;">Pillar</th>
               <th style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">Score</th>
               <th style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">OIC Avg</th>
               <th style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">vs Avg</th>
+              <th style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">Performance</th>
             </tr>
           </thead>
           <tbody>
             ${PILLARS.map(
-              (p) => `
+              (p) => {
+                const gap = country[p.key] - oicAvgByPillar[p.key];
+                const barWidth = Math.max(0, (country[p.key] / 100) * 150);
+                return `
               <tr style="background: ${PILLARS.indexOf(p) % 2 === 0 ? "#FFFFFF" : "#F8FAFC"}; border: 1px solid #E2E8F0;">
-                <td style="padding: 10px; border: 1px solid #E2E8F0; color: ${p.color}; font-weight: bold;">${p.name}</td>
+                <td style="padding: 10px; border: 1px solid #E2E8F0; color: ${p.color}; font-weight: bold; font-size: 12px;">${p.name}</td>
                 <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0; font-weight: bold;">${country[p.key].toFixed(1)}</td>
-                <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0;">${oicAvgByPillar[p.key].toFixed(1)}</td>
-                <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0; color: ${country[p.key] - oicAvgByPillar[p.key] >= 0 ? "#10B981" : "#EF4444"}; font-weight: bold;">
-                  ${(country[p.key] - oicAvgByPillar[p.key]).toFixed(1)}
+                <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0; font-size: 12px;">${oicAvgByPillar[p.key].toFixed(1)}</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0; color: ${gap >= 0 ? "#10B981" : "#EF4444"}; font-weight: bold;">${gap >= 0 ? "+" : ""}${gap.toFixed(1)}</td>
+                <td style="padding: 5px; border: 1px solid #E2E8F0;">
+                  <div style="background: ${p.color}; width: ${barWidth}px; height: 20px; border-radius: 4px; opacity: 0.7;"></div>
                 </td>
               </tr>
-            `,
+            `;
+              },
             ).join("")}
           </tbody>
         </table>
 
-        <div style="page-break-inside: avoid; margin-top: 30px; border-top: 1px solid #E2E8F0; padding-top: 15px;">
-          <p style="color: #64748B; font-size: 12px; margin: 5px 0;">
-            <strong>Report Generated:</strong> ${new Date().toLocaleDateString()} · OIC Digital Economy Index 2025
+        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Top Regional Performers</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+          ${top3Regional.map((c, idx) => `
+            <div style="background: #F8FAFC; padding: 12px; border-radius: 8px; border: 1px solid #E2E8F0;">
+              <p style="color: #1B4332; font-weight: bold; margin: 0 0 5px 0; font-size: 13px;">#${idx + 1} ${c.name}</p>
+              <p style="color: #64748B; margin: 0; font-size: 12px;">Score: <strong>${c.adei.toFixed(1)}</strong></p>
+            </div>
+          `).join("")}
+        </div>
+
+        <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Strategic Recommendations</h3>
+        <div style="line-height: 1.8; font-size: 13px; color: #1E293B; margin-bottom: 20px;">
+          <p><strong style="color: #1B4332;">1. Strengthen Your Position</strong><br/>Focus on enhancing ${strongest.pillar.name} where you have competitive advantage. This pillar is your key differentiator.</p>
+          <p><strong style="color: #1B4332;">2. Bridge the Gap</strong><br/>Prioritize ${weakest.pillar.name} to reduce the ${Math.abs(weakest.gap).toFixed(1)} point gap from OIC average. This is critical for overall advancement.</p>
+          <p><strong style="color: #1B4332;">3. Benchmark Learning</strong><br/>Study successful implementations from ${top3Regional[0].name} and other regional leaders to accelerate progress toward advanced digital economy status.</p>
+          <p><strong style="color: #1B4332;">4. Close Global Gap</strong><br/>To reach ${globalLeader.name}'s level, focus investments on digital infrastructure, innovation, and workforce development aligned with your classification tier.</p>
+        </div>
+
+        <div style="page-break-inside: avoid; margin-top: 30px; border-top: 2px solid #E2E8F0; padding-top: 15px; background: #F8FAFC; padding: 15px; border-radius: 8px;">
+          <p style="color: #1B4332; font-weight: bold; margin: 0 0 10px 0;">Report Summary</p>
+          <p style="color: #64748B; font-size: 12px; margin: 0 0 5px 0;">
+            <strong>Generated:</strong> ${new Date().toLocaleDateString()} · <strong>Assessment:</strong> OIC Digital Economy Index 2025
           </p>
-          <p style="color: #94A3B8; font-size: 11px; margin: 5px 0;">
-            For more information, visit: OIC Digital Economy Index Dashboard
+          <p style="color: #94A3B8; font-size: 11px; margin: 0;">
+            This report provides a comprehensive analysis of ${country.name}'s digital readiness. For updates and interactive analysis, visit the OIC Digital Economy Index Dashboard.
           </p>
         </div>
       `;

@@ -9178,7 +9178,7 @@ function Acknowledgement() {
               { name: "Haitham Alnaeb", url: null },
               {
                 name: "Abdullahi Ahmad Babura",
-                url: "https://abdull6771.github.io/aahmad.github.io/",
+                url: "https://abdullahiahmad.vercel.app/",
               },
               { name: "Amnan Hanani", url: null },
             ].map((person) => (

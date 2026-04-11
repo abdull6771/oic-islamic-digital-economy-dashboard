@@ -2471,7 +2471,10 @@ function CountryProfiles() {
         .sort((a, b) => b.adei - a.adei);
       const globalLeader = [...COUNTRIES].sort((a, b) => b.adei - a.adei)[0];
       const gapToLeader = (globalLeader.adei - country.adei).toFixed(1);
-      const regionLeaderGap = regionPeers[0].name === country.name ? 0 : (regionPeers[0].adei - country.adei).toFixed(1);
+      const regionLeaderGap =
+        regionPeers[0].name === country.name
+          ? 0
+          : (regionPeers[0].adei - country.adei).toFixed(1);
 
       // Get top 3 regional performers
       const top3Regional = regionPeers.slice(0, 3);
@@ -2551,11 +2554,10 @@ function CountryProfiles() {
             </tr>
           </thead>
           <tbody>
-            ${PILLARS.map(
-              (p) => {
-                const gap = country[p.key] - oicAvgByPillar[p.key];
-                const barWidth = Math.max(0, (country[p.key] / 100) * 150);
-                return `
+            ${PILLARS.map((p) => {
+              const gap = country[p.key] - oicAvgByPillar[p.key];
+              const barWidth = Math.max(0, (country[p.key] / 100) * 150);
+              return `
               <tr style="background: ${PILLARS.indexOf(p) % 2 === 0 ? "#FFFFFF" : "#F8FAFC"}; border: 1px solid #E2E8F0;">
                 <td style="padding: 10px; border: 1px solid #E2E8F0; color: ${p.color}; font-weight: bold; font-size: 12px;">${p.name}</td>
                 <td style="padding: 10px; text-align: center; border: 1px solid #E2E8F0; font-weight: bold;">${country[p.key].toFixed(1)}</td>
@@ -2566,19 +2568,22 @@ function CountryProfiles() {
                 </td>
               </tr>
             `;
-              },
-            ).join("")}
+            }).join("")}
           </tbody>
         </table>
 
         <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Top Regional Performers</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;">
-          ${top3Regional.map((c, idx) => `
+          ${top3Regional
+            .map(
+              (c, idx) => `
             <div style="background: #F8FAFC; padding: 12px; border-radius: 8px; border: 1px solid #E2E8F0;">
               <p style="color: #1B4332; font-weight: bold; margin: 0 0 5px 0; font-size: 13px;">#${idx + 1} ${c.name}</p>
               <p style="color: #64748B; margin: 0; font-size: 12px;">Score: <strong>${c.adei.toFixed(1)}</strong></p>
             </div>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </div>
 
         <h3 style="color: #1B4332; border-bottom: 2px solid #40916C; padding-bottom: 10px; margin-top: 30px;">Strategic Recommendations</h3>
@@ -9548,8 +9553,7 @@ export default function App() {
         <p>
           *Salim, K., Abdul Hamid, B., Disli, M., Lutfi, K. I., & Cahyono, K. N.
           (2026). Digital Economy Index: OIC Countries 2025 — Policy Report.
-          INCEIF University. Methodology based on Al-Khouri, A. M. (2024). Arab
-          Digital Economy Index 2024. Arab Federation for Digital Economy.
+          INCEIF University.
         </p>
       </div>
       <Footer />

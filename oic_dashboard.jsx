@@ -1197,7 +1197,7 @@ const TREND_DATA = {
   "United Arab Emirates": [70.22, 71.05, 73.71, 75.24, 76.84],
   Malaysia: [71.08, 71.61, 70.68, 72.92, 71.98],
   "Saudi Arabia": [56.98, 61.0, 68.42, 66.7, 67.77],
-  Qatar: [null, null, null, null, 66.44],
+  Qatar: [66.44127346, 59.33335374, 58.39692024, 55.83661274, 55.14266421],
   Indonesia: [51.46, 55.93, 58.6, 60.08, 61.57],
   Türkiye: [54.96, 55.86, 48.44, 59.07, 60.71],
   Kazakhstan: [50.07, 53.58, 57.16, 57.07, 57.78],
@@ -7506,7 +7506,7 @@ function ProgressTracker({ hideTrajectory = false }) {
     "United Arab Emirates": [70.22, 71.05, 73.71, 75.24, 76.84],
     Malaysia: [71.08, 71.61, 70.68, 72.92, 71.98],
     "Saudi Arabia": [56.98, 61.0, 68.42, 66.7, 67.77],
-    Qatar: [null, null, null, null, 66.44],
+    Qatar: [66.44127346, 59.33335374, 58.39692024, 55.83661274, 55.14266421],
     Indonesia: [51.46, 55.93, 58.6, 60.08, 61.57],
     Türkiye: [54.96, 55.86, 48.44, 59.07, 60.71],
     Kazakhstan: [50.07, 53.58, 57.16, 57.07, 57.78],
@@ -7528,7 +7528,8 @@ function ProgressTracker({ hideTrajectory = false }) {
   const YEARS_L = ["2021", "2022", "2023", "2024", "2025"];
   const scoreChange = (name) => {
     const h = TREND_FULL[name];
-    return h ? parseFloat((h[4] - h[0]).toFixed(2)) : 0;
+    if (!h || h[0] === null) return null;
+    return parseFloat((h[4] - h[0]).toFixed(2));
   };
   const sorted = [...COUNTRIES].sort((a, b) => b.adei - a.adei);
   const lineData = YEARS_L.map((yr, yi) => {
@@ -7742,9 +7743,11 @@ function ProgressTracker({ hideTrajectory = false }) {
                       }}
                     >
                       {hist
-                        ? hist
-                            .map((v) => (v !== null ? v.toFixed(0) : "—"))
-                            .join("→")
+                        ? hist[0] === null
+                          ? `New Entry (${hist[4]?.toFixed(0) ?? "—"})`
+                          : hist
+                              .map((v) => (v !== null ? v.toFixed(0) : "—"))
+                              .join("→")
                         : "N/A"}
                     </td>
                     <td style={{ padding: "8px", textAlign: "center" }}>

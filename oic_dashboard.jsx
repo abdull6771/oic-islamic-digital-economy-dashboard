@@ -8941,6 +8941,22 @@ function Methodology() {
         ))}
       </div>
       {tabContents[activeTab]}
+      <div
+        style={{
+          padding: "20px",
+          textAlign: "center",
+          fontSize: "12px",
+          color: "#64748B",
+          borderTop: "1px solid #E2E8F0",
+          marginTop: "40px",
+        }}
+      >
+        <p>
+          *Al-Khouri, A. M. (2024). Arab Digital Economy Index 2024: The rise of
+          artificial intelligence applications in the Arab economy. Arab
+          Federation for Digital Economy
+        </p>
+      </div>
     </div>
   );
 }

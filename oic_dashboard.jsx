@@ -2481,17 +2481,27 @@ function CountryProfiles() {
             }}
           >
             {isRegionLeader ? (
-              <>
-                <strong>
-                  {country.name} leads {region}
-                </strong>{" "}
-                with a score of <strong>{country.adei.toFixed(1)}</strong>,{" "}
-                <strong>
-                  {(country.adei - secondPlace.adei).toFixed(1)} pts
-                </strong>{" "}
-                ahead of <strong>{secondPlace.name}</strong> (
-                {secondPlace.adei.toFixed(1)}).
-              </>
+              secondPlace ? (
+                <>
+                  <strong>
+                    {country.name} leads {region}
+                  </strong>{" "}
+                  with a score of <strong>{country.adei.toFixed(1)}</strong>,{" "}
+                  <strong>
+                    {(country.adei - secondPlace.adei).toFixed(1)} pts
+                  </strong>{" "}
+                  ahead of <strong>{secondPlace.name}</strong> (
+                  {secondPlace.adei.toFixed(1)}).
+                </>
+              ) : (
+                <>
+                  <strong>
+                    {country.name} leads {region}
+                  </strong>{" "}
+                  with a score of <strong>{country.adei.toFixed(1)}</strong>. It
+                  is currently the only OIC member state in this region.
+                </>
+              )
             ) : (
               <>
                 {country.name} ranks{" "}

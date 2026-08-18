@@ -392,6 +392,8 @@ const REGIONS = {
   Chad: "Central Africa",
 };
 
+// 2025 scores from Master Data Collection workbook, sheet "2025 ranked"
+// (June 2025 update, including Yemen and Palestine).
 const COUNTRIES = [
   { name: "United Arab Emirates", rank: 1, adei: 77.726, p1: 77.69, p2: 88.51, p3: 57.74, p4: 95.33, p5: 60.56, p6: 92.88, p7: 65.44, p8: 61.42, p9: 78.44 },
   { name: "Malaysia", rank: 2, adei: 72.7651, p1: 78.94, p2: 81.99, p3: 44.05, p4: 81.11, p5: 46.02, p6: 83.5, p7: 74.36, p8: 60.94, p9: 77.53 },
@@ -452,7 +454,7 @@ const COUNTRIES = [
   { name: "Somalia", rank: 57, adei: 11.1636, p1: 6.21, p2: 8.12, p3: 10.6, p4: 18.64, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 32.82 },
 ];
 
-const TREND_DATA = {
+const TREND_HISTORY = {
   "United Arab Emirates": [70.82, 70.02, 73.57, 76.08, 77.73],
   Malaysia: [72.31, 69.46, 70.43, 72.35, 72.77],
   "Saudi Arabia": [57.65, 58.47, 67.91, 66.72, 69.79],
@@ -513,8 +515,53 @@ const TREND_DATA = {
   "OIC Average": [31.18, 33.43, 33.68, 33.83, 34.62],
 };
 
+const TREND_DATA = Object.fromEntries(
+  Object.entries(TREND_HISTORY).map(([name, scores]) => {
+    if (name === "OIC Average") {
+      const avg2025 = parseFloat(
+        (
+          COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length
+        ).toFixed(2),
+      );
+      return [name, [...scores.slice(0, 4), avg2025]];
+    }
+    const country = COUNTRIES.find((c) => c.name === name);
+    return [
+      name,
+      country
+        ? [...scores.slice(0, 4), parseFloat(country.adei.toFixed(2))]
+        : scores,
+    ];
+  }),
+);
 
 const YEARS = [2021, 2022, 2023, 2024, 2025];
+
+const GEO_NAME_MAP = {
+  Turkey: "Türkiye",
+  Syria: "Syrian Arab Republic",
+  Iran: "Iran, Islamic Rep.",
+  "Iran (Islamic Republic of)": "Iran, Islamic Rep.",
+  "West Bank": "Palestine",
+  Palestine: "Palestine",
+  "Ivory Coast": "Cote d'Ivoire",
+  "Côte d'Ivoire": "Cote d'Ivoire",
+  Kyrgyzstan: "Kyrgyz Republic",
+  Brunei: "Brunei Darussalam",
+  "The Gambia": "Gambia",
+  "Yemen, Rep.": "Yemen",
+};
+
+function findCountryByGeoName(countryName) {
+  if (!countryName) return undefined;
+  const mapped = GEO_NAME_MAP[countryName] || countryName;
+  const mappedLower = mapped.toLowerCase();
+  const rawLower = countryName.toLowerCase();
+  return COUNTRIES.find((c) => {
+    const n = c.name.toLowerCase();
+    return n === mappedLower || n === rawLower;
+  });
+}
 
 const getCluster = (adei) => {
   if (adei >= 60)
@@ -767,24 +814,7 @@ function WorldMap() {
   }, []);
 
   const getCountryColor = (countryName) => {
-    // Map geographic data names to COUNTRIES array names
-    const nameMapping = {
-      Turkey: "Türkiye",
-      Syria: "Syrian Arab Republic",
-    };
-
-    const normalizedName = nameMapping[countryName] || countryName;
-
-    const country = COUNTRIES.find(
-      (c) =>
-        c.name.toLowerCase() === normalizedName.toLowerCase() ||
-        c.name.toLowerCase() === countryName.toLowerCase() ||
-        (countryName === "United States of America" &&
-          c.name === "United States") ||
-        (countryName.includes("Tanzania") && c.name === "Tanzania") ||
-        (countryName.includes("Democratic Republic of the Congo") &&
-          c.name === "Cameroon"),
-    );
+    const country = findCountryByGeoName(countryName);
 
     if (!country) return "#E2E8F0";
 
@@ -794,23 +824,7 @@ function WorldMap() {
     return "#EF4444";
   };
 
-  const getCountryInfo = (countryName) => {
-    // Map geographic data names to COUNTRIES array names
-    const nameMapping = {
-      Turkey: "Türkiye",
-      Syria: "Syrian Arab Republic",
-    };
-
-    const normalizedName = nameMapping[countryName] || countryName;
-
-    return COUNTRIES.find(
-      (c) =>
-        c.name.toLowerCase() === normalizedName.toLowerCase() ||
-        c.name.toLowerCase() === countryName.toLowerCase() ||
-        (countryName === "United States of America" &&
-          c.name === "United States"),
-    );
-  };
+  const getCountryInfo = (countryName) => findCountryByGeoName(countryName);
 
   const geoUrl =
     "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
@@ -3106,10 +3120,10 @@ function PillarAnalysis() {
 
   const INSIGHTS = {
     p1: "Institutions form the governance bedrock of digital transformation. Malaysia leads with the strongest governance framework (78.94), followed by UAE and Qatar, demonstrating robust political stability and regulatory quality across diverse contexts.",
-    p2: "Infrastructure underpins all digital activity. The UAE and Malaysia have near-perfect scores driven by fiber and 5G investments. Many African states score below 20, indicating opportunities for foundational infrastructure investment.",
+    p2: "Infrastructure underpins all digital activity. The UAE leads (88.51), followed by Malaysia (81.99) and Bahrain (81.74). Many African states score below 20, indicating opportunities for foundational infrastructure investment.",
     p3: "Workforce capability remains a major area of focus. UAE leads in human capital development (57.74), with Tunisia (52.24) and Kyrgyz Republic (52.18) also demonstrating strong performance. Many conflict-affected states show substantial room for capacity building.",
     p4: "E-Government is the OIC's standout strength. Saudi Arabia (96.02) and UAE (95.33) lead in digital service delivery, with state-led digitization resulting in high scores across diverse economies.",
-    p5: "Innovation is the OIC's key area for growth. Malaysia leads at 46.02, but even the strongest performers score below 65, reflecting dependence on state R&D over private-sector investment.",
+    p5: "Innovation is the OIC's key area for growth. The UAE leads at 60.56, followed by Malaysia (46.02) and Türkiye (42.95). Even the strongest performers remain below 65, reflecting limited private-sector R&D intensity relative to digital infrastructure.",
     p6: "Technological Readiness (Future Tech) varies widely. GCC states score high due to AI and advanced tech adoption strategies, with UAE (92.88) and Saudi Arabia (85.63) leading.",
     p7: "Market Development shows strong performance in Southeast Asia and the Levant. Malaysia leads (74.36) due to its vibrant digital economy and startup ecosystem.",
     p8: "Financial Market Development is prominently led by Iran's unique position (92.89). Islamic Fintech is an emerging strategic advantage for GCC and Malaysia.",
@@ -6277,9 +6291,9 @@ function PeerLearning() {
         "Absher platform digitized 70+ government services. National digital ID became foundational for e-service delivery. E-procurement mandatory for government contracts.",
     },
     p5: {
-      country: "Türkiye",
+      country: "UAE",
       lesson:
-        "Technology Development Zones offer 5-year tax holidays for R&D companies. TUBITAK grants fund 75% of SME innovation projects.",
+        "UAE National Innovation Strategy and dedicated R&D funding lifted the country to the OIC's highest Innovation score (60.56), well ahead of the next peer. Public-private research partnerships and targeted incentives remain the core transferrable lesson.",
     },
     p6: {
       country: "UAE",
@@ -6809,66 +6823,7 @@ function PeerLearning() {
 
 // ─── PROGRESS TRACKER ────────────────────────────────────────────────────────
 function ProgressTracker({ hideTrajectory = false }) {
-  const TREND_FULL = {
-    "United Arab Emirates": [70.82, 70.02, 73.57, 76.08, 77.73],
-    Malaysia: [72.31, 69.46, 70.43, 72.35, 72.77],
-    "Saudi Arabia": [57.65, 58.47, 67.91, 66.72, 69.79],
-    Qatar: [61.02, 59.3, 63.18, 63.9, 67.11],
-    Indonesia: [51.95, 55.1, 58.53, 59.93, 61.92],
-    "Türkiye": [55.21, 55.5, 48.42, 59.07, 60.97],
-    Kazakhstan: [50.34, 53.2, 57.15, 57.03, 58.0],
-    Jordan: [47.59, 45.67, 48.87, 49.3, 53.3],
-    Morocco: [50.26, 47.18, 51.14, 49.57, 52.82],
-    Tunisia: [48.67, 54.96, 51.41, 50.97, 52.78],
-    Oman: [48.53, 51.95, 50.9, 51.34, 52.59],
-    Uzbekistan: [32.68, 43.19, 41.49, 47.42, 51.84],
-    Bahrain: [53.3, 50.6, 48.35, 50.09, 51.32],
-    Egypt: [35.48, 43.23, 47.44, 48.88, 50.74],
-    "Iran, Islamic Rep.": [45.27, 47.1, 49.47, 42.49, 49.36],
-    Kuwait: [51.17, 47.96, 49.5, 48.48, 48.17],
-    Albania: [38.39, 43.72, 44.3, 43.64, 45.42],
-    Senegal: [33.67, 39.96, 39.24, 41.2, 43.16],
-    "Kyrgyz Republic": [29.96, 26.33, 26.02, 25.69, 41.97],
-    Azerbaijan: [39.66, 43.11, 44.4, 43.43, 41.85],
-    Algeria: [33.63, 35.26, 39.17, 38.32, 40.89],
-    Bangladesh: [34.15, 34.95, 36.57, 36.56, 39.22],
-    "Brunei Darussalam": [34.96, 39.33, 36.09, 35.98, 36.97],
-    Nigeria: [31.54, 33.19, 35.73, 35.37, 35.93],
-    Pakistan: [28.9, 31.36, 35.15, 33.82, 35.92],
-    Benin: [28.91, 26.46, 33.18, 32.89, 34.67],
-    Uganda: [33.88, 35.89, 36.71, 34.85, 32.75],
-    "Cote d'Ivoire": [26.2, 22.34, 30.84, 32.35, 32.74],
-    Lebanon: [40.65, 36.99, 29.42, 37.0, 31.7],
-    Cameroon: [25.91, 29.4, 30.67, 30.66, 30.83],
-    Mali: [25.35, 28.46, 27.23, 27.14, 27.15],
-    Tajikistan: [27.48, 36.04, 33.9, 31.78, 27.08],
-    Maldives: [26.96, 29.52, 26.14, 25.76, 26.07],
-    Togo: [23.96, 28.54, 24.93, 25.24, 25.15],
-    Mozambique: [24.14, 29.67, 25.87, 25.58, 24.77],
-    Mauritania: [16.85, 19.16, 21.07, 24.5, 24.71],
-    Suriname: [21.99, 24.99, 24.88, 24.45, 24.69],
-    "Burkina Faso": [26.66, 31.52, 27.89, 25.99, 24.13],
-    Gabon: [21.5, 24.11, 23.87, 23.63, 23.19],
-    Guyana: [20.63, 23.57, 23.28, 22.82, 22.47],
-    "Sierra Leone": [16.77, 19.79, 19.19, 19.32, 21.99],
-    Iraq: [17.5, 19.94, 24.6, 19.29, 18.89],
-    Guinea: [23.04, 25.46, 25.98, 25.92, 18.77],
-    Gambia: [17.45, 19.96, 19.15, 19.5, 18.65],
-    Niger: [16.02, 21.47, 19.23, 18.79, 18.26],
-    Turkmenistan: [17.46, 19.95, 18.42, 18.01, 17.55],
-    Chad: [13.65, 16.45, 15.1, 16.06, 17.03],
-    Djibouti: [15.15, 18.04, 17.25, 17.0, 16.7],
-    Comoros: [15.14, 17.71, 16.8, 16.7, 16.33],
-    "Guinea-Bissau": [13.5, 16.47, 16.27, 15.99, 16.22],
-    "Syrian Arab Republic": [14.51, 17.24, 15.5, 14.75, 14.47],
-    Libya: [14.6, 17.22, 14.56, 14.3, 14.18],
-    Sudan: [12.97, 16.13, 14.9, 14.2, 12.83],
-    Afghanistan: [13.12, 14.88, 13.47, 13.53, 12.32],
-    Palestine: [10.47, 12.92, 12.14, 11.99, 11.82],
-    Yemen: [8.75, 13.44, 11.89, 10.0, 11.43],
-    Somalia: [8.72, 11.8, 11.0, 10.92, 11.16],
-    "OIC Average": [31.18, 33.43, 33.68, 33.83, 34.62],
-  };
+  const TREND_FULL = TREND_DATA;
   const YEARS_L = ["2021", "2022", "2023", "2024", "2025"];
   const scoreChange = (name) => {
     const h = TREND_FULL[name];

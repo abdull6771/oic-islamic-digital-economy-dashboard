@@ -25,566 +25,28 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import { scaleLinear } from "d3-scale";
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
-const PILLARS = [
-  {
-    id: "1",
-    key: "p1",
-    name: "Institutions",
-    short: "Institutions",
-    weight: 15,
-    color: "#1B4332",
-    dim: "Digital Foundation",
-  },
-  {
-    id: "2",
-    key: "p2",
-    name: "Infrastructure",
-    short: "Infrastructure",
-    weight: 15,
-    color: "#2D6A4F",
-    dim: "Digital Foundation",
-  },
-  {
-    id: "3",
-    key: "p3",
-    name: "Workforce",
-    short: "Workforce",
-    weight: 10,
-    color: "#40916C",
-    dim: "Digital Works",
-  },
-  {
-    id: "4",
-    key: "p4",
-    name: "E-Government",
-    short: "E-Gov",
-    weight: 10,
-    color: "#52B788",
-    dim: "E-Government",
-  },
-  {
-    id: "5",
-    key: "p5",
-    name: "Innovation",
-    short: "Innovation",
-    weight: 5,
-    color: "#74C69D",
-    dim: "Innovation",
-  },
-  {
-    id: "6",
-    key: "p6",
-    name: "Future Technologies",
-    short: "Future Tech",
-    weight: 15,
-    color: "#95D5B2",
-    dim: "Readiness in Digital for the Citizen",
-  },
-  {
-    id: "7",
-    key: "p7",
-    name: "Market Development & Sophistication",
-    short: "Market Dev",
-    weight: 10,
-    color: "#2D6A4F",
-    dim: "Readiness in Digital for the Citizen",
-  },
-  {
-    id: "8",
-    key: "p8",
-    name: "Financial Market Development",
-    short: "Fin. Markets",
-    weight: 10,
-    color: "#388E7F",
-    dim: "Readiness in Digital for the Citizen",
-  },
-  {
-    id: "9",
-    key: "p9",
-    name: "Sustainable Development Goals",
-    short: "SDGs",
-    weight: 10,
-    color: "#1F4E38",
-    dim: "Readiness in Digital for the Citizen",
-  },
-];
-
-// ─── INDICATORS & SUB-INDICATORS ────────────────────────────────────────────
-const PILLAR_INDICATORS = {
-  p1: {
-    name: "Institutions",
-    indicators: [
-      {
-        code: "1.1",
-        name: "Political Environment",
-        subIndicators: [
-          { code: "1.1.1", name: "Political Stability and Security" },
-          { code: "1.1.2", name: "Government Effectiveness" },
-          { code: "1.1.3", name: "Voice and Accountability" },
-        ],
-      },
-      {
-        code: "1.2",
-        name: "Regulatory Environment",
-        subIndicators: [
-          { code: "1.2.1", name: "Regulatory Quality" },
-          { code: "1.2.2", name: "Rule of Law" },
-          { code: "1.2.3", name: "Control of Corruption" },
-        ],
-      },
-      {
-        code: "1.3",
-        name: "Technology Governance",
-        subIndicators: [
-          { code: "1.3.1", name: "Secure Internet Servers" },
-          { code: "1.3.2", name: "E-Security" },
-          { code: "1.3.3", name: "Online Shopping" },
-          { code: "1.3.4", name: "ICT Regulatory Environment" },
-          { code: "1.3.5", name: "Regulation of Emerging Technologies" },
-          { code: "1.3.6", name: "E-commerce Legislation" },
-          {
-            code: "1.3.7",
-            name: "Protection of content privacy under the law",
-          },
-        ],
-      },
-    ],
-  },
-  p2: {
-    name: "Infrastructure",
-    indicators: [
-      {
-        code: "2.1",
-        name: "Access to ICT",
-      },
-      {
-        code: "2.2",
-        name: "Use of ICT",
-      },
-      {
-        code: "2.3",
-        name: "Technological Inclusion",
-        subIndicators: [
-          { code: "2.3.1", name: "E-Participation" },
-          {
-            code: "2.3.2",
-            name: "Socioeconomic gap in the use of digital payments",
-          },
-          { code: "2.3.3", name: "Availability of local content online" },
-          { code: "2.3.4", name: "Gender gap in internet use" },
-          { code: "2.3.5", name: "Rural gap in the use of digital payments" },
-        ],
-      },
-      {
-        code: "2.4",
-        name: "Logistical Performance",
-      },
-    ],
-  },
-  p3: {
-    name: "Workforce",
-    indicators: [
-      {
-        code: "3.1",
-        name: "Expenditure on education as a % of GDP",
-      },
-      {
-        code: "3.2",
-        name: "Knowledge-intensive employment %",
-      },
-      {
-        code: "3.3",
-        name: "ICT skills in the education system",
-      },
-    ],
-  },
-  p4: {
-    name: "E-Government",
-    indicators: [
-      {
-        code: "4.1",
-        name: "Government services online",
-      },
-      {
-        code: "4.2",
-        name: "Telecommunication Infrastructure",
-      },
-      {
-        code: "4.3",
-        name: "Human Capital Component",
-      },
-    ],
-  },
-  p5: {
-    name: "Innovation",
-    indicators: [
-      {
-        code: "5.1",
-        name: "R&D expenditure financed by business sector (%)",
-      },
-      {
-        code: "5.2",
-        name: "University-industry collaboration in R&D",
-      },
-      {
-        code: "5.3",
-        name: "Knowledge impact",
-      },
-      {
-        code: "5.4",
-        name: "Knowledge absorption",
-      },
-    ],
-  },
-  p6: {
-    name: "Future Technologies",
-    indicators: [
-      {
-        code: "6.1",
-        name: "Adoption of emerging technologies",
-      },
-      {
-        code: "6.2",
-        name: "Investment in emerging technologies",
-      },
-      {
-        code: "6.3",
-        name: "Artificial Intelligence (AI) strategy",
-      },
-    ],
-  },
-  p7: {
-    name: "Market Development and Sophistication",
-    indicators: [
-      {
-        code: "7.1",
-        name: "Financing of start-ups and ease of access",
-      },
-      {
-        code: "7.2",
-        name: "Domestic credit to private sector, % of GDP",
-      },
-      {
-        code: "7.3",
-        name: "Diversification of local industry",
-      },
-    ],
-  },
-  p8: {
-    name: "Financial Market Development",
-    indicators: [
-      {
-        code: "8.1",
-        name: "FinTech and Financial Inclusion",
-        subIndicators: [
-          {
-            code: "8.1.1",
-            name: "Population (age 15+) with bank accounts (%)",
-          },
-          {
-            code: "8.1.2",
-            name: "Population (age 15+) with debit or credit card (%)",
-          },
-          {
-            code: "8.1.3",
-            name: "Population (age 15+) made or received digital payment (%)",
-          },
-        ],
-      },
-      {
-        code: "8.2",
-        name: "Market capitalization as a % of GDP",
-      },
-    ],
-  },
-  p9: {
-    name: "Sustainable Development Goals",
-    indicators: [
-      {
-        code: "9.1",
-        name: "Goal 1: No Poverty",
-      },
-      {
-        code: "9.2",
-        name: "Goal 2: Zero Hunger",
-      },
-      {
-        code: "9.3",
-        name: "Goal 3: Good Health and Well-being",
-      },
-      {
-        code: "9.4",
-        name: "Goal 4: Quality Education",
-      },
-      {
-        code: "9.5",
-        name: "Goal 8: Decent Work and Economic Growth",
-      },
-      {
-        code: "9.6",
-        name: "Goal 9: Industry, Innovation and Infrastructure",
-      },
-      {
-        code: "9.7",
-        name: "Goal 17: Partnerships for the Goals",
-      },
-    ],
-  },
-};
-
-const REGIONS = {
-  "United Arab Emirates": "GCC",
-  "Saudi Arabia": "GCC",
-  Qatar: "GCC",
-  Bahrain: "GCC",
-  Kuwait: "GCC",
-  Oman: "GCC",
-  Malaysia: "Southeast Asia",
-  Indonesia: "Southeast Asia",
-  "Brunei Darussalam": "Southeast Asia",
-  Maldives: "South Asia",
-  Kazakhstan: "Central Asia",
-  Uzbekistan: "Central Asia",
-  "Kyrgyz Republic": "Central Asia",
-  Tajikistan: "Central Asia",
-  Turkmenistan: "Central Asia",
-  Azerbaijan: "Central Asia",
-  Pakistan: "South Asia",
-  Bangladesh: "South Asia",
-  Jordan: "Middle East",
-  Lebanon: "Middle East",
-  Iraq: "Middle East",
-  "Syrian Arab Republic": "Middle East",
-  Yemen: "Middle East",
-  Palestine: "Middle East",
-  "Iran, Islamic Rep.": "Middle East",
-  Türkiye: "Middle East",
-  Egypt: "North Africa",
-  Morocco: "North Africa",
-  Tunisia: "North Africa",
-  Algeria: "North Africa",
-  Libya: "North Africa",
-  Sudan: "North Africa",
-  Senegal: "West Africa",
-  Nigeria: "West Africa",
-  Benin: "West Africa",
-  "Cote d'Ivoire": "West Africa",
-  Guinea: "West Africa",
-  "Guinea-Bissau": "West Africa",
-  Mali: "West Africa",
-  "Burkina Faso": "West Africa",
-  Niger: "West Africa",
-  Gambia: "West Africa",
-  Togo: "West Africa",
-  Mauritania: "West Africa",
-  "Sierra Leone": "West Africa",
-  Cameroon: "Central Africa",
-  Gabon: "Central Africa",
-  Uganda: "East Africa",
-  Somalia: "East Africa",
-  Djibouti: "East Africa",
-  Comoros: "East Africa",
-  Mozambique: "Southeastern Africa",
-  Albania: "Europe",
-  Guyana: "South America",
-  Suriname: "South America",
-  Afghanistan: "Central Asia",
-  Chad: "Central Africa",
-};
-
-// 2025 scores from Master Data Collection workbook, sheet "2025 ranked"
-// (June 2025 update, including Yemen and Palestine).
-const COUNTRIES = [
-  { name: "United Arab Emirates", rank: 1, adei: 77.726, p1: 77.69, p2: 88.51, p3: 57.74, p4: 95.33, p5: 60.56, p6: 92.88, p7: 65.44, p8: 61.42, p9: 78.44 },
-  { name: "Malaysia", rank: 2, adei: 72.7651, p1: 78.94, p2: 81.99, p3: 44.05, p4: 81.11, p5: 46.02, p6: 83.5, p7: 74.36, p8: 60.94, p9: 77.53 },
-  { name: "Saudi Arabia", rank: 3, adei: 69.789, p1: 66.79, p2: 81.56, p3: 29.52, p4: 96.02, p5: 36.77, p6: 85.63, p7: 54.57, p8: 86.65, p9: 61.76 },
-  { name: "Qatar", rank: 4, adei: 67.1101, p1: 76.63, p2: 75.02, p3: 47.61, p4: 82.44, p5: 36.15, p6: 84.7, p7: 52.51, p8: 38.01, p9: 77.93 },
-  { name: "Indonesia", rank: 5, adei: 61.9231, p1: 65.6, p2: 66.13, p3: 36.86, p4: 79.91, p5: 39.14, p6: 82.23, p7: 61.73, p8: 28.78, p9: 71.44 },
-  { name: "Türkiye", rank: 6, adei: 60.9685, p1: 55.78, p2: 75.98, p3: 31.38, p4: 89.13, p5: 42.95, p6: 64.36, p7: 56.57, p8: 38.45, p9: 78.5 },
-  { name: "Kazakhstan", rank: 7, adei: 58.0007, p1: 57.56, p2: 69.8, p3: 40.98, p4: 90.09, p5: 30.89, p6: 59.59, p7: 37.79, p8: 41.38, p9: 73.9 },
-  { name: "Jordan", rank: 8, adei: 53.3047, p1: 62.18, p2: 61.82, p3: 45.48, p4: 68.49, p5: 27.92, p6: 42.03, p7: 56.84, p8: 27.38, p9: 71.85 },
-  { name: "Morocco", rank: 9, adei: 52.8214, p1: 57.98, p2: 55.2, p3: 42.62, p4: 68.41, p5: 20.12, p6: 63.24, p7: 43.05, p8: 26.15, p9: 73.29 },
-  { name: "Tunisia", rank: 10, adei: 52.7787, p1: 56.9, p2: 51.1, p3: 52.24, p4: 69.35, p5: 22.22, p6: 65.32, p7: 45.17, p8: 17.24, p9: 72.7 },
-  { name: "Oman", rank: 11, adei: 52.5896, p1: 65.79, p2: 67.32, p3: 45.47, p4: 85.76, p5: 35.0, p6: 39.99, p7: 47.71, p8: 6.58, p9: 63.24 },
-  { name: "Uzbekistan", rank: 12, adei: 51.8417, p1: 40.57, p2: 60.39, p3: 34.0, p4: 79.99, p5: 41.01, p6: 55.1, p7: 54.86, p8: 21.74, p9: 73.24 },
-  { name: "Bahrain", rank: 13, adei: 51.32, p1: 67.12, p2: 81.74, p3: 38.64, p4: 91.96, p5: 27.34, p6: 23.67, p7: 31.57, p8: 15.15, p9: 63.43 },
-  { name: "Egypt", rank: 14, adei: 50.7389, p1: 47.18, p2: 63.69, p3: 40.16, p4: 66.99, p5: 25.2, p6: 66.44, p7: 49.26, p8: 4.74, p9: 67.69 },
-  { name: "Iran, Islamic Rep.", rank: 15, adei: 49.3598, p1: 33.51, p2: 55.0, p3: 29.54, p4: 65.64, p5: 20.53, p6: 30.12, p7: 44.01, p8: 92.89, p9: 73.32 },
-  { name: "Kuwait", rank: 16, adei: 48.1713, p1: 65.62, p2: 76.35, p3: 24.85, p4: 78.12, p5: 16.59, p6: 25.35, p7: 38.46, p8: 19.4, p9: 61.59 },
-  { name: "Albania", rank: 17, adei: 45.4231, p1: 66.25, p2: 58.91, p3: 26.64, p4: 80.0, p5: 24.53, p6: 11.77, p7: 39.26, p8: 18.04, p9: 72.63 },
-  { name: "Senegal", rank: 18, adei: 43.1597, p1: 61.02, p2: 44.01, p3: 40.45, p4: 51.63, p5: 29.25, p6: 30.43, p7: 42.97, p8: 20.77, p9: 57.95 },
-  { name: "Kyrgyz Republic", rank: 19, adei: 41.9701, p1: 42.74, p2: 57.67, p3: 52.18, p4: 73.16, p5: 15.52, p6: 18.5, p7: 16.07, p8: 19.24, p9: 72.92 },
-  { name: "Azerbaijan", rank: 20, adei: 41.8509, p1: 44.79, p2: 53.57, p3: 27.01, p4: 76.08, p5: 34.67, p6: 26.85, p7: 33.7, p8: 3.47, p9: 73.1 },
-  { name: "Algeria", rank: 21, adei: 40.8902, p1: 42.14, p2: 55.99, p3: 49.37, p4: 59.56, p5: 22.43, p6: 27.92, p7: 12.01, p8: 17.35, p9: 70.34 },
-  { name: "Bangladesh", rank: 22, adei: 39.2184, p1: 44.01, p2: 51.74, p3: 20.25, p4: 65.7, p5: 15.89, p6: 25.96, p7: 31.82, p8: 20.53, p9: 63.37 },
-  { name: "Brunei Darussalam", rank: 23, adei: 36.971, p1: 62.8, p2: 52.45, p3: 22.41, p4: 75.54, p5: 20.93, p6: 6.97, p7: 13.14, p8: 3.45, p9: 61.39 },
-  { name: "Nigeria", rank: 24, adei: 35.93, p1: 41.91, p2: 28.85, p3: 35.18, p4: 48.14, p5: 13.3, p6: 55.51, p7: 10.86, p8: 22.87, p9: 46.19 },
-  { name: "Pakistan", rank: 25, adei: 35.9229, p1: 39.82, p2: 35.18, p3: 23.7, p4: 50.96, p5: 27.85, p6: 39.9, p7: 39.55, p8: 9.79, p9: 48.97 },
-  { name: "Benin", rank: 26, adei: 34.6744, p1: 58.67, p2: 32.05, p3: 27.26, p4: 45.78, p5: 22.19, p6: 29.02, p7: 11.25, p8: 16.84, p9: 54.9 },
-  { name: "Uganda", rank: 27, adei: 32.7471, p1: 47.98, p2: 18.49, p3: 15.35, p4: 44.64, p5: 18.67, p6: 49.85, p7: 10.95, p8: 24.91, p9: 47.8 },
-  { name: "Cote d'Ivoire", rank: 28, adei: 32.7412, p1: 54.72, p2: 16.92, p3: 26.81, p4: 55.87, p5: 7.57, p6: 30.75, p7: 10.39, p8: 20.03, p9: 56.95 },
-  { name: "Lebanon", rank: 29, adei: 31.6992, p1: 23.3, p2: 39.43, p3: 24.09, p4: 54.49, p5: 14.24, p6: 6.97, p7: 61.95, p8: 13.15, p9: 51.65 },
-  { name: "Cameroon", rank: 30, adei: 30.8302, p1: 37.32, p2: 23.77, p3: 27.43, p4: 42.94, p5: 22.42, p6: 28.43, p7: 23.49, p8: 18.66, p9: 50.31 },
-  { name: "Mali", rank: 31, adei: 27.1538, p1: 32.82, p2: 23.91, p3: 32.12, p4: 30.05, p5: 19.81, p6: 27.85, p7: 12.89, p8: 16.44, p9: 43.26 },
-  { name: "Tajikistan", rank: 32, adei: 27.0805, p1: 22.03, p2: 20.0, p3: 26.75, p4: 56.05, p5: 17.38, p6: 6.97, p7: 28.52, p8: 15.17, p9: 62.12 },
-  { name: "Maldives", rank: 33, adei: 26.0675, p1: 43.65, p2: 8.12, p3: 10.6, p4: 67.45, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 76.89 },
-  { name: "Togo", rank: 34, adei: 25.1481, p1: 33.38, p2: 27.34, p3: 19.75, p4: 39.2, p5: 13.12, p6: 6.97, p7: 12.91, p8: 17.21, p9: 54.31 },
-  { name: "Mozambique", rank: 35, adei: 24.7688, p1: 39.03, p2: 16.38, p3: 34.01, p4: 28.48, p5: 14.89, p6: 13.18, p7: 11.8, p8: 19.35, p9: 43.72 },
-  { name: "Mauritania", rank: 36, adei: 24.7103, p1: 39.57, p2: 22.8, p3: 13.33, p4: 34.91, p5: 23.01, p6: 18.27, p7: 11.99, p8: 3.45, p9: 50.97 },
-  { name: "Suriname", rank: 37, adei: 24.6856, p1: 43.2, p2: 8.12, p3: 10.6, p4: 63.65, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 67.54 },
-  { name: "Burkina Faso", rank: 38, adei: 24.1293, p1: 41.65, p2: 13.69, p3: 31.69, p4: 28.95, p5: 14.0, p6: 12.52, p7: 14.75, p8: 13.57, p9: 43.57 },
-  { name: "Gabon", rank: 39, adei: 23.1919, p1: 30.37, p2: 8.12, p3: 10.6, p4: 57.41, p5: 7.57, p6: 6.97, p7: 10.39, p8: 24.7, p9: 56.84 },
-  { name: "Guyana", rank: 40, adei: 22.4651, p1: 42.52, p2: 8.12, p3: 10.6, p4: 54.43, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 55.59 },
-  { name: "Sierra Leone", rank: 41, adei: 21.991, p1: 42.33, p2: 10.77, p3: 10.6, p4: 30.42, p5: 7.57, p6: 13.84, p7: 10.39, p8: 9.99, p9: 54.3 },
-  { name: "Iraq", rank: 42, adei: 18.891, p1: 16.21, p2: 8.12, p3: 10.6, p4: 45.72, p5: 7.57, p6: 6.97, p7: 10.39, p8: 7.51, p9: 63.95 },
-  { name: "Guinea", rank: 43, adei: 18.7703, p1: 25.69, p2: 8.12, p3: 13.08, p4: 40.06, p5: 7.57, p6: 6.97, p7: 10.39, p8: 10.74, p9: 48.49 },
-  { name: "Gambia", rank: 44, adei: 18.6485, p1: 40.83, p2: 8.12, p3: 10.6, p4: 25.52, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 48.86 },
-  { name: "Niger", rank: 45, adei: 18.2574, p1: 30.12, p2: 9.61, p3: 21.03, p4: 21.16, p5: 17.12, p6: 6.97, p7: 21.45, p8: 3.45, p9: 36.87 },
-  { name: "Turkmenistan", rank: 46, adei: 17.5501, p1: 16.48, p2: 8.12, p3: 10.6, p4: 47.57, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 52.35 },
-  { name: "Chad", rank: 47, adei: 17.0329, p1: 25.14, p2: 13.95, p3: 19.7, p4: 17.85, p5: 7.57, p6: 14.14, p7: 10.39, p8: 3.45, p9: 35.3 },
-  { name: "Djibouti", rank: 48, adei: 16.7042, p1: 27.42, p2: 8.12, p3: 10.6, p4: 29.1, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 45.95 },
-  { name: "Comoros", rank: 49, adei: 16.3311, p1: 25.6, p2: 8.12, p3: 10.6, p4: 25.86, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 48.18 },
-  { name: "Guinea-Bissau", rank: 50, adei: 16.2195, p1: 26.4, p2: 8.12, p3: 10.6, p4: 30.83, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 40.9 },
-  { name: "Syrian Arab Republic", rank: 51, adei: 14.4671, p1: 5.61, p2: 8.12, p3: 10.6, p4: 38.87, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 46.52 },
-  { name: "Libya", rank: 52, adei: 14.1781, p1: 11.21, p2: 8.12, p3: 10.6, p4: 54.66, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 19.45 },
-  { name: "Sudan", rank: 53, adei: 12.8276, p1: 9.99, p2: 8.12, p3: 10.6, p4: 27.59, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 34.83 },
-  { name: "Afghanistan", rank: 54, adei: 12.3166, p1: 11.24, p2: 8.12, p3: 10.6, p4: 20.83, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.76, p9: 34.31 },
-  { name: "Palestine", rank: 55, adei: 11.8162, p1: 27.44, p2: 8.12, p3: 10.6, p4: 6.69, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 19.45 },
-  { name: "Yemen", rank: 56, adei: 11.4326, p1: 12.14, p2: 9.33, p3: 11.06, p4: 6.69, p5: 7.57, p6: 7.99, p7: 10.39, p8: 3.45, p9: 34.76 },
-  { name: "Somalia", rank: 57, adei: 11.1636, p1: 6.21, p2: 8.12, p3: 10.6, p4: 18.64, p5: 7.57, p6: 6.97, p7: 10.39, p8: 3.45, p9: 32.82 },
-];
-
-const TREND_HISTORY = {
-  "United Arab Emirates": [70.82, 70.02, 73.57, 76.08, 77.73],
-  Malaysia: [72.31, 69.46, 70.43, 72.35, 72.77],
-  "Saudi Arabia": [57.65, 58.47, 67.91, 66.72, 69.79],
-  Qatar: [61.02, 59.3, 63.18, 63.9, 67.11],
-  Indonesia: [51.95, 55.1, 58.53, 59.93, 61.92],
-  "Türkiye": [55.21, 55.5, 48.42, 59.07, 60.97],
-  Kazakhstan: [50.34, 53.2, 57.15, 57.03, 58.0],
-  Jordan: [47.59, 45.67, 48.87, 49.3, 53.3],
-  Morocco: [50.26, 47.18, 51.14, 49.57, 52.82],
-  Tunisia: [48.67, 54.96, 51.41, 50.97, 52.78],
-  Oman: [48.53, 51.95, 50.9, 51.34, 52.59],
-  Uzbekistan: [32.68, 43.19, 41.49, 47.42, 51.84],
-  Bahrain: [53.3, 50.6, 48.35, 50.09, 51.32],
-  Egypt: [35.48, 43.23, 47.44, 48.88, 50.74],
-  "Iran, Islamic Rep.": [45.27, 47.1, 49.47, 42.49, 49.36],
-  Kuwait: [51.17, 47.96, 49.5, 48.48, 48.17],
-  Albania: [38.39, 43.72, 44.3, 43.64, 45.42],
-  Senegal: [33.67, 39.96, 39.24, 41.2, 43.16],
-  "Kyrgyz Republic": [29.96, 26.33, 26.02, 25.69, 41.97],
-  Azerbaijan: [39.66, 43.11, 44.4, 43.43, 41.85],
-  Algeria: [33.63, 35.26, 39.17, 38.32, 40.89],
-  Bangladesh: [34.15, 34.95, 36.57, 36.56, 39.22],
-  "Brunei Darussalam": [34.96, 39.33, 36.09, 35.98, 36.97],
-  Nigeria: [31.54, 33.19, 35.73, 35.37, 35.93],
-  Pakistan: [28.9, 31.36, 35.15, 33.82, 35.92],
-  Benin: [28.91, 26.46, 33.18, 32.89, 34.67],
-  Uganda: [33.88, 35.89, 36.71, 34.85, 32.75],
-  "Cote d'Ivoire": [26.2, 22.34, 30.84, 32.35, 32.74],
-  Lebanon: [40.65, 36.99, 29.42, 37.0, 31.7],
-  Cameroon: [25.91, 29.4, 30.67, 30.66, 30.83],
-  Mali: [25.35, 28.46, 27.23, 27.14, 27.15],
-  Tajikistan: [27.48, 36.04, 33.9, 31.78, 27.08],
-  Maldives: [26.96, 29.52, 26.14, 25.76, 26.07],
-  Togo: [23.96, 28.54, 24.93, 25.24, 25.15],
-  Mozambique: [24.14, 29.67, 25.87, 25.58, 24.77],
-  Mauritania: [16.85, 19.16, 21.07, 24.5, 24.71],
-  Suriname: [21.99, 24.99, 24.88, 24.45, 24.69],
-  "Burkina Faso": [26.66, 31.52, 27.89, 25.99, 24.13],
-  Gabon: [21.5, 24.11, 23.87, 23.63, 23.19],
-  Guyana: [20.63, 23.57, 23.28, 22.82, 22.47],
-  "Sierra Leone": [16.77, 19.79, 19.19, 19.32, 21.99],
-  Iraq: [17.5, 19.94, 24.6, 19.29, 18.89],
-  Guinea: [23.04, 25.46, 25.98, 25.92, 18.77],
-  Gambia: [17.45, 19.96, 19.15, 19.5, 18.65],
-  Niger: [16.02, 21.47, 19.23, 18.79, 18.26],
-  Turkmenistan: [17.46, 19.95, 18.42, 18.01, 17.55],
-  Chad: [13.65, 16.45, 15.1, 16.06, 17.03],
-  Djibouti: [15.15, 18.04, 17.25, 17.0, 16.7],
-  Comoros: [15.14, 17.71, 16.8, 16.7, 16.33],
-  "Guinea-Bissau": [13.5, 16.47, 16.27, 15.99, 16.22],
-  "Syrian Arab Republic": [14.51, 17.24, 15.5, 14.75, 14.47],
-  Libya: [14.6, 17.22, 14.56, 14.3, 14.18],
-  Sudan: [12.97, 16.13, 14.9, 14.2, 12.83],
-  Afghanistan: [13.12, 14.88, 13.47, 13.53, 12.32],
-  Palestine: [10.47, 12.92, 12.14, 11.99, 11.82],
-  Yemen: [8.75, 13.44, 11.89, 10.0, 11.43],
-  Somalia: [8.72, 11.8, 11.0, 10.92, 11.16],
-  "OIC Average": [31.18, 33.43, 33.68, 33.83, 34.62],
-};
-
-const TREND_DATA = Object.fromEntries(
-  Object.entries(TREND_HISTORY).map(([name, scores]) => {
-    if (name === "OIC Average") {
-      const avg2025 = parseFloat(
-        (
-          COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length
-        ).toFixed(2),
-      );
-      return [name, [...scores.slice(0, 4), avg2025]];
-    }
-    const country = COUNTRIES.find((c) => c.name === name);
-    return [
-      name,
-      country
-        ? [...scores.slice(0, 4), parseFloat(country.adei.toFixed(2))]
-        : scores,
-    ];
-  }),
-);
-
-const YEARS = [2021, 2022, 2023, 2024, 2025];
-
-const GEO_NAME_MAP = {
-  Turkey: "Türkiye",
-  Syria: "Syrian Arab Republic",
-  Iran: "Iran, Islamic Rep.",
-  "Iran (Islamic Republic of)": "Iran, Islamic Rep.",
-  "West Bank": "Palestine",
-  Palestine: "Palestine",
-  "Ivory Coast": "Cote d'Ivoire",
-  "Côte d'Ivoire": "Cote d'Ivoire",
-  Kyrgyzstan: "Kyrgyz Republic",
-  Brunei: "Brunei Darussalam",
-  "The Gambia": "Gambia",
-  "Yemen, Rep.": "Yemen",
-};
-
-function findCountryByGeoName(countryName) {
-  if (!countryName) return undefined;
-  const mapped = GEO_NAME_MAP[countryName] || countryName;
-  const mappedLower = mapped.toLowerCase();
-  const rawLower = countryName.toLowerCase();
-  return COUNTRIES.find((c) => {
-    const n = c.name.toLowerCase();
-    return n === mappedLower || n === rawLower;
-  });
-}
-
-const getCluster = (adei) => {
-  if (adei >= 60)
-    return {
-      label: "Advanced Digital Economies",
-      color: "#1B4332",
-      bg: "#D8F3DC",
-    };
-  if (adei >= 40)
-    return {
-      label: "Emerging Digital Economies",
-      color: "#52B788",
-      bg: "#E8F5E9",
-    };
-  return {
-    label: "Foundational Digital Economies",
-    color: "#95D5B2",
-    bg: "#F1F8F6",
-  };
-};
-
-const OIC_AVERAGE =
-  COUNTRIES.reduce((s, c) => s + c.adei, 0) / COUNTRIES.length;
+// Every score, rank and weight below is generated from the master Excel
+// workbook by `npm run build:data` and reaches the views through the data
+// layer. Nothing in this file hard-codes an index value — see DATA.md.
+import {
+  COUNTRIES,
+  DATA_QUALITY,
+  FINDEX,
+  FINDEX_IMPUTED_COUNTRIES,
+  INDICATOR_COUNTS,
+  META,
+  OIC_AVERAGE,
+  OIC_AVERAGE_LABEL,
+  PILLARS,
+  PILLAR_INDICATORS,
+  REFERENCE_YEAR,
+  REGIONS,
+  TREND_DATA,
+  YEARS,
+  YEAR_RANGE,
+  findCountryByGeoName,
+  getCluster,
+} from "./src/data/index.js";
 
 // ─── STYLES ─────────────────────────────────────────────────────────────────
 const styles = {
@@ -1117,7 +579,7 @@ function GlobalOverview() {
             OIC Average
           </div>
           <div style={{ fontSize: "11px", color: "#2D6A4F", fontWeight: 600 }}>
-            All 57 Countries
+            All {META.countryCount} Countries
           </div>
         </div>
         <div style={styles.card}>
@@ -1511,7 +973,8 @@ function GlobalOverview() {
         <div
           style={{ fontSize: "13px", color: "#64748B", marginBottom: "12px" }}
         >
-          All 57 OIC member states performance across 9 pillars
+          All {META.countryCount} OIC member states performance across{" "}
+          {PILLARS.length} pillars
         </div>
         <div
           style={{ overflowX: "auto", maxHeight: "500px", overflowY: "auto" }}
@@ -3118,17 +2581,23 @@ function PillarAnalysis() {
   const avg =
     COUNTRIES.reduce((s, c) => s + c[pillar.key], 0) / COUNTRIES.length;
 
+  // Editorial commentary per pillar. Deliberately carries no scores or country
+  // rankings — those are read from the data and rendered alongside it, so the
+  // copy cannot go stale when the workbook is refreshed.
   const INSIGHTS = {
-    p1: "Institutions form the governance bedrock of digital transformation. Malaysia leads with the strongest governance framework (78.94), followed by UAE and Qatar, demonstrating robust political stability and regulatory quality across diverse contexts.",
-    p2: "Infrastructure underpins all digital activity. The UAE leads (88.51), followed by Malaysia (81.99) and Bahrain (81.74). Many African states score below 20, indicating opportunities for foundational infrastructure investment.",
-    p3: "Workforce capability remains a major area of focus. UAE leads in human capital development (57.74), with Tunisia (52.24) and Kyrgyz Republic (52.18) also demonstrating strong performance. Many conflict-affected states show substantial room for capacity building.",
-    p4: "E-Government is the OIC's standout strength. Saudi Arabia (96.02) and UAE (95.33) lead in digital service delivery, with state-led digitization resulting in high scores across diverse economies.",
-    p5: "Innovation is the OIC's key area for growth. The UAE leads at 60.56, followed by Malaysia (46.02) and Türkiye (42.95). Even the strongest performers remain below 65, reflecting limited private-sector R&D intensity relative to digital infrastructure.",
-    p6: "Technological Readiness (Future Tech) varies widely. GCC states score high due to AI and advanced tech adoption strategies, with UAE (92.88) and Saudi Arabia (85.63) leading.",
-    p7: "Market Development shows strong performance in Southeast Asia and the Levant. Malaysia leads (74.36) due to its vibrant digital economy and startup ecosystem.",
-    p8: "Financial Market Development is prominently led by Iran's unique position (92.89). Islamic Fintech is an emerging strategic advantage for GCC and Malaysia.",
-    p9: "SDG Impact scores reflect access and inclusion progress. Türkiye (78.5) and UAE (78.44) demonstrate the strongest public health system integration and connectivity.",
+    p1: "Institutions form the governance bedrock of digital transformation, combining political stability, regulatory quality and technology governance.",
+    p2: "Infrastructure underpins all digital activity. Many African member states score below 20, marking foundational connectivity investment as the clearest opportunity.",
+    p3: "Workforce capability remains a major area of focus, and conflict-affected states in particular show substantial room for capacity building.",
+    p4: "E-Government is the OIC's standout strength: state-led digitisation has produced high service-delivery scores across very diverse economies.",
+    p5: "Innovation is the OIC's key area for growth. Even the strongest performers sit well below the global frontier, reflecting limited private-sector R&D intensity relative to digital infrastructure.",
+    p6: "Technological readiness varies more widely than any other pillar. GCC states score highest on the strength of AI strategies and emerging-technology adoption.",
+    p7: "Market development is strongest across Southeast Asia and the Levant, where startup ecosystems and access to finance are deepest.",
+    p8: "Financial Market Development is the most unevenly measured pillar. It combines stock-market capitalisation with Global Findex financial-inclusion data, and the Findex survey does not cover every member state — several high-income economies therefore carry an imputed floor value here rather than an observation. Islamic FinTech remains an emerging strategic advantage for the GCC and Malaysia.",
+    p9: "SDG impact scores track progress on access and inclusion, particularly health-system integration and connectivity.",
   };
+
+  const leaders = sorted.slice(0, 3);
+  const scoreOf = (c) => c[pillar.key].toFixed(2);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -3228,7 +2697,11 @@ function PillarAnalysis() {
             margin: 0,
           }}
         >
-          {INSIGHTS[pillar.key]}
+          {INSIGHTS[pillar.key]}{" "}
+          <strong style={{ color: "#1B4332" }}>{leaders[0].name}</strong> leads
+          on {pillar.name} ({scoreOf(leaders[0])}), ahead of {leaders[1].name} (
+          {scoreOf(leaders[1])}) and {leaders[2].name} ({scoreOf(leaders[2])}),
+          against an OIC average of {avg.toFixed(2)}.
         </p>
       </div>
 
@@ -3838,7 +3311,7 @@ function GeographicAnalysis() {
               strokeDasharray="4 4"
               strokeWidth={2}
               label={{
-                value: `OIC Average: ${OIC_AVERAGE}`,
+                value: `OIC Average: ${OIC_AVERAGE.toFixed(1)}`,
                 fill: "#1B4332",
                 fontSize: 11,
                 fontWeight: 700,
@@ -4091,7 +3564,7 @@ function GeographicAnalysis() {
 // ─── TRENDS TAB ─────────────────────────────────────────────────────────────
 function TrendsProgress() {
   const availableCountries = [
-    "OIC Average",
+    OIC_AVERAGE_LABEL,
     ...[...COUNTRIES].map((c) => c.name).sort(),
   ];
   const [selectedCountries, setSelectedCountries] = useState([
@@ -4100,7 +3573,7 @@ function TrendsProgress() {
     "Malaysia",
     "Indonesia",
     "Türkiye",
-    "OIC Average",
+    OIC_AVERAGE_LABEL,
   ]);
 
   const toggleCountry = (name) => {
@@ -4121,27 +3594,20 @@ function TrendsProgress() {
     Türkiye: "#95D5B2",
     Kazakhstan: "#1F4E38",
     Jordan: "#388E7F",
-    "OIC Average": "#1B4332",
+    [OIC_AVERAGE_LABEL]: "#1B4332",
   };
 
   const OTHER_COLORS = ["#2D6A4F", "#40916C", "#52B788", "#74C69D", "#95D5B2"];
   const getColor = (c, i) =>
     trendColors[c] || OTHER_COLORS[i % OTHER_COLORS.length];
 
+  // Every point comes from the workbook panel. A year a country was not scored
+  // stays null, which Recharts draws as a break in the line — never as a zero
+  // and never as an interpolated guess.
   const lineData = YEARS.map((year, yi) => {
     const row = { year };
     selectedCountries.forEach((country) => {
-      if (TREND_DATA[country]) {
-        row[country] = TREND_DATA[country][yi];
-      } else {
-        const c = COUNTRIES.find((x) => x.name === country);
-        if (c) {
-          // Estimate historical data for missing countries
-          const startScore = c.adei * 0.85;
-          const step = (c.adei - startScore) / 4;
-          row[country] = parseFloat((startScore + step * yi).toFixed(2));
-        }
-      }
+      row[country] = TREND_DATA[country]?.[yi] ?? null;
     });
     return row;
   });
@@ -4232,7 +3698,7 @@ function TrendsProgress() {
 
       {/* Trend Lines */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>OIC DEI Score Trends 2021–2025</div>
+        <div style={styles.cardTitle}>OIC DEI Score Trends {YEAR_RANGE}</div>
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={lineData}>
             <CartesianGrid
@@ -4262,22 +3728,22 @@ function TrendsProgress() {
                 type="monotone"
                 dataKey={country}
                 stroke={getColor(country, i)}
-                strokeWidth={country === "OIC Average" ? 3 : 2.5}
+                strokeWidth={country === OIC_AVERAGE_LABEL ? 3 : 2.5}
                 dot={{
                   fill: getColor(country, i),
-                  r: country === "OIC Average" ? 0 : 4,
-                  strokeWidth: country === "OIC Average" ? 0 : 2,
+                  r: country === OIC_AVERAGE_LABEL ? 0 : 4,
+                  strokeWidth: country === OIC_AVERAGE_LABEL ? 0 : 2,
                   stroke: "#FFFFFF",
                 }}
-                strokeDasharray={country === "OIC Average" ? "5 5" : undefined}
+                strokeDasharray={country === OIC_AVERAGE_LABEL ? "5 5" : undefined}
                 isAnimationActive={true}
               />
             ))}
           </LineChart>
         </ResponsiveContainer>
-        {selectedCountries.filter((c) => c !== "OIC Average").length > 0 &&
+        {selectedCountries.filter((c) => c !== OIC_AVERAGE_LABEL).length > 0 &&
           (() => {
-            const nonAvg = selectedCountries.filter((c) => c !== "OIC Average");
+            const nonAvg = selectedCountries.filter((c) => c !== OIC_AVERAGE_LABEL);
             const startYear = lineData[0];
             const endYear = lineData[lineData.length - 1];
             const gains = nonAvg
@@ -4348,11 +3814,11 @@ function TrendsProgress() {
                   ) : (
                     <>
                       Tracking <strong>{nonAvg.length}</strong> countries over
-                      the 2021–2025 period.
+                      the {YEAR_RANGE} period.
                     </>
                   )}{" "}
                   The OIC average{" "}
-                  {selectedCountries.includes("OIC Average") ? (
+                  {selectedCountries.includes(OIC_AVERAGE_LABEL) ? (
                     <>
                       is shown as a <strong>dashed reference line</strong>
                     </>
@@ -4718,9 +4184,10 @@ function PolicyRecommendations() {
           <strong style={{ color: "#000000" }}>
             {country.adei.toFixed(1)}
           </strong>{" "}
-          (Rank #{country.rank} of 57 OIC states). The following evidence-based
-          recommendations are derived from pillar-level gap analysis relative to
-          OIC leading nations and global best practices.
+          (Rank #{country.rank} of {META.countryCount} OIC states). The
+          following evidence-based recommendations are derived from pillar-level
+          gap analysis relative to OIC leading nations and global best
+          practices.
         </p>
       </div>
 
@@ -4903,7 +4370,7 @@ function DigitalDivide() {
           },
           {
             label: "Max Digital Divide",
-            value: `${(sorted[0].adei - sorted[56].adei).toFixed(0)} pts`,
+            value: `${(sorted[0].adei - sorted[sorted.length - 1].adei).toFixed(0)} pts`,
             color: "#52B788",
           },
         ].map((k, i) => (
@@ -4935,7 +4402,7 @@ function DigitalDivide() {
 
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          Gap from OIC Average (All 57 Countries)
+          Gap from OIC Average (All {META.countryCount} Countries)
         </div>
         <ResponsiveContainer width="100%" height={360}>
           <BarChart data={gapData} barSize={10}>
@@ -5412,20 +4879,8 @@ function CustomIndexBuilder() {
     .map((c, i) => ({ ...c, customRank: i + 1, rankChange: c.rank - (i + 1) }));
 
   const PRESETS = {
-    official: {
-      label: "Official OIC DEI Weights",
-      w: {
-        p1: 15,
-        p2: 15,
-        p3: 10,
-        p4: 10,
-        p5: 5,
-        p6: 15,
-        p7: 10,
-        p8: 10,
-        p9: 10,
-      },
-    },
+    // The published weights, read from the workbook rather than restated here.
+    official: { label: "Official OIC DEI Weights", w: defaultWeights },
     govFocus: {
       label: "Governance-Focused",
       w: {
@@ -6293,7 +5748,7 @@ function PeerLearning() {
     p5: {
       country: "UAE",
       lesson:
-        "UAE National Innovation Strategy and dedicated R&D funding lifted the country to the OIC's highest Innovation score (60.56), well ahead of the next peer. Public-private research partnerships and targeted incentives remain the core transferrable lesson.",
+        "UAE National Innovation Strategy and dedicated R&D funding lifted the country to the OIC's highest Innovation score, well ahead of the next peer. Public-private research partnerships and targeted incentives remain the core transferrable lesson.",
     },
     p6: {
       country: "UAE",
@@ -6824,11 +6279,14 @@ function PeerLearning() {
 // ─── PROGRESS TRACKER ────────────────────────────────────────────────────────
 function ProgressTracker({ hideTrajectory = false }) {
   const TREND_FULL = TREND_DATA;
-  const YEARS_L = ["2021", "2022", "2023", "2024", "2025"];
+  const YEARS_L = YEARS.map(String);
   const scoreChange = (name) => {
     const h = TREND_FULL[name];
-    if (!h || h[0] === null) return null;
-    return parseFloat((h[4] - h[0]).toFixed(2));
+    const first = h?.[0];
+    const last = h?.[h.length - 1];
+    if (first === null || first === undefined) return null;
+    if (last === null || last === undefined) return null;
+    return parseFloat((last - first).toFixed(2));
   };
   const sorted = [...COUNTRIES].sort((a, b) => b.adei - a.adei);
   const lineData = YEARS_L.map((yr, yi) => {
@@ -6847,7 +6305,7 @@ function ProgressTracker({ hideTrajectory = false }) {
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {!hideTrajectory && (
         <div style={styles.card}>
-          <div style={styles.cardTitle}>Score Trajectory 2021–2025</div>
+          <div style={styles.cardTitle}>Score Trajectory {YEAR_RANGE}</div>
           <ResponsiveContainer width="100%" height={340}>
             <LineChart data={lineData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
@@ -6927,7 +6385,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                 >
                   Among tracked countries, <strong>{top.name}</strong> recorded
                   the strongest 4-year growth of{" "}
-                  <strong>+{top.gain.toFixed(1)} pts</strong> (2021–2025). The
+                  <strong>+{top.gain.toFixed(1)} pts</strong> ({YEAR_RANGE}). The
                   upward trajectory across most countries reflects sustained
                   digital investment across the OIC bloc.
                 </p>
@@ -7088,7 +6546,7 @@ function ProgressTracker({ hideTrajectory = false }) {
             />
             <YAxis tick={{ fill: "#1E293B", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="growth" name="Score Gain (2021–2025)">
+            <Bar dataKey="growth" name={`Score Gain (${YEAR_RANGE})`}>
               {fastestGrowing.map((c, i) => (
                 <Cell key={i} fill={c.growth > 0 ? "#10B981" : "#EF4444"} />
               ))}
@@ -7304,7 +6762,8 @@ function StatisticalAnalysis() {
       {/* Descriptive Statistics */}
       <div style={styles.card}>
         <div style={styles.cardTitle}>
-          Descriptive Statistics — All 9 Pillars (n=57 countries)
+          Descriptive Statistics — All {PILLARS.length} Pillars (n={META.countryCount}{" "}
+          countries)
         </div>
         <div style={{ overflowX: "auto" }}>
           <table
@@ -7669,7 +7128,7 @@ function Methodology() {
     {
       indicator: "FinTech and Financial Inclusion",
       code: "8.1.1–8.1.3",
-      source: "World Bank (2025)",
+      source: "World Bank Global Findex Database 2025 (2024 survey wave)",
     },
     {
       indicator: "Market Capitalization",
@@ -7698,13 +7157,16 @@ function Methodology() {
             }}
           >
             The OIC Digital Economy Index (OIC DEI) is a comprehensive framework
-            measuring digital economy maturity across all 57 OIC member states.
-            It applies the Arab Digital Economy Index (ADEI) structure to
-            compute index scores for 2025 using lagged annual data. The index
-            comprises nine pillars, 32 indicators, and 21 sub-indicators
-            (Al-Khouri, 2024). Greater weight is assigned to Institutions,
-            Infrastructure, and Technological Readiness (15% each), reflecting
-            their foundational role in digital transformation.
+            measuring digital economy maturity across all {META.countryCount}{" "}
+            OIC member states. It applies the Arab Digital Economy Index (ADEI)
+            structure to compute index scores for {REFERENCE_YEAR} using lagged
+            annual data. The index comprises {INDICATOR_COUNTS.pillars} pillars,{" "}
+            {INDICATOR_COUNTS.indicators} indicators, and{" "}
+            {INDICATOR_COUNTS.subIndicators} sub-indicators (Al-Khouri, 2024).
+            Greater weight is assigned to Institutions, Infrastructure, and
+            Technological Readiness (
+            {PILLARS.find((p) => p.key === "p1").weight}% each), reflecting their
+            foundational role in digital transformation.
           </p>
           <div
             style={{
@@ -7715,11 +7177,19 @@ function Methodology() {
             }}
           >
             {[
-              { label: "Pillars", value: "9", desc: "Structural dimensions" },
-              { label: "Indicators", value: "32", desc: "Measurable factors" },
+              {
+                label: "Pillars",
+                value: String(INDICATOR_COUNTS.pillars),
+                desc: "Structural dimensions",
+              },
+              {
+                label: "Indicators",
+                value: String(INDICATOR_COUNTS.indicators),
+                desc: "Measurable factors",
+              },
               {
                 label: "Sub-Indicators",
-                value: "21",
+                value: String(INDICATOR_COUNTS.subIndicators),
                 desc: "Granular metrics",
               },
             ].map((item) => (
@@ -7763,7 +7233,8 @@ function Methodology() {
 
         <div style={styles.card}>
           <div style={styles.cardTitle}>
-            9 Pillars, 32 Indicators & 21 Sub-Indicators
+            {INDICATOR_COUNTS.pillars} Pillars, {INDICATOR_COUNTS.indicators}{" "}
+            Indicators & {INDICATOR_COUNTS.subIndicators} Sub-Indicators
           </div>
           <div
             style={{
@@ -8128,6 +7599,7 @@ function Methodology() {
       </div>
     ),
     sources: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <div style={styles.card}>
         <div style={styles.cardTitle}>Primary Data Sources</div>
         <p
@@ -8199,6 +7671,119 @@ function Methodology() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Coverage notes generated from the workbook by the data-build step, so
+          they always describe the dataset actually on screen. */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>Data Coverage &amp; Known Limitations</div>
+        <p
+          style={{
+            color: "#64748B",
+            fontSize: "13px",
+            lineHeight: 1.8,
+            marginBottom: "16px",
+          }}
+        >
+          Scores are read directly from{" "}
+          <span style={{ fontFamily: "monospace", color: "#1B4332" }}>
+            {META.source}
+          </span>{" "}
+          (sheet{" "}
+          <span style={{ fontFamily: "monospace", color: "#1B4332" }}>
+            {META.sheets.panel}
+          </span>
+          ), covering {META.countryCount} member states for {YEARS[0]}–
+          {YEARS[YEARS.length - 1]}. The caveats below are detected when the
+          dataset is built and are reproduced here unaltered rather than
+          smoothed over.
+        </p>
+
+        <div
+          style={{
+            background: "#FFF7ED",
+            border: "1px solid #FDBA74",
+            borderRadius: "10px",
+            padding: "16px",
+            marginBottom: "16px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "13px",
+              fontWeight: 700,
+              color: "#9A3412",
+              marginBottom: "8px",
+            }}
+          >
+            Global Findex coverage (sub-indicators{" "}
+            {FINDEX.codes.join(", ")})
+          </div>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#7C2D12",
+              lineHeight: 1.7,
+              margin: "0 0 10px 0",
+            }}
+          >
+            The Global Findex survey does not cover every OIC member state. Where
+            an economy has no observation, the workbook substitutes the
+            documented floor value (minimum observed score less 5%) rather than
+            leaving a gap, which depresses that country's Financial Market
+            Development score and, through it, its overall index score. This
+            affects {FINDEX_IMPUTED_COUNTRIES.length} of {META.countryCount}{" "}
+            countries in {FINDEX.year}, including several high-income economies
+            whose actual financial inclusion is far higher than the substituted
+            value implies. Read pillar 8 for those countries with that in mind.
+          </p>
+          <div style={{ fontSize: "12px", color: "#7C2D12", lineHeight: 1.7 }}>
+            <strong>Imputed:</strong> {FINDEX_IMPUTED_COUNTRIES.join(", ")}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {DATA_QUALITY.filter((issue) => issue.id !== "findex-coverage").map(
+            (issue, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "flex-start",
+                  background: "#F1F8F6",
+                  border: "1px solid #40916C30",
+                  borderRadius: "8px",
+                  padding: "12px",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    letterSpacing: "0.05em",
+                    textTransform: "uppercase",
+                    color: issue.severity === "info" ? "#2D6A4F" : "#9A3412",
+                    background:
+                      issue.severity === "info" ? "#D8F3DC" : "#FFE4D5",
+                    borderRadius: "4px",
+                    padding: "3px 7px",
+                    whiteSpace: "nowrap",
+                    marginTop: "2px",
+                  }}
+                >
+                  {issue.severity}
+                </span>
+                <span
+                  style={{ fontSize: "13px", color: "#1E293B", lineHeight: 1.7 }}
+                >
+                  {issue.message}
+                </span>
+              </div>
+            ),
+          )}
+        </div>
+      </div>
       </div>
     ),
   };
@@ -8781,7 +8366,8 @@ export default function App() {
                   fontWeight: 500,
                 }}
               >
-                OIC DEI · 57 Member States · 2025 Assessment
+                OIC DEI · {META.countryCount} Member States · {REFERENCE_YEAR}{" "}
+                Assessment
               </div>
             </div>
             <div

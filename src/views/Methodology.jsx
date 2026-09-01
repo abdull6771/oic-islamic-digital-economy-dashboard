@@ -1,0 +1,803 @@
+import { useState } from "react";
+import { styles } from "../styles/styles.js";
+import {
+  COUNTRIES,
+  DATA_QUALITY,
+  FINDEX,
+  FINDEX_IMPUTED_COUNTRIES,
+  INDICATOR_COUNTS,
+  META,
+  PILLARS,
+  PILLAR_INDICATORS,
+  REFERENCE_YEAR,
+  YEARS,
+} from "../data/index.js";
+
+function Methodology() {
+  const [activeTab, setActiveTab] = useState("overview");
+  const SOURCES = [
+    {
+      indicator: "Political Environment (1.1)",
+      code: "1.1.1–1.1.3",
+      source: "World Bank Worldwide Governance Indicators (WGI), 2025",
+    },
+    {
+      indicator: "Regulatory Environment (1.2)",
+      code: "1.2.1–1.2.3",
+      source: "World Bank Worldwide Governance Indicators (WGI), 2025",
+    },
+    {
+      indicator: "Technology Governance (1.3)",
+      code: "1.3.1–1.3.7",
+      source:
+        "Portulans Institute & Saïd Business School, University of Oxford (2021–2025)",
+    },
+    {
+      indicator: "Access to ICT / Use of ICT",
+      code: "2.1–2.2",
+      source: "WIPO (2022–2025)",
+    },
+    {
+      indicator: "Technological Inclusion (2.3)",
+      code: "2.3.1–2.3.5",
+      source:
+        "Portulans Institute & Saïd Business School, University of Oxford (2021–2025)",
+    },
+    {
+      indicator: "Logistical Performance",
+      code: "2.4",
+      source: "WIPO (2022–2025)",
+    },
+    {
+      indicator: "Workforce (Education, Employment, ICT Skills)",
+      code: "3.1–3.3",
+      source:
+        "WIPO (2022–2025); Portulans Institute & Saïd Business School (2021–2025)",
+    },
+    {
+      indicator: "E-Government",
+      code: "4.1–4.3",
+      source: "World Bank (2025a)",
+    },
+    {
+      indicator: "Innovation (R&D, Collaboration, Knowledge)",
+      code: "5.1–5.4",
+      source: "WIPO (2022–2025)",
+    },
+    {
+      indicator: "Future Technologies (Adoption & Investment)",
+      code: "6.1–6.2",
+      source:
+        "Portulans Institute & Saïd Business School, University of Oxford (2021–2025)",
+    },
+    {
+      indicator: "AI Strategy",
+      code: "6.3",
+      source: "OECD (2025)",
+    },
+    {
+      indicator: "Market Development & Sophistication",
+      code: "7.1–7.3",
+      source: "WIPO (2022–2025)",
+    },
+    {
+      indicator: "FinTech and Financial Inclusion",
+      code: "8.1.1–8.1.3",
+      source: "World Bank Global Findex Database 2025 (2024 survey wave)",
+    },
+    {
+      indicator: "Market Capitalization",
+      code: "8.2",
+      source: "WIPO (2022–2025)",
+    },
+    {
+      indicator: "Sustainable Development Goals",
+      code: "9.1–9.7",
+      source:
+        "Sustainable Development Solutions Network & Bertelsmann Stiftung (2025)",
+    },
+  ];
+
+  const tabContents = {
+    overview: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Index Overview</div>
+          <p
+            style={{
+              color: "#64748B",
+              fontSize: "14px",
+              lineHeight: 1.8,
+              marginBottom: "16px",
+            }}
+          >
+            The OIC Digital Economy Index (OIC DEI) is a comprehensive framework
+            measuring digital economy maturity across all {META.countryCount}{" "}
+            OIC member states. It applies the Arab Digital Economy Index (ADEI)
+            structure to compute index scores for {REFERENCE_YEAR} using lagged
+            annual data. The index comprises {INDICATOR_COUNTS.pillars} pillars,{" "}
+            {INDICATOR_COUNTS.indicators} indicators, and{" "}
+            {INDICATOR_COUNTS.subIndicators} sub-indicators (Al-Khouri, 2024).
+            Greater weight is assigned to Institutions, Infrastructure, and
+            Technological Readiness (
+            {PILLARS.find((p) => p.key === "p1").weight}% each), reflecting their
+            foundational role in digital transformation.
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "16px",
+              marginTop: "16px",
+            }}
+          >
+            {[
+              {
+                label: "Pillars",
+                value: String(INDICATOR_COUNTS.pillars),
+                desc: "Structural dimensions",
+              },
+              {
+                label: "Indicators",
+                value: String(INDICATOR_COUNTS.indicators),
+                desc: "Measurable factors",
+              },
+              {
+                label: "Sub-Indicators",
+                value: String(INDICATOR_COUNTS.subIndicators),
+                desc: "Granular metrics",
+              },
+            ].map((item) => (
+              <div
+                key={item.label}
+                style={{
+                  background: "#D8F3DC",
+                  borderRadius: "10px",
+                  padding: "16px",
+                  textAlign: "center",
+                  border: "1px solid #40916C40",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "28px",
+                    fontWeight: 900,
+                    color: "#1B4332",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {item.value}
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    color: "#1B4332",
+                    marginBottom: "4px",
+                  }}
+                >
+                  {item.label}
+                </div>
+                <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
+                  {item.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>
+            {INDICATOR_COUNTS.pillars} Pillars, {INDICATOR_COUNTS.indicators}{" "}
+            Indicators & {INDICATOR_COUNTS.subIndicators} Sub-Indicators
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            {PILLARS.map((p) => {
+              const pillarData = PILLAR_INDICATORS[p.key];
+              return (
+                <div
+                  key={p.key}
+                  style={{
+                    background: `${p.color}10`,
+                    borderRadius: "10px",
+                    border: `2px solid ${p.color}50`,
+                    overflow: "hidden",
+                  }}
+                >
+                  {/* Pillar Header */}
+                  <div
+                    style={{
+                      background: `${p.color}25`,
+                      padding: "14px",
+                      borderBottom: `2px solid ${p.color}50`,
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <div>
+                        <div
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: 700,
+                            color: p.color,
+                            marginBottom: "4px",
+                          }}
+                        >
+                          P{p.id}: {p.name}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "12px",
+                            color: "#64748B",
+                          }}
+                        >
+                          {p.dim}
+                        </div>
+                      </div>
+                      <span
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: p.color,
+                          background: "#FFFFFF",
+                          padding: "6px 12px",
+                          borderRadius: "6px",
+                          border: `2px solid ${p.color}`,
+                        }}
+                      >
+                        {p.weight}%
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Indicators & Sub-Indicators */}
+                  <div style={{ padding: "12px" }}>
+                    {pillarData?.indicators?.map((indicator, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          marginBottom:
+                            idx < pillarData.indicators.length - 1
+                              ? "12px"
+                              : "0",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            color: p.color,
+                            marginBottom: "6px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              background: p.color,
+                              color: "#FFFFFF",
+                              borderRadius: "4px",
+                              padding: "2px 8px",
+                              fontSize: "10px",
+                              fontWeight: 700,
+                            }}
+                          >
+                            {indicator.code}
+                          </span>
+                          {indicator.name}
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "6px",
+                            marginLeft: "12px",
+                          }}
+                        >
+                          {indicator.subIndicators?.map((sub, subIdx) => (
+                            <div
+                              key={subIdx}
+                              style={{
+                                background: "#FFFFFF",
+                                border: `1px solid ${p.color}40`,
+                                borderRadius: "6px",
+                                padding: "6px 10px",
+                                fontSize: "11px",
+                                color: "#1E293B",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "9px",
+                                  fontWeight: 600,
+                                  color: p.color,
+                                }}
+                              >
+                                {sub.code}
+                              </span>
+                              {sub.name}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    ),
+    methodology: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Data Processing & Normalization</div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  color: "#1B4332",
+                  marginBottom: "12px",
+                }}
+              >
+                Missing Value Imputation
+              </div>
+              <p
+                style={{
+                  color: "#64748B",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  marginBottom: "10px",
+                }}
+              >
+                For incomplete data across OIC member states, missing values are
+                computed using:
+              </p>
+              <div
+                style={{
+                  background: "#1B433210",
+                  border: "1px solid #40916C40",
+                  borderRadius: "6px",
+                  padding: "12px",
+                  fontFamily: "monospace",
+                  fontSize: "12px",
+                  color: "#1B4332",
+                  marginBottom: "12px",
+                }}
+              >
+                Min - (5% × Min)
+              </div>
+              <p
+                style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}
+              >
+                This conservative approach ensures data integrity while
+                preventing underestimation of emerging markets.
+              </p>
+            </div>
+            <div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  fontWeight: 700,
+                  color: "#1B4332",
+                  marginBottom: "12px",
+                }}
+              >
+                Min-Max Normalization
+              </div>
+              <p
+                style={{
+                  color: "#64748B",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  marginBottom: "10px",
+                }}
+              >
+                All indicators are normalized to a standardized 0-100 scale:
+              </p>
+              <div
+                style={{
+                  background: "#1B433210",
+                  border: "1px solid #40916C40",
+                  borderRadius: "6px",
+                  padding: "12px",
+                  fontFamily: "monospace",
+                  fontSize: "12px",
+                  color: "#1B4332",
+                  marginBottom: "12px",
+                  lineHeight: 1.6,
+                }}
+              >
+                (Value - Min) / (Max - Min) × 100
+              </div>
+              <p
+                style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}
+              >
+                Enables fair comparison across diverse indicators and geographic
+                contexts.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style={styles.card}>
+          <div style={styles.cardTitle}>Performance Clusters</div>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}
+          >
+            {[
+              {
+                title: "Advanced Digital Economies",
+                range: "Score ≥ 60",
+                color: "#1B4332",
+                bgColor: "#D8F3DC",
+                count: "6 States",
+                desc: "Well positioned to transition from infrastructure expansion toward innovation leadership. Priorities include scaling frontier R&D, strengthening patent commercialization, and contributing to global AI and data governance frameworks.",
+              },
+              {
+                title: "Emerging Digital Economies",
+                range: "Score 40–59",
+                color: "#52B788",
+                bgColor: "#E8F5E9",
+                count: "15 States",
+                desc: "Established core infrastructure but would benefit from strengthening digital skills, institutional capacity, SME digital transformation, and innovation financing to avoid middle digital stagnation.",
+              },
+              {
+                title: "Foundational Digital Economies",
+                range: "Score < 40",
+                color: "#95D5B2",
+                bgColor: "#F1F8F6",
+                count: "36 States",
+                desc: "Require continued emphasis on foundational investments: affordable broadband access, digital inclusion, baseline digital literacy, and regulatory modernization to enable broad-based participation.",
+              },
+            ].map((cluster) => (
+              <div
+                key={cluster.title}
+                style={{
+                  background: cluster.bgColor,
+                  border: `1px solid ${cluster.color}40`,
+                  borderRadius: "8px",
+                  padding: "16px",
+                  display: "flex",
+                  gap: "14px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "4px",
+                    background: cluster.color,
+                    borderRadius: "2px",
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: cluster.color,
+                        }}
+                      >
+                        {cluster.title}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          color: "#64748B",
+                          marginTop: "2px",
+                        }}
+                      >
+                        {cluster.range}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: 600,
+                        color: cluster.color,
+                        background: "rgba(255,255,255,0.5)",
+                        padding: "4px 10px",
+                        borderRadius: "4px",
+                      }}
+                    >
+                      {cluster.count}
+                    </div>
+                  </div>
+                  <p
+                    style={{
+                      color: "#1E293B",
+                      fontSize: "13px",
+                      lineHeight: 1.6,
+                      margin: 0,
+                    }}
+                  >
+                    {cluster.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    ),
+    sources: (
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>Primary Data Sources</div>
+        <p
+          style={{
+            color: "#64748B",
+            fontSize: "13px",
+            lineHeight: 1.8,
+            marginBottom: "16px",
+          }}
+        >
+          All data sourced from internationally recognized organizations
+          including World Bank, WIPO, OECD, Portulans Institute & Saïd Business
+          School (University of Oxford), and the Sustainable Development
+          Solutions Network. The 2025 edition uses lagged annual data from
+          multiple reporting periods for accuracy.
+        </p>
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            fontSize: "13px",
+            marginTop: "16px",
+          }}
+        >
+          <thead>
+            <tr style={{ borderBottom: "2px solid #40916C40" }}>
+              {["Indicator", "Code", "Source"].map((h) => (
+                <th
+                  key={h}
+                  style={{
+                    padding: "12px 8px",
+                    color: "#1B4332",
+                    textAlign: "left",
+                    fontWeight: 700,
+                    fontSize: "12px",
+                  }}
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {SOURCES.map((s, i) => (
+              <tr
+                key={i}
+                style={{
+                  borderBottom: "1px solid #E8F5E9",
+                  background: i % 2 === 0 ? "transparent" : "#F1F8F615",
+                }}
+              >
+                <td style={{ padding: "10px 8px", color: "#1E293B" }}>
+                  {s.indicator}
+                </td>
+                <td
+                  style={{
+                    padding: "10px 8px",
+                    color: "#1B4332",
+                    fontFamily: "monospace",
+                    fontWeight: 600,
+                  }}
+                >
+                  {s.code}
+                </td>
+                <td style={{ padding: "10px 8px", color: "#64748B" }}>
+                  {s.source}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Coverage notes generated from the workbook by the data-build step, so
+          they always describe the dataset actually on screen. */}
+      <div style={styles.card}>
+        <div style={styles.cardTitle}>Data Coverage &amp; Known Limitations</div>
+        <p
+          style={{
+            color: "#64748B",
+            fontSize: "13px",
+            lineHeight: 1.8,
+            marginBottom: "16px",
+          }}
+        >
+          Scores are read directly from{" "}
+          <span style={{ fontFamily: "monospace", color: "#1B4332" }}>
+            {META.source}
+          </span>{" "}
+          (sheet{" "}
+          <span style={{ fontFamily: "monospace", color: "#1B4332" }}>
+            {META.sheets.panel}
+          </span>
+          ), covering {META.countryCount} member states for {YEARS[0]}–
+          {YEARS[YEARS.length - 1]}. The caveats below are detected when the
+          dataset is built and are reproduced here unaltered rather than
+          smoothed over.
+        </p>
+
+        <div
+          style={{
+            background: "#FFF7ED",
+            border: "1px solid #FDBA74",
+            borderRadius: "10px",
+            padding: "16px",
+            marginBottom: "16px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "13px",
+              fontWeight: 700,
+              color: "#9A3412",
+              marginBottom: "8px",
+            }}
+          >
+            Global Findex coverage (sub-indicators{" "}
+            {FINDEX.codes.join(", ")})
+          </div>
+          <p
+            style={{
+              fontSize: "13px",
+              color: "#7C2D12",
+              lineHeight: 1.7,
+              margin: "0 0 10px 0",
+            }}
+          >
+            The Global Findex survey does not cover every OIC member state. Where
+            an economy has no observation, the workbook substitutes the
+            documented floor value (minimum observed score less 5%) rather than
+            leaving a gap, which depresses that country's Financial Market
+            Development score and, through it, its overall index score. This
+            affects {FINDEX_IMPUTED_COUNTRIES.length} of {META.countryCount}{" "}
+            countries in {FINDEX.year}, including several high-income economies
+            whose actual financial inclusion is far higher than the substituted
+            value implies. Read pillar 8 for those countries with that in mind.
+          </p>
+          <div style={{ fontSize: "12px", color: "#7C2D12", lineHeight: 1.7 }}>
+            <strong>Imputed:</strong> {FINDEX_IMPUTED_COUNTRIES.join(", ")}
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {DATA_QUALITY.filter((issue) => issue.id !== "findex-coverage").map(
+            (issue, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "flex-start",
+                  background: "#F1F8F6",
+                  border: "1px solid #40916C30",
+                  borderRadius: "8px",
+                  padding: "12px",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    letterSpacing: "0.05em",
+                    textTransform: "uppercase",
+                    color: issue.severity === "info" ? "#2D6A4F" : "#9A3412",
+                    background:
+                      issue.severity === "info" ? "#D8F3DC" : "#FFE4D5",
+                    borderRadius: "4px",
+                    padding: "3px 7px",
+                    whiteSpace: "nowrap",
+                    marginTop: "2px",
+                  }}
+                >
+                  {issue.severity}
+                </span>
+                <span
+                  style={{ fontSize: "13px", color: "#1E293B", lineHeight: 1.7 }}
+                >
+                  {issue.message}
+                </span>
+              </div>
+            ),
+          )}
+        </div>
+      </div>
+      </div>
+    ),
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          borderBottom: "2px solid #E8F5E9",
+          paddingBottom: "12px",
+        }}
+      >
+        {[
+          { id: "overview", label: "Overview" },
+          { id: "methodology", label: "Methodology" },
+          { id: "sources", label: "Data Sources" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            style={{
+              padding: "12px 20px",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: 600,
+              fontFamily: "'Georgia', serif",
+              background: activeTab === tab.id ? "#1B433210" : "transparent",
+              color: activeTab === tab.id ? "#1B4332" : "#64748B",
+              borderBottom: activeTab === tab.id ? "3px solid #1B4332" : "none",
+              transition: "all 0.2s ease",
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      {tabContents[activeTab]}
+      <div
+        style={{
+          padding: "20px",
+          textAlign: "center",
+          fontSize: "12px",
+          color: "#64748B",
+          borderTop: "1px solid #E2E8F0",
+          marginTop: "40px",
+        }}
+      >
+        <p>
+          *Al-Khouri, A. M. (2024). Arab Digital Economy Index 2024: The rise of
+          artificial intelligence applications in the Arab economy. Arab
+          Federation for Digital Economy
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default Methodology;

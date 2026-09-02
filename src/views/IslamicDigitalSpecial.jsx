@@ -36,9 +36,9 @@ function IslamicDigitalSpecial() {
           background: "var(--surface)",
         }}
       >
-        <div style={styles.cardTitle}>
+        <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>
           🕌 Islamic Digital Economy Special Analysis
-        </div>
+        </h2>
         <p
           style={{
             color: "var(--text)",
@@ -60,9 +60,9 @@ function IslamicDigitalSpecial() {
 
       {/* Innovation vs Financial Markets Scatter */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>
+        <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>
           Innovation vs. Financial Market Development (Scatter)
-        </div>
+        </h2>
         <ResponsiveContainer width="100%" height={320}>
           <ScatterChart>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border-strong)" />

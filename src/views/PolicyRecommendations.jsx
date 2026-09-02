@@ -1,11 +1,21 @@
 import { useState } from "react";
-import { styles } from "../styles/styles.js";
-import {
-  COUNTRIES,
-  META,
-  PILLARS,
-  getCluster,
-} from "../data/index.js";
+
+import { COUNTRIES, META, PILLARS, REFERENCE_YEAR, getCluster } from "../data/index.js";
+import * as fmt from "../lib/format.js";
+import CountryCombobox from "../components/CountryCombobox.jsx";
+import PageActions from "../components/PageActions.jsx";
+import { Badge, Card, ClusterBadge, ScoreBar, StatTile } from "../components/Primitives.jsx";
+
+/**
+ * Priority is carried by an explicit label and a leading glyph as well as by
+ * colour, so it survives greyscale, projection and colour-vision deficiency.
+ */
+const PRIORITY = {
+  IMMEDIATE: { tone: "negative", glyph: "▲▲▲" },
+  HIGH: { tone: "warning", glyph: "▲▲" },
+  MEDIUM: { tone: "info", glyph: "▲" },
+  STRATEGIC: { tone: "positive", glyph: "★" },
+};
 
 function PolicyRecommendations() {
   const [selected, setSelected] = useState("United Arab Emirates");
@@ -25,7 +35,6 @@ function PolicyRecommendations() {
         priority: "IMMEDIATE",
         action:
           "Innovation is the primary bottleneck in OIC's digital transformation. R&D activity remains predominantly state-funded with limited private-sector participation. Incentivize private-sector R&D participation, strengthen venture financing ecosystems, and establish structured commercialization pathways linking university research centers with industry and investment capital.",
-        icon: "🔬",
       });
     if (p.p3 < 40)
       recs.push({
@@ -33,7 +42,6 @@ function PolicyRecommendations() {
         priority: "HIGH",
         action:
           "Many OIC economies remain structurally concentrated in primary sectors rather than knowledge-intensive industries. Launch national digital skills programs targeting youth and women. Expand knowledge-intensive employment through STEM education, professional certifications, and workforce upskilling initiatives.",
-        icon: "🎓",
       });
     if (p.p2 < 50)
       recs.push({
@@ -41,7 +49,6 @@ function PolicyRecommendations() {
         priority: "HIGH",
         action:
           "Expand reliable broadband infrastructure, reduce access costs, and treat digital connectivity as a critical public utility. Pursue public-private partnerships for infrastructure financing and leverage Islamic Social Finance (Zakat/Waqf) for digital inclusion programs in underserved areas.",
-        icon: "📡",
       });
     if (p.p1 < 50)
       recs.push({
@@ -49,7 +56,6 @@ function PolicyRecommendations() {
         priority: "HIGH",
         action:
           "Strengthen digital governance frameworks and regulatory quality. Establish an independent digital regulator and implement GDPR-aligned data protection laws.",
-        icon: "⚖",
       });
     if (p.p4 < 60)
       recs.push({
@@ -57,7 +63,6 @@ function PolicyRecommendations() {
         priority: "MEDIUM",
         action:
           "Expand national e-ID and digital public service portals. Adopt open data standards and interoperable government systems. Benchmark against UAE PASS and Saudi Arabia's Absher.",
-        icon: "🏛",
       });
     if (p.p8 < 30)
       recs.push({
@@ -65,7 +70,6 @@ function PolicyRecommendations() {
         priority: "MEDIUM",
         action:
           "Develop Islamic FinTech regulatory sandbox to attract digital finance innovation. In many OIC economies, a substantial population remains outside the formal banking system. Promote mobile banking, digital wallets, and Shariah-compliant FinTech solutions to drive financial inclusion, especially in rural areas.",
-        icon: "💰",
       });
     if (p.p6 < 40)
       recs.push({
@@ -73,7 +77,6 @@ function PolicyRecommendations() {
         priority: "MEDIUM",
         action:
           "Many Emerging and Foundational Digital Economies have yet to formalize national AI strategies or mobilize sustained capital toward frontier technologies. Create a national AI strategy with clear governance frameworks and investment incentives for advanced digital sectors to capture value from the next wave of technological transformation.",
-        icon: "🤖",
       });
     if (p.p7 < 40)
       recs.push({
@@ -81,7 +84,6 @@ function PolicyRecommendations() {
         priority: "MEDIUM",
         action:
           "Limited access to growth-stage financing constrains start-up scaling, while insufficient industrial diversification narrows the domestic demand base. Reduce digital trade barriers, streamline e-commerce regulations, expand start-up financing accessibility, and support SME digital adoption.",
-        icon: "🛒",
       });
 
     if (!recs.length)
@@ -90,7 +92,6 @@ function PolicyRecommendations() {
         priority: "STRATEGIC",
         action:
           "Maintain leadership position by expanding digital exports, establishing regional tech hubs, and leading OIC digital standards. Invest in cutting-edge research in AI, quantum computing, and blockchain.",
-        icon: "🚀",
       });
 
     return recs;
@@ -98,211 +99,114 @@ function PolicyRecommendations() {
 
   const recs = generateRecommendations(country);
 
-  const PRIORITY_STYLES = {
-    IMMEDIATE: { color: "var(--negative)", bg: "var(--negative-bg)", border: "var(--negative-line)" },
-    HIGH: { color: "var(--warning)", bg: "var(--warning-bg)", border: "var(--warning-line)" },
-    MEDIUM: { color: "var(--info)", bg: "var(--info-bg)", border: "var(--info)" },
-    STRATEGIC: { color: "var(--positive)", bg: "var(--surface-2)", border: "var(--positive-line)" },
-  };
+  const pillarFor = (name) =>
+    PILLARS.find((p) => p.name === name || p.short === name);
+
+  const OIC_WIDE = [
+    {
+      title: "1. Aligning Policy with Digital Maturity",
+      desc: "National digital strategies should reflect a country's current digital maturity. Foundational economies: prioritize affordable broadband and digital literacy. Emerging economies: accelerate SME digitalization and workforce upskilling. Advanced economies: scale private-sector R&D and advance frontier technologies.",
+    },
+    {
+      title: "2. Transforming the Digital Divide into Intra-OIC Synergy",
+      desc: "Establish structured intra-OIC corridors for knowledge transfer, venture capital mobilization, and digital trade facilitation. Create common standards for e-commerce governance, digital identity recognition, cybersecurity protocols, and Shariah-compliant FinTech solutions.",
+    },
+    {
+      title: "3. Shared OIC Digital Talent & Innovation Mobility Framework",
+      desc: "Develop a bloc-level mechanism to facilitate digital talent movement, harmonize skills certification standards, and co-finance regional centers of excellence in AI, data science, and Islamic FinTech. Structured university-industry collaboration can reduce brain drain and position the OIC as a coordinated digital knowledge hub.",
+    },
+    {
+      title: "4. Leveraging Islamic Finance for Inclusive Growth",
+      desc: "Deploy Zakat and Waqf-backed microfinance for digital inclusion in Foundational economies. Use Shariah-compliant venture capital and equity crowdfunding for Emerging economy start-ups. Advanced economies should pioneer regulatory standards for digital Sukuk and Shariah-compliant FinTech frameworks.",
+    },
+  ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <select
-          style={styles.select}
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-        >
-          {[...COUNTRIES]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-        </select>
-        <div
-          style={{
-            ...styles.badge(cluster.color, cluster.bg),
-            fontSize: "13px",
-            padding: "4px 12px",
-          }}
-        >
-          {cluster.label} · Score: {country.adei.toFixed(1)} · Rank #
-          {country.rank}
-        </div>
+    <div className="stack">
+      <PageActions>
+        <CountryCombobox value={selected} onChange={setSelected} hideLabel id="policy-country" />
+        <ClusterBadge cluster={cluster.label} short />
+      </PageActions>
+
+      <div className="cols-3">
+        <StatTile label="OIC DEI score" value={fmt.score(country.adei)} support={cluster.label} />
+        <StatTile
+          label="Global rank"
+          value={fmt.rank(country.rank)}
+          support={`of ${META.countryCount} OIC states`}
+        />
+        <StatTile
+          label="Recommendations"
+          value={recs.length}
+          support="Derived from pillar-level gaps"
+        />
       </div>
 
-      <div
-        style={{
-          ...styles.card,
-          borderColor: `${cluster.color}40`,
-          background: `linear-gradient(135deg, var(--surface), ${cluster.color}08)`,
-        }}
+      <Card
+        title={`Strategic context for ${country.name}`}
+        subtitle={`${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
+        footer={fmt.SOURCE_LINE}
       >
-        <div style={{ ...styles.cardTitle, color: cluster.color }}>
-          Strategic Context for {country.name}
-        </div>
-        <p
-          style={{
-            color: "var(--text)",
-            fontSize: "13px",
-            lineHeight: 1.8,
-            margin: 0,
-          }}
-        >
-          {country.name} is classified as a{" "}
-          <strong style={{ color: cluster.color }}>{cluster.label}</strong> with
-          an OIC DEI score of{" "}
-          <strong style={{ color: "var(--text)" }}>
-            {country.adei.toFixed(1)}
-          </strong>{" "}
-          (Rank #{country.rank} of {META.countryCount} OIC states). The
-          following evidence-based recommendations are derived from pillar-level
-          gap analysis relative to OIC leading nations and global best
-          practices.
+        <p className="t-body-lg prose">
+          {country.name} is classified as a <strong>{cluster.label}</strong> with an OIC DEI
+          score of <strong>{fmt.score(country.adei)}</strong> (Rank {fmt.rank(country.rank)} of{" "}
+          {META.countryCount} OIC states). The following evidence-based recommendations are
+          derived from pillar-level gap analysis relative to OIC leading nations and global
+          best practices.
         </p>
-      </div>
+      </Card>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {recs.map((rec, i) => {
-          const ps = PRIORITY_STYLES[rec.priority];
+      <div className="stack-sm">
+        {recs.map((rec) => {
+          const pillar = pillarFor(rec.pillar);
+          const meta = PRIORITY[rec.priority];
           return (
-            <div
-              key={i}
-              style={{
-                ...styles.card,
-                border: `1px solid ${ps.border}40`,
-                background: ps.bg,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "14px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "28px",
-                    minWidth: "36px",
-                    textAlign: "center",
-                  }}
-                >
-                  {rec.icon}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        ...styles.badge(ps.color, `${ps.border}20`),
-                        fontSize: "11px",
-                      }}
-                    >
-                      {rec.priority}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: 700,
-                        color: "var(--text)",
-                      }}
-                    >
-                      {rec.pillar}
-                    </span>
-                    <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
-                      Current Score:{" "}
-                      {country[
-                        PILLARS.find(
-                          (p) =>
-                            p.name === rec.pillar ||
-                            p.short === rec.pillar ||
-                            p.pillar === rec.pillar,
-                        )?.key || "p1"
-                      ]?.toFixed(1)}
-                    </span>
-                  </div>
-                  <p
-                    style={{
-                      color: "var(--text)",
-                      fontSize: "13px",
-                      lineHeight: 1.7,
-                      margin: 0,
-                    }}
-                  >
-                    {rec.action}
-                  </p>
-                </div>
+            <Card key={rec.pillar}>
+              <div className="row" style={{ gap: "var(--s-8)", marginBottom: "var(--s-8)" }}>
+                <Badge tone={meta.tone}>
+                  <span aria-hidden="true">{meta.glyph}</span> {rec.priority}
+                </Badge>
+                <span className="t-h3">{rec.pillar}</span>
+                {pillar && (
+                  <span className="t-caption muted tnum push">
+                    Current score {fmt.score(country[pillar.key])} · weight{" "}
+                    {fmt.weight(pillar.weight)}
+                  </span>
+                )}
               </div>
-            </div>
+              {pillar && (
+                <div style={{ marginBottom: "var(--s-12)", maxWidth: "420px" }}>
+                  <ScoreBar value={country[pillar.key]} color={pillar.color} label={pillar.name} />
+                </div>
+              )}
+              <p className="t-body-lg prose">{rec.action}</p>
+            </Card>
           );
         })}
       </div>
 
-      {/* OIC-wide Recommendations */}
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>OIC-Wide Strategic Recommendations</div>
-        {[
-          {
-            icon: "🎯",
-            title: "1. Aligning Policy with Digital Maturity",
-            desc: "National digital strategies should reflect a country's current digital maturity. Foundational economies: prioritize affordable broadband and digital literacy. Emerging economies: accelerate SME digitalization and workforce upskilling. Advanced economies: scale private-sector R&D and advance frontier technologies.",
-          },
-          {
-            icon: "🔗",
-            title: "2. Transforming the Digital Divide into Intra-OIC Synergy",
-            desc: "Establish structured intra-OIC corridors for knowledge transfer, venture capital mobilization, and digital trade facilitation. Create common standards for e-commerce governance, digital identity recognition, cybersecurity protocols, and Shariah-compliant FinTech solutions.",
-          },
-          {
-            icon: "🧠",
-            title:
-              "3. Shared OIC Digital Talent & Innovation Mobility Framework",
-            desc: "Develop a bloc-level mechanism to facilitate digital talent movement, harmonize skills certification standards, and co-finance regional centers of excellence in AI, data science, and Islamic FinTech. Structured university-industry collaboration can reduce brain drain and position the OIC as a coordinated digital knowledge hub.",
-          },
-          {
-            icon: "🕌",
-            title: "4. Leveraging Islamic Finance for Inclusive Growth",
-            desc: "Deploy Zakat and Waqf-backed microfinance for digital inclusion in Foundational economies. Use Shariah-compliant venture capital and equity crowdfunding for Emerging economy start-ups. Advanced economies should pioneer regulatory standards for digital Sukuk and Shariah-compliant FinTech frameworks.",
-          },
-        ].map((r, i) => (
-          <div
-            key={i}
-            style={{
-              display: "flex",
-              gap: "12px",
-              padding: "12px 0",
-              borderBottom: "1px solid var(--border)",
-            }}
-          >
-            <span style={{ fontSize: "20px" }}>{r.icon}</span>
-            <div>
-              <div
-                style={{
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: "var(--text)",
-                  marginBottom: "4px",
-                }}
-              >
+      <Card
+        title="OIC-wide strategic recommendations"
+        subtitle="Bloc-level actions, independent of any one member state"
+        footer={fmt.SOURCE_LINE}
+      >
+        <ol className="stack-sm" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {OIC_WIDE.map((r) => (
+            <li
+              key={r.title}
+              style={{
+                paddingBottom: "var(--s-12)",
+                borderBottom: "1px solid var(--border)",
+              }}
+            >
+              <h3 className="t-h3" style={{ marginBottom: "var(--s-4)" }}>
                 {r.title}
-              </div>
-              <div
-                style={{ fontSize: "12px", color: "var(--text)", lineHeight: 1.6 }}
-              >
-                {r.desc}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+              </h3>
+              <p className="t-body prose muted">{r.desc}</p>
+            </li>
+          ))}
+        </ol>
+      </Card>
     </div>
   );
 }

@@ -1,23 +1,25 @@
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Cell,
-  Line,
-  ReferenceLine,
 } from "recharts";
-import { styles } from "../styles/styles.js";
+
+import { COUNTRIES, META, OIC_AVERAGE, REFERENCE_YEAR } from "../data/index.js";
+import { useChartTokens } from "../styles/tokens.js";
+import { openCountry } from "../lib/routing.js";
+import * as fmt from "../lib/format.js";
 import CustomTooltip from "../components/CustomTooltip.jsx";
-import {
-  META,
-  OIC_AVERAGE,
-} from "../data/index.js";
+import ChartFrame, { LegendKey, animation, axis, grid } from "../components/ChartFrame.jsx";
+import { Card, Delta, InsightBlock, StatTile } from "../components/Primitives.jsx";
 
 function DigitalDivide() {
+  const tokens = useChartTokens();
   const sorted = [...COUNTRIES].sort((a, b) => b.adei - a.adei);
   const oicAvg = OIC_AVERAGE;
   const above = sorted.filter((c) => c.adei >= oicAvg);
@@ -25,217 +27,148 @@ function DigitalDivide() {
 
   const gapData = sorted.map((c) => ({
     name: c.name.length > 12 ? c.name.slice(0, 12) + "…" : c.name,
+    fullName: c.name,
     gap: parseFloat((c.adei - oicAvg).toFixed(1)),
     score: parseFloat(c.adei.toFixed(1)),
   }));
 
+  const highest = sorted[0];
+  const lowest = sorted[sorted.length - 1];
+  const spread = highest.adei - lowest.adei;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div style={styles.grid4}>
-        {[
-          {
-            label: "Countries Above OIC Avg",
-            value: above.length,
-            color: "var(--interactive)",
-          },
-          {
-            label: "Countries Below OIC Avg",
-            value: below.length,
-            color: "var(--text-muted)",
-          },
-          {
-            label: "OIC Average Score",
-            value: oicAvg.toFixed(1),
-            color: "var(--text)",
-          },
-          {
-            label: "Max Digital Divide",
-            value: `${(sorted[0].adei - sorted[sorted.length - 1].adei).toFixed(0)} pts`,
-            color: "var(--interactive)",
-          },
-        ].map((k, i) => (
-          <div
-            key={i}
-            style={{
-              ...styles.card,
-              textAlign: "center",
-              background: i === 0 ? "var(--tint)" : "var(--surface-2)",
-              border: `1px solid ${k.color}`,
-            }}
-          >
-            <div style={{ fontSize: "28px", fontWeight: 700, color: k.color }}>
-              {k.value}
-            </div>
-            <div
-              style={{
-                fontSize: "11px",
-                color: "var(--text)",
-                marginTop: "4px",
-                fontWeight: 600,
-              }}
-            >
-              {k.label}
-            </div>
-          </div>
-        ))}
+    <div className="stack">
+      <div className="cols-4">
+        <StatTile
+          label="Above OIC average"
+          value={above.length}
+          support={`of ${META.countryCount} member states`}
+        />
+        <StatTile
+          label="Below OIC average"
+          value={below.length}
+          support={`of ${META.countryCount} member states`}
+        />
+        <StatTile
+          label="OIC average score"
+          value={fmt.score(oicAvg)}
+          support={`${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
+        />
+        <StatTile
+          label="Maximum divide"
+          value={`${spread.toFixed(0)} pts`}
+          support={`${highest.name} to ${lowest.name}`}
+        />
       </div>
 
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>
-          Gap from OIC Average (All {META.countryCount} Countries)
-        </div>
-        <ResponsiveContainer width="100%" height={360}>
-          <BarChart data={gapData} barSize={10}>
-            <CartesianGrid
-              strokeDasharray="0"
-              stroke="var(--surface-2)"
-              vertical={false}
+      <ChartFrame
+        title={`Gap from the OIC average (all ${META.countryCount} countries)`}
+        subtitle={`Points above or below the OIC average of ${fmt.score(oicAvg)} · ${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
+        summary={`Deviation from the OIC average for every member state. ${above.length} sit above it and ${below.length} below, spanning ${spread.toFixed(0)} points from ${highest.name} to ${lowest.name}.`}
+        legend={
+          <>
+            <LegendKey color={tokens.positive}>▲ Above average</LegendKey>
+            <LegendKey color={tokens.negative}>▼ Below average</LegendKey>
+          </>
+        }
+      >
+        <ResponsiveContainer width="100%" height={380}>
+          <BarChart data={gapData} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
+            <CartesianGrid {...grid(tokens)} />
+            <XAxis dataKey="name" {...axis(tokens)} angle={-45} textAnchor="end" height={96} interval={0} />
+            <YAxis {...axis(tokens)} width={40} />
+            <Tooltip
+              content={<CustomTooltip unit={`Points from the OIC average of ${fmt.score(oicAvg)}`} />}
+              cursor={{ fill: tokens["surface-2"] }}
             />
-            <XAxis
-              dataKey="name"
-              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
-              angle={-45}
-              textAnchor="end"
-              height={80}
-            />
-            <YAxis tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }} />
-            <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
               y={0}
-              stroke="var(--seq-7)"
+              stroke={tokens["text-subtle"]}
               strokeDasharray="4 4"
-              strokeWidth={2}
               label={{
-                value: "OIC Average",
-                fill: "var(--text)",
+                value: `OIC average ${fmt.score(oicAvg)}`,
+                fill: tokens["text-subtle"],
                 fontSize: 11,
-                fontWeight: 700,
+                position: "insideTopRight",
               }}
             />
-            <Bar dataKey="gap" name="Gap from OIC Avg">
-              {gapData.map((d, i) => (
-                <Cell key={i} fill={d.gap >= 0 ? "var(--seq-5)" : "var(--seq-2)"} />
+            <Bar dataKey="gap" name="Gap from OIC average" maxBarSize={12} {...animation()}>
+              {gapData.map((d) => (
+                <Cell key={d.fullName} fill={d.gap >= 0 ? tokens.positive : tokens.negative} />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-        <div
-          style={{
-            background: "var(--tint)",
-            border: "1px solid var(--border-strong)",
-            borderRadius: "8px",
-            padding: "12px 14px",
-            marginTop: "12px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "8px",
-              marginBottom: "6px",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "11px",
-                fontWeight: 700,
-                color: "var(--text)",
-              }}
-            >
-              Strategic Insight
-            </div>
-            <div
-              style={{
-                fontSize: "11px",
-                fontWeight: 400,
-                color: "var(--text-subtle)",
-                whiteSpace: "nowrap",
-              }}
-            >
-              AI-assisted insight
-            </div>
-          </div>
-          <p
-            style={{
-              fontSize: "12px",
-              color: "var(--text)",
-              margin: 0,
-              lineHeight: 1.6,
-            }}
-          >
-            <strong>{above.length} countries</strong> exceed the OIC average (
-            {oicAvg.toFixed(1)}), while{" "}
-            <strong>{below.length} countries</strong> fall below it. The largest
-            positive gap belongs to <strong>{sorted[0].name}</strong> (+
-            {(sorted[0].adei - oicAvg).toFixed(1)} pts) and the largest deficit
-            to <strong>{sorted[sorted.length - 1].name}</strong> (
-            {(sorted[sorted.length - 1].adei - oicAvg).toFixed(1)} pts),
-            representing a total intra-OIC divide of{" "}
-            <strong>
-              {(sorted[0].adei - sorted[sorted.length - 1].adei).toFixed(0)} pts
-            </strong>
-            .
-          </p>
-        </div>
-      </div>
 
-      <div style={styles.grid2}>
-        <div
-          style={{ ...styles.card, borderColor: "var(--tint-line)", borderWidth: "2px" }}
-        >
-          <div style={{ ...styles.cardTitle, color: "var(--interactive)" }}>
-            Above OIC Average ({above.length})
-          </div>
-          {above.map((c) => (
-            <div
-              key={c.name}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "8px 0",
-                borderBottom: "1px solid var(--tint-line)",
-                fontSize: "12px",
-              }}
-            >
-              <span style={{ color: "var(--interactive)", fontWeight: 500 }}>
-                {c.name}
-              </span>
-              <span style={{ color: "var(--interactive)", fontWeight: 700 }}>
-                +{(c.adei - oicAvg).toFixed(1)}
-              </span>
-            </div>
-          ))}
+        <div style={{ marginTop: "var(--s-16)" }}>
+          <InsightBlock>
+            <strong>{above.length} countries</strong> exceed the OIC average (
+            {oicAvg.toFixed(1)}), while <strong>{below.length} countries</strong> fall below
+            it. The largest positive gap belongs to <strong>{highest.name}</strong> (+
+            {(highest.adei - oicAvg).toFixed(1)} pts) and the largest deficit to{" "}
+            <strong>{lowest.name}</strong> ({(lowest.adei - oicAvg).toFixed(1)} pts),
+            representing a total intra-OIC divide of{" "}
+            <strong>{spread.toFixed(0)} pts</strong>.
+          </InsightBlock>
         </div>
-        <div
-          style={{ ...styles.card, borderColor: "var(--tint-line)", borderWidth: "2px" }}
-        >
-          <div style={{ ...styles.cardTitle, color: "var(--text-muted)" }}>
-            Below OIC Average ({below.length})
-          </div>
-          {below.map((c) => (
-            <div
-              key={c.name}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                padding: "8px 0",
-                borderBottom: "1px solid var(--tint-line)",
-                fontSize: "12px",
-              }}
-            >
-              <span style={{ color: "var(--interactive)", fontWeight: 500 }}>
-                {c.name}
-              </span>
-              <span style={{ color: "var(--text-muted)", fontWeight: 700 }}>
-                {(c.adei - oicAvg).toFixed(1)}
-              </span>
-            </div>
-          ))}
-        </div>
+      </ChartFrame>
+
+      <div className="cols-2">
+        <GapList
+          title={`Above OIC average (${above.length})`}
+          rows={above}
+          oicAvg={oicAvg}
+        />
+        <GapList
+          title={`Below OIC average (${below.length})`}
+          rows={below}
+          oicAvg={oicAvg}
+        />
       </div>
     </div>
+  );
+}
+
+function GapList({ title, rows, oicAvg }) {
+  return (
+    <Card
+      title={title}
+      subtitle={`Gap from the OIC average of ${fmt.score(oicAvg)}`}
+      footer={fmt.SOURCE_LINE}
+    >
+      <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        {rows.map((c) => (
+          <li key={c.name}>
+            <button
+              type="button"
+              className="row"
+              onClick={() => openCountry(c.name)}
+              style={{
+                width: "100%",
+                justifyContent: "space-between",
+                flexWrap: "nowrap",
+                gap: "var(--s-12)",
+                padding: "var(--s-8) 0",
+                borderBottom: "1px solid var(--border)",
+                background: "none",
+                border: 0,
+                borderBottomWidth: "1px",
+                borderBottomStyle: "solid",
+                borderBottomColor: "var(--border)",
+                textAlign: "left",
+                cursor: "pointer",
+              }}
+              aria-label={`${c.name}, ${fmt.delta(c.adei - oicAvg)} points from the OIC average. Open profile.`}
+            >
+              <span className="t-sm" style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {c.name}
+              </span>
+              <Delta value={c.adei - oicAvg} />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </Card>
   );
 }
 

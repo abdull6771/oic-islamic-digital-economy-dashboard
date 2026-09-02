@@ -2,6 +2,10 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as fmt from "../lib/format.js";
 import { CLUSTER_TIER, CLUSTER_SHORT, toneFor } from "../lib/clusters.js";
 
+/** Measure before paint in the browser; fall back to useEffect off-DOM. */
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 /**
  * The primitive layer: Card, StatTile, Badge, Delta, ScoreBar, InsightBlock,
  * the control set and the empty/loading/error states.
@@ -326,7 +330,7 @@ export function TableScroll({ maxHeight, className = "", children }) {
   const ref = useRef(null);
   const [overflowing, setOverflowing] = useState(false);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const el = ref.current;
     if (!el) return undefined;
     const measure = () =>

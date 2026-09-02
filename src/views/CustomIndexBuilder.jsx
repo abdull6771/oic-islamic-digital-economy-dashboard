@@ -1,21 +1,33 @@
 import { useState } from "react";
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
-import { styles } from "../styles/styles.js";
+
+import { COUNTRIES, PILLARS, REFERENCE_YEAR } from "../data/index.js";
+import { useChartTokens } from "../styles/tokens.js";
+import { openCountry } from "../lib/routing.js";
+import * as fmt from "../lib/format.js";
 import CustomTooltip from "../components/CustomTooltip.jsx";
+import ChartFrame, { LegendKey, animation, axis, grid, SCORE_DOMAIN } from "../components/ChartFrame.jsx";
 import {
-  PILLARS,
-} from "../data/index.js";
+  Badge,
+  Card,
+  DataTable,
+  Delta,
+  InsightBlock,
+  RangeSlider,
+  RankPill,
+} from "../components/Primitives.jsx";
 
 function CustomIndexBuilder() {
+  const tokens = useChartTokens();
+
   const defaultWeights = PILLARS.reduce((acc, p) => {
     acc[p.key] = p.weight;
     return acc;
@@ -24,6 +36,7 @@ function CustomIndexBuilder() {
   const [preset, setPreset] = useState("official");
 
   const totalWeight = Object.values(weights).reduce((s, v) => s + v, 0);
+  const balanced = Math.abs(totalWeight - 100) < 1;
 
   const normalize = (w) => {
     const total = Object.values(w).reduce((s, v) => s + v, 0);
@@ -52,17 +65,7 @@ function CustomIndexBuilder() {
     official: { label: "Official OIC DEI Weights", w: defaultWeights },
     govFocus: {
       label: "Governance-Focused",
-      w: {
-        p1: 25,
-        p2: 10,
-        p3: 10,
-        p4: 20,
-        p5: 5,
-        p6: 10,
-        p7: 5,
-        p8: 5,
-        p9: 10,
-      },
+      w: { p1: 25, p2: 10, p3: 10, p4: 20, p5: 5, p6: 10, p7: 5, p8: 5, p9: 10 },
     },
     innovFocus: {
       label: "Innovation-First",
@@ -70,31 +73,11 @@ function CustomIndexBuilder() {
     },
     inclusive: {
       label: "Digital Inclusion",
-      w: {
-        p1: 10,
-        p2: 20,
-        p3: 20,
-        p4: 10,
-        p5: 5,
-        p6: 10,
-        p7: 5,
-        p8: 5,
-        p9: 15,
-      },
+      w: { p1: 10, p2: 20, p3: 20, p4: 10, p5: 5, p6: 10, p7: 5, p8: 5, p9: 15 },
     },
     market: {
       label: "Market-Driven",
-      w: {
-        p1: 10,
-        p2: 10,
-        p3: 10,
-        p4: 5,
-        p5: 15,
-        p6: 15,
-        p7: 20,
-        p8: 15,
-        p9: 0,
-      },
+      w: { p1: 10, p2: 10, p3: 10, p4: 5, p5: 15, p6: 15, p7: 20, p8: 15, p9: 0 },
     },
   };
 
@@ -102,6 +85,7 @@ function CustomIndexBuilder() {
     setPreset(key);
     setWeights(PRESETS[key].w);
   };
+
   const topMoverUp = customRanked
     .filter((c) => c.rankChange > 0)
     .sort((a, b) => b.rankChange - a.rankChange)
@@ -116,475 +100,196 @@ function CustomIndexBuilder() {
     Custom: c.customScore,
   }));
 
+  const biggestGainer = [...customRanked].sort((a, b) => b.rankChange - a.rankChange)[0];
+  const biggestLoser = [...customRanked].sort((a, b) => a.rankChange - b.rankChange)[0];
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div
-        style={{
-          ...styles.card,
-          borderColor: "var(--border-strong)",
-          background: "linear-gradient(135deg,var(--surface),var(--surface-2))",
-          borderWidth: "2px",
-        }}
+    <div className="stack">
+      <Card
+        title="Custom index builder — sensitivity analysis tool"
+        subtitle={`Re-weight the ${PILLARS.length} pillars and watch the ranking move`}
       >
-        <div style={{ ...styles.cardTitle, color: "var(--text)" }}>
-          Custom Index Builder — Sensitivity Analysis Tool
-        </div>
-        <p
-          style={{
-            color: "var(--text)",
-            fontSize: "13px",
-            lineHeight: 1.7,
-            margin: 0,
-          }}
-        >
-          Re-weight the 9 pillars to see how rankings shift under alternative
-          policy priorities. Use presets or manually adjust sliders. Weights
-          auto-normalize to 100%. Essential for{" "}
-          <strong style={{ color: "var(--text)" }}>
-            academic sensitivity analysis
-          </strong>{" "}
-          and <strong style={{ color: "var(--text)" }}>scenario planning</strong>.
+        <p className="t-body-lg prose">
+          Re-weight the 9 pillars to see how rankings shift under alternative policy
+          priorities. Use presets or manually adjust sliders. Weights auto-normalize to
+          100%. Essential for <strong>academic sensitivity analysis</strong> and{" "}
+          <strong>scenario planning</strong>.
         </p>
-      </div>
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>Weight Presets</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+      </Card>
+
+      <Card title="Weight presets" subtitle="Five published scenarios">
+        <div className="row" role="group" aria-label="Weight preset" style={{ gap: "var(--s-8)" }}>
           {Object.entries(PRESETS).map(([key, p]) => (
             <button
+              type="button"
               key={key}
+              className="btn"
+              aria-pressed={preset === key}
               onClick={() => applyPreset(key)}
-              style={{
-                padding: "8px 16px",
-                borderRadius: "8px",
-                border: "1px solid",
-                cursor: "pointer",
-                fontSize: "12px",
-                background: preset === key ? "var(--tint)" : "var(--surface-2)",
-                borderColor: preset === key ? "var(--seq-7)" : "var(--seq-2)",
-                color: preset === key ? "var(--seq-7)" : "var(--seq-6)",
-                fontWeight: preset === key ? 700 : 500,
-              }}
             >
               {p.label}
             </button>
           ))}
+          {preset === "custom" && <Badge tone="info">Custom weights</Badge>}
         </div>
-      </div>
-      <div style={styles.card}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "16px",
-          }}
-        >
-          <div style={styles.cardTitle}>Pillar Weights</div>
-          <div
-            style={{
-              fontSize: "13px",
-              fontWeight: 700,
-              color: Math.abs(totalWeight - 100) < 1 ? "var(--seq-5)" : "var(--seq-3)",
-            }}
-          >
-            Total: {totalWeight}%{" "}
-            {Math.abs(totalWeight - 100) < 1 ? "✓" : "(will auto-normalize)"}
-          </div>
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: "16px",
-          }}
-        >
+      </Card>
+
+      <Card
+        title="Pillar weights"
+        subtitle="Raw weights, before normalisation"
+        action={
+          <span className="badge" data-tone={balanced ? "neutral" : "warning"}>
+            <span aria-hidden="true">{balanced ? "✓" : "⚠"}</span>
+            Total {totalWeight}%{balanced ? "" : " — will auto-normalise"}
+          </span>
+        }
+        footer={`Weights are normalised to sum to 100% before the custom score is computed, so any total is valid. ${fmt.SOURCE_LINE}`}
+      >
+        <div className="cols-3">
           {PILLARS.map((p) => (
             <div key={p.key}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "6px",
-                }}
-              >
-                <span
-                  style={{ fontSize: "12px", color: p.color, fontWeight: 600 }}
-                >
-                  {p.name}
-                </span>
-                <span
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: "var(--text)",
-                  }}
-                >
-                  {weights[p.key]}%
-                </span>
-              </div>
-              <input
-                type="range"
-                min="0"
-                max="40"
+              <RangeSlider
+                id={`weight-${p.key}`}
+                label={
+                  <>
+                    <span className="swatch-dot" style={{ background: p.color }} aria-hidden="true" />{" "}
+                    {p.name}
+                  </>
+                }
                 value={weights[p.key]}
-                onChange={(e) => {
+                min={0}
+                max={40}
+                readout={`${weights[p.key]}%`}
+                onChange={(value) => {
                   setPreset("custom");
-                  setWeights((w) => ({
-                    ...w,
-                    [p.key]: parseInt(e.target.value),
-                  }));
-                }}
-                style={{
-                  width: "100%",
-                  accentColor: p.color,
-                  cursor: "pointer",
+                  setWeights((w) => ({ ...w, [p.key]: value }));
                 }}
               />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "11px",
-                  color: "var(--text)",
-                }}
-              >
+              <div className="row t-caption subtle" style={{ justifyContent: "space-between", flexWrap: "nowrap" }}>
                 <span>0%</span>
-                <span>Official: {p.weight}%</span>
+                <span>Official {fmt.weight(p.weight)}</span>
                 <span>40%</span>
               </div>
             </div>
           ))}
         </div>
+      </Card>
+
+      <div className="cols-2">
+        <Card title="Rank gainers" subtitle="Largest upward moves under these weights">
+          {topMoverUp.length === 0 ? (
+            <p className="t-body muted">No country gains a position under these weights.</p>
+          ) : (
+            <MoverList rows={topMoverUp} />
+          )}
+        </Card>
+        <Card title="Rank losers" subtitle="Largest downward moves under these weights">
+          {topMoverDown.length === 0 ? (
+            <p className="t-body muted">No country loses a position under these weights.</p>
+          ) : (
+            <MoverList rows={topMoverDown} />
+          )}
+        </Card>
       </div>
-      <div style={styles.grid2}>
-        <div
-          style={{ ...styles.card, borderColor: "var(--tint-line)", borderWidth: "2px" }}
-        >
-          <div style={{ ...styles.cardTitle, color: "var(--interactive)" }}>
-            Rank Gainers
-          </div>
-          {topMoverUp.map((c) => (
-            <div
-              key={c.name}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "8px",
-                padding: "8px",
-                background: "var(--tint)",
-                borderRadius: "6px",
-              }}
-            >
-              <div style={{ fontSize: "18px", color: "var(--interactive)" }}>↑</div>
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "var(--text)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {c.name}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "var(--interactive)",
-                      fontWeight: 700,
-                    }}
-                  >
-                    +{c.rankChange} places
-                  </span>
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--interactive)" }}>
-                  #{c.rank} → #{c.customRank} | {c.adei.toFixed(1)} →{" "}
-                  {c.customScore.toFixed(1)}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div
-          style={{ ...styles.card, borderColor: "var(--seq-3)", borderWidth: "2px" }}
-        >
-          <div style={{ ...styles.cardTitle, color: "var(--text-muted)" }}>
-            Rank Decliners
-          </div>
-          {topMoverDown.map((c) => (
-            <div
-              key={c.name}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "8px",
-                padding: "8px",
-                background: "var(--surface-2)",
-                borderRadius: "6px",
-              }}
-            >
-              <div style={{ fontSize: "18px", color: "var(--text-muted)" }}>↓</div>
-              <div style={{ flex: 1 }}>
-                <div
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "var(--text)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {c.name}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "13px",
-                      color: "var(--text-muted)",
-                      fontWeight: 700,
-                    }}
-                  >
-                    {c.rankChange} places
-                  </span>
-                </div>
-                <div style={{ fontSize: "11px", color: "var(--interactive)" }}>
-                  #{c.rank} → #{c.customRank} | {c.adei.toFixed(1)} →{" "}
-                  {c.customScore.toFixed(1)}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>
-          Official vs Custom Score — Leading 20 Countries
-        </div>
-        <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={compData} barSize={12}>
-            <CartesianGrid
-              strokeDasharray="0"
-              stroke="var(--surface-2)"
-              vertical={false}
-            />
-            <XAxis
-              dataKey="name"
-              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
-              angle={-30}
-              textAnchor="end"
-              height={60}
-            />
-            <YAxis
-              domain={[0, 100]}
-              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              wrapperStyle={{
-                fontSize: "12px",
-                fontWeight: 600,
-              }}
-            />
-            <Bar dataKey="Official" fill="var(--seq-2)" />
-            <Bar dataKey="Custom" fill="var(--seq-5)" />
+
+      <ChartFrame
+        title="Official vs custom score — leading 20 countries"
+        subtitle={`${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
+        summary={`Paired bars comparing the official DEI score with the custom re-weighted score for the top 20 countries. ${biggestGainer?.name} gains the most at ${fmt.rankDelta(biggestGainer?.rankChange)} places.`}
+        legend={
+          <>
+            <LegendKey color={tokens["border-strong"]}>Official</LegendKey>
+            <LegendKey color={tokens["brand-700"]}>Custom</LegendKey>
+          </>
+        }
+      >
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={compData} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
+            <CartesianGrid {...grid(tokens)} />
+            <XAxis dataKey="name" {...axis(tokens)} angle={-30} textAnchor="end" height={72} interval={0} />
+            <YAxis domain={SCORE_DOMAIN} {...axis(tokens)} width={36} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: tokens["surface-2"] }} />
+            <Bar dataKey="Official" fill={tokens["border-strong"]} maxBarSize={12} {...animation()} />
+            <Bar dataKey="Custom" fill={tokens["brand-700"]} maxBarSize={12} {...animation()} />
           </BarChart>
         </ResponsiveContainer>
-        {(() => {
-          const biggestGainer = [...customRanked].sort(
-            (a, b) => b.rankChange - a.rankChange,
-          )[0];
-          const biggestLoser = [...customRanked].sort(
-            (a, b) => a.rankChange - b.rankChange,
-          )[0];
-          const scoreDiff = biggestGainer
-            ? (biggestGainer.customScore - biggestGainer.adei).toFixed(1)
-            : 0;
-          return (
-            <div
-              style={{
-                background: "var(--tint)",
-                border: "1px solid var(--border-strong)",
-                borderRadius: "8px",
-                padding: "12px 14px",
-                marginTop: "12px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "8px",
-                  marginBottom: "6px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    color: "var(--text)",
-                  }}
-                >
-                  Strategic Insight
-                </div>
-                <div
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 400,
-                    color: "var(--text-subtle)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  AI-assisted insight
-                </div>
-              </div>
-              <p
-                style={{
-                  fontSize: "12px",
-                  color: "var(--text)",
-                  margin: 0,
-                  lineHeight: 1.6,
-                }}
-              >
-                Under the current weight settings,{" "}
-                <strong>{biggestGainer?.name}</strong> gains the most (+
-                {biggestGainer?.rankChange} ranks, score{" "}
-                {biggestGainer?.adei.toFixed(1)} →{" "}
-                {biggestGainer?.customScore.toFixed(1)}), while{" "}
-                <strong>{biggestLoser?.name}</strong> drops the most (
-                {biggestLoser?.rankChange} ranks). Adjusting pillar weights
-                reveals which countries are under- or over-valued by the
-                official index.
-              </p>
-            </div>
-          );
-        })()}
-      </div>
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>Full Custom Rankings</div>
-        <div
-          style={{ overflowX: "auto", maxHeight: "400px", overflowY: "auto" }}
-        >
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: "12px",
-            }}
-          >
-            <thead
-              style={{ position: "sticky", top: 0, background: "var(--surface)" }}
-            >
-              <tr style={{ borderBottom: "1px solid var(--accent-line)" }}>
-                {[
-                  "Custom #",
-                  "Official #",
-                  "Δ Rank",
-                  "Country",
-                  "Official Score",
-                  "Custom Score",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    style={{
-                      padding: "10px 8px",
-                      color: "var(--text)",
-                      textAlign: "center",
-                      fontSize: "11px",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {customRanked.map((c, i) => (
-                <tr
-                  key={c.name}
-                  style={{
-                    borderBottom: "1px solid var(--border)",
-                    background: i % 2 === 0 ? "transparent" : "var(--surface-2)",
-                  }}
-                >
-                  <td
-                    style={{
-                      padding: "7px 8px",
-                      textAlign: "center",
-                      fontWeight: 700,
-                      color: "var(--info)",
-                    }}
-                  >
-                    #{c.customRank}
-                  </td>
-                  <td
-                    style={{
-                      padding: "7px 8px",
-                      textAlign: "center",
-                      color: "var(--text)",
-                    }}
-                  >
-                    #{c.rank}
-                  </td>
-                  <td
-                    style={{
-                      padding: "7px 8px",
-                      textAlign: "center",
-                      fontWeight: 700,
-                      color:
-                        c.rankChange > 0
-                          ? "var(--positive)"
-                          : c.rankChange < 0
-                            ? "var(--negative)"
-                            : "var(--text-muted)",
-                    }}
-                  >
-                    {c.rankChange > 0
-                      ? `+${c.rankChange}`
-                      : c.rankChange === 0
-                        ? "–"
-                        : c.rankChange}
-                  </td>
-                  <td
-                    style={{
-                      padding: "7px 8px",
-                      color: "var(--text)",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {c.name}
-                  </td>
-                  <td
-                    style={{
-                      padding: "7px 8px",
-                      textAlign: "center",
-                      color: "var(--text)",
-                    }}
-                  >
-                    {c.adei.toFixed(1)}
-                  </td>
-                  <td
-                    style={{
-                      padding: "7px 8px",
-                      textAlign: "center",
-                      fontWeight: 700,
-                      color: "var(--info)",
-                    }}
-                  >
-                    {c.customScore.toFixed(1)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+        <div style={{ marginTop: "var(--s-16)" }}>
+          <InsightBlock>
+            Under the current weight settings, <strong>{biggestGainer?.name}</strong> gains
+            the most (+{biggestGainer?.rankChange} ranks, score{" "}
+            {biggestGainer?.adei.toFixed(1)} → {biggestGainer?.customScore.toFixed(1)}), while{" "}
+            <strong>{biggestLoser?.name}</strong> drops the most ({biggestLoser?.rankChange}{" "}
+            ranks). Adjusting pillar weights reveals which countries are under- or
+            over-valued by the official index.
+          </InsightBlock>
         </div>
-      </div>
+      </ChartFrame>
+
+      <Card
+        title="Full custom rankings"
+        subtitle={`All ${COUNTRIES.length} member states re-ranked · sortable`}
+        footer={fmt.SOURCE_LINE}
+      >
+        <DataTable
+          caption="Custom rank, official rank, rank change, official score and custom score for every member state."
+          maxHeight="440px"
+          rowKey={(c) => c.name}
+          onRowClick={(c) => openCountry(c.name)}
+          initialSort={{ key: "customRank", dir: "asc" }}
+          rows={customRanked}
+          columns={[
+            {
+              key: "customRank",
+              label: "Custom #",
+              numeric: true,
+              render: (c) => <RankPill rank={c.customRank} top={c.customRank <= 3} />,
+            },
+            { key: "rank", label: "Official #", numeric: true, render: (c) => fmt.rank(c.rank) },
+            {
+              key: "rankChange",
+              label: "Δ Rank",
+              numeric: true,
+              render: (c) => <Delta value={c.rankChange} places />,
+            },
+            { key: "name", label: "Country", nameCell: true },
+            {
+              key: "adei",
+              label: "Official score",
+              numeric: true,
+              render: (c) => fmt.score(c.adei),
+            },
+            {
+              key: "customScore",
+              label: "Custom score",
+              numeric: true,
+              render: (c) => <strong>{fmt.score(c.customScore)}</strong>,
+            },
+          ]}
+        />
+      </Card>
     </div>
+  );
+}
+
+function MoverList({ rows }) {
+  return (
+    <ul className="stack-sm" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+      {rows.map((c) => (
+        <li className="panel-tight" key={c.name}>
+          <div className="row" style={{ justifyContent: "space-between", flexWrap: "nowrap" }}>
+            <span className="t-sm" style={{ fontWeight: 600, minWidth: 0 }}>
+              {c.name}
+            </span>
+            <Delta value={c.rankChange} places unit=" places" />
+          </div>
+          <div className="t-caption muted tnum">
+            {fmt.rank(c.rank)} → {fmt.rank(c.customRank)} · {fmt.score(c.adei)} →{" "}
+            {fmt.score(c.customScore)}
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 

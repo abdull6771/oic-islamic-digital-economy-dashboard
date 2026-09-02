@@ -1,29 +1,47 @@
 import { useState } from "react";
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
 } from "recharts";
-import { styles } from "../styles/styles.js";
-import CustomTooltip from "../components/CustomTooltip.jsx";
+
 import {
   COUNTRIES,
   OIC_AVERAGE,
   OIC_AVERAGE_LABEL,
+  REFERENCE_YEAR,
   TREND_DATA,
   YEARS,
   YEAR_RANGE,
   getCluster,
 } from "../data/index.js";
+import { useChartTokens } from "../styles/tokens.js";
+import { CLUSTER_SHORT, toneFor } from "../lib/clusters.js";
+import { openCountry } from "../lib/routing.js";
+import * as fmt from "../lib/format.js";
+import CustomTooltip from "../components/CustomTooltip.jsx";
+import ChartFrame, { LegendKey, animation, axis, grid, referenceLineProps } from "../components/ChartFrame.jsx";
+import {
+  Badge,
+  Button,
+  Card,
+  DataTable,
+  EmptyState,
+  InsightBlock,
+  RankPill,
+  ScoreBar,
+  StatTile,
+} from "../components/Primitives.jsx";
 
 function TrendsProgress() {
+  const tokens = useChartTokens();
   const availableCountries = [
     OIC_AVERAGE_LABEL,
     ...[...COUNTRIES].map((c) => c.name).sort(),
@@ -37,30 +55,20 @@ function TrendsProgress() {
     OIC_AVERAGE_LABEL,
   ]);
 
-  const toggleCountry = (name) => {
+  const toggleCountry = (name) =>
     setSelectedCountries((prev) =>
       prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
     );
-  };
 
   const selectAll = () => setSelectedCountries(availableCountries);
   const deselectAll = () => setSelectedCountries([]);
 
-  const trendColors = {
-    "United Arab Emirates": "var(--seq-7)",
-    "Saudi Arabia": "var(--seq-6)",
-    Malaysia: "var(--seq-5)",
-    Indonesia: "var(--seq-4)",
-    Qatar: "var(--seq-3)",
-    Türkiye: "var(--seq-2)",
-    Kazakhstan: "var(--seq-7)",
-    Jordan: "var(--seq-5)",
-    [OIC_AVERAGE_LABEL]: "var(--seq-7)",
-  };
-
-  const OTHER_COLORS = ["var(--seq-6)", "var(--seq-5)", "var(--seq-4)", "var(--seq-3)", "var(--seq-2)"];
-  const getColor = (c, i) =>
-    trendColors[c] || OTHER_COLORS[i % OTHER_COLORS.length];
+  // The OIC average reads as an annotation, not as a competitor: it is the only
+  // dashed series and it takes the subtle neutral rather than a categorical hue.
+  const colorFor = (name, i) =>
+    name === OIC_AVERAGE_LABEL
+      ? tokens["text-subtle"]
+      : tokens.pillar[i % tokens.pillar.length];
 
   // Every point comes from the workbook panel. A year a country was not scored
   // stays null, which Recharts draws as a break in the line — never as a zero
@@ -73,421 +81,220 @@ function TrendsProgress() {
     return row;
   });
 
-  // Score distribution
   const bins = Array.from({ length: 10 }, (_, i) => ({
     range: `${i * 10}–${(i + 1) * 10}`,
-    count: COUNTRIES.filter((c) => c.adei >= i * 10 && c.adei < (i + 1) * 10)
-      .length,
+    count: COUNTRIES.filter((c) => c.adei >= i * 10 && c.adei < (i + 1) * 10).length,
   }));
 
-  // Country ladder (rank sorted)
   const sorted = [...COUNTRIES].sort((a, b) => a.rank - b.rank);
+  const peakBin = bins.reduce((a, b) => (a.count > b.count ? a : b));
+  const stdDev = Math.sqrt(
+    COUNTRIES.reduce((s, c) => s + (c.adei - OIC_AVERAGE) ** 2, 0) / COUNTRIES.length,
+  );
+
+  const nonAvg = selectedCountries.filter((c) => c !== OIC_AVERAGE_LABEL);
+  const startYear = lineData[0];
+  const endYear = lineData[lineData.length - 1];
+  const gains = nonAvg
+    .map((c) => ({ name: c, gain: (endYear?.[c] || 0) - (startYear?.[c] || 0) }))
+    .filter((x) => x.gain !== 0);
+  const topGainer = gains.length > 0 ? gains.reduce((a, b) => (a.gain > b.gain ? a : b)) : null;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div style={styles.card}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "12px",
-          }}
-        >
-          <div style={{ ...styles.cardTitle, marginBottom: 0 }}>
-            Filter Countries
-          </div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <button
-              onClick={selectAll}
-              style={{
-                background: "var(--seq-5)",
-                color: "var(--on-brand)",
-                border: "none",
-                padding: "6px 12px",
-                borderRadius: "6px",
-                fontSize: "11px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
-              Select All
-            </button>
-            <button
-              onClick={deselectAll}
-              style={{
-                background: "var(--seq-2)",
-                color: "var(--text)",
-                border: "none",
-                padding: "6px 12px",
-                borderRadius: "6px",
-                fontSize: "11px",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
-              Deselect All
-            </button>
-          </div>
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+    <div className="stack">
+      <Card
+        title="Filter countries"
+        subtitle={`${selectedCountries.length} of ${availableCountries.length} series shown`}
+        action={
+          <>
+            <Button size="sm" onClick={selectAll}>
+              Select all
+            </Button>
+            <Button size="sm" onClick={deselectAll}>
+              Clear
+            </Button>
+          </>
+        }
+      >
+        <div className="row" role="group" aria-label="Countries to chart" style={{ gap: "var(--s-8)" }}>
           {availableCountries.map((c) => (
             <button
+              type="button"
               key={c}
+              className="btn btn-sm"
+              aria-pressed={selectedCountries.includes(c)}
               onClick={() => toggleCountry(c)}
-              style={{
-                background: selectedCountries.includes(c)
-                  ? "var(--seq-7)"
-                  : "var(--surface-2)",
-                color: selectedCountries.includes(c) ? "var(--surface)" : "var(--seq-7)",
-                border: selectedCountries.includes(c)
-                  ? "none"
-                  : "1px solid #D8F3DC",
-                padding: "6px 12px",
-                borderRadius: "20px",
-                fontSize: "12px",
-                cursor: "pointer",
-                fontWeight: selectedCountries.includes(c) ? 600 : 500,
-                transition: "all 0.2s ease",
-              }}
+              style={{ borderRadius: "var(--r-full)" }}
             >
               {c}
             </button>
           ))}
         </div>
-      </div>
+      </Card>
 
-      {/* Trend Lines */}
-      <div style={styles.card}>
-        <div style={styles.cardTitle}>OIC DEI Score Trends {YEAR_RANGE}</div>
-        <ResponsiveContainer width="100%" height={320}>
-          <LineChart data={lineData}>
-            <CartesianGrid
-              strokeDasharray="0"
-              stroke="var(--surface-2)"
-              vertical={false}
-            />
-            <XAxis
-              dataKey="year"
-              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
-            />
-            <YAxis
-              domain={[25, 80]}
-              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              wrapperStyle={{
-                fontSize: "12px",
-                paddingTop: "12px",
-              }}
-            />
-            {selectedCountries.map((country, i) => (
-              <Line
-                key={country}
-                type="monotone"
-                dataKey={country}
-                stroke={getColor(country, i)}
-                strokeWidth={country === OIC_AVERAGE_LABEL ? 3 : 2.5}
-                dot={{
-                  fill: getColor(country, i),
-                  r: country === OIC_AVERAGE_LABEL ? 0 : 4,
-                  strokeWidth: country === OIC_AVERAGE_LABEL ? 0 : 2,
-                  stroke: "var(--on-brand)",
-                }}
-                strokeDasharray={country === OIC_AVERAGE_LABEL ? "5 5" : undefined}
-                isAnimationActive={true}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-        {selectedCountries.filter((c) => c !== OIC_AVERAGE_LABEL).length > 0 &&
-          (() => {
-            const nonAvg = selectedCountries.filter((c) => c !== OIC_AVERAGE_LABEL);
-            const startYear = lineData[0];
-            const endYear = lineData[lineData.length - 1];
-            const gains = nonAvg
-              .map((c) => ({
-                name: c,
-                gain: (endYear[c] || 0) - (startYear[c] || 0),
-              }))
-              .filter((x) => x.gain !== 0);
-            const topGainer =
-              gains.length > 0
-                ? gains.reduce((a, b) => (a.gain > b.gain ? a : b))
-                : null;
-            return (
-              <div
-                style={{
-                  background: "var(--tint)",
-                  border: "1px solid var(--border-strong)",
-                  borderRadius: "8px",
-                  padding: "12px 14px",
-                  marginTop: "12px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: "8px",
-                    marginBottom: "6px",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      color: "var(--text)",
-                    }}
-                  >
-                    Strategic Insight
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      fontWeight: 400,
-                      color: "var(--text-subtle)",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    AI-assisted insight
-                  </div>
-                </div>
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "var(--text)",
-                    margin: 0,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {topGainer ? (
-                    <>
-                      Among selected countries,{" "}
-                      <strong>{topGainer.name}</strong> shows the strongest
-                      upward trajectory with a{" "}
-                      <strong>+{topGainer.gain.toFixed(1)} pt</strong> gain from
-                      2021 to 2025.
-                    </>
-                  ) : (
-                    <>
-                      Tracking <strong>{nonAvg.length}</strong> countries over
-                      the {YEAR_RANGE} period.
-                    </>
-                  )}{" "}
-                  The OIC average{" "}
-                  {selectedCountries.includes(OIC_AVERAGE_LABEL) ? (
-                    <>
-                      is shown as a <strong>dashed reference line</strong>
-                    </>
-                  ) : (
-                    <>
-                      currently stands at{" "}
-                      <strong>{OIC_AVERAGE.toFixed(1)}</strong>
-                    </>
-                  )}
-                  .
-                </p>
-              </div>
-            );
-          })()}
-      </div>
-
-      <div style={styles.grid2}>
-        {/* Score Distribution */}
-        <div style={styles.card}>
-          <div style={styles.cardTitle}>Score Distribution (2025)</div>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={bins} barSize={28}>
-              <CartesianGrid
-                strokeDasharray="0"
-                stroke="var(--surface-2)"
-                vertical={false}
-              />
-              <XAxis
-                dataKey="range"
-                tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
-              />
-              <YAxis
-                tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
-              />
+      <ChartFrame
+        title={`OIC DEI score trends ${YEAR_RANGE}`}
+        subtitle={`${fmt.SCORE_UNIT} · a gap in a line is a year with no observation, never a zero`}
+        summary={
+          topGainer
+            ? `Trend lines ${YEAR_RANGE} for ${nonAvg.length} member states. ${topGainer.name} gained the most at ${fmt.delta(topGainer.gain)} points.`
+            : `Trend lines ${YEAR_RANGE}. The OIC average stands at ${fmt.score(OIC_AVERAGE)}.`
+        }
+        legend={selectedCountries.map((c, i) => (
+          <LegendKey key={c} color={colorFor(c, i)}>
+            {c}
+          </LegendKey>
+        ))}
+      >
+        {selectedCountries.length === 0 ? (
+          <EmptyState title="No series selected." icon="↗">
+            Choose one or more countries above to draw their {YEAR_RANGE} trajectory.
+          </EmptyState>
+        ) : (
+          <ResponsiveContainer width="100%" height={340}>
+            <LineChart data={lineData} margin={{ top: 8, right: 24, bottom: 4, left: 0 }}>
+              <CartesianGrid {...grid(tokens)} />
+              <XAxis dataKey="year" {...axis(tokens)} />
+              <YAxis domain={[25, 80]} {...axis(tokens)} width={36} />
               <Tooltip content={<CustomTooltip />} />
-              <Bar
-                dataKey="count"
-                name="Countries"
-                fill="var(--seq-5)"
-                radius={[4, 4, 0, 0]}
-              />
+              {selectedCountries.map((country, i) => (
+                <Line
+                  key={country}
+                  type="monotone"
+                  dataKey={country}
+                  stroke={colorFor(country, i)}
+                  strokeWidth={country === OIC_AVERAGE_LABEL ? 2 : 2}
+                  dot={{
+                    fill: colorFor(country, i),
+                    r: country === OIC_AVERAGE_LABEL ? 0 : 3,
+                    strokeWidth: 0,
+                  }}
+                  activeDot={{ r: 5, strokeWidth: 0 }}
+                  strokeDasharray={country === OIC_AVERAGE_LABEL ? "5 5" : undefined}
+                  connectNulls={false}
+                  {...animation()}
+                />
+              ))}
+              {!selectedCountries.includes(OIC_AVERAGE_LABEL) && (
+                <ReferenceLine y={OIC_AVERAGE} {...referenceLineProps(tokens)} />
+              )}
+            </LineChart>
+          </ResponsiveContainer>
+        )}
+
+        {nonAvg.length > 0 && (
+          <div style={{ marginTop: "var(--s-16)" }}>
+            <InsightBlock>
+              {topGainer ? (
+                <>
+                  Among selected countries, <strong>{topGainer.name}</strong> shows the
+                  strongest upward trajectory with a{" "}
+                  <strong>+{topGainer.gain.toFixed(1)} pt</strong> gain from 2021 to 2025.
+                </>
+              ) : (
+                <>
+                  Tracking <strong>{nonAvg.length}</strong> countries over the {YEAR_RANGE}{" "}
+                  period.
+                </>
+              )}{" "}
+              The OIC average{" "}
+              {selectedCountries.includes(OIC_AVERAGE_LABEL) ? (
+                <>
+                  is shown as a <strong>dashed reference line</strong>
+                </>
+              ) : (
+                <>
+                  currently stands at <strong>{OIC_AVERAGE.toFixed(1)}</strong>
+                </>
+              )}
+              .
+            </InsightBlock>
+          </div>
+        )}
+      </ChartFrame>
+
+      <div className="cols-3">
+        <StatTile label="Mean" value={fmt.score(OIC_AVERAGE)} support="Across all member states" />
+        <StatTile label="Median" value={fmt.score(sorted[28].adei)} support="29th of 57 by rank" />
+        <StatTile label="Standard deviation" value={fmt.score(stdDev)} support="Score variability" />
+      </div>
+
+      <div className="cols-2">
+        <ChartFrame
+          title={`Score distribution (${REFERENCE_YEAR})`}
+          subtitle={`Member states per 10-point band · ${fmt.SCORE_UNIT}`}
+          summary={`Histogram of DEI scores in ten-point bands. The ${peakBin.range} band is most common with ${peakBin.count} countries.`}
+        >
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={bins} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
+              <CartesianGrid {...grid(tokens)} />
+              <XAxis dataKey="range" {...axis(tokens)} />
+              <YAxis {...axis(tokens)} width={28} allowDecimals={false} />
+              <Tooltip content={<CustomTooltip unit="Member states" digits={0} />} cursor={{ fill: tokens["surface-2"] }} />
+              <Bar dataKey="count" name="Countries" fill={tokens["brand-700"]} maxBarSize={32} {...animation()} />
+              <ReferenceLine x={peakBin.range} stroke="transparent" />
             </BarChart>
           </ResponsiveContainer>
-          {(() => {
-            const peakBin = bins.reduce((a, b) => (a.count > b.count ? a : b));
-            const aboveMedianBins = bins.filter((b) => {
-              const mid = parseInt(b.range.split("–")[0]) + 5;
-              return mid >= OIC_AVERAGE;
-            });
-            return (
-              <div
-                style={{
-                  background: "var(--tint)",
-                  border: "1px solid var(--border-strong)",
-                  borderRadius: "8px",
-                  padding: "12px 14px",
-                  marginTop: "12px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    color: "var(--text)",
-                    marginBottom: "6px",
-                  }}
-                >
-                  Strategic Insight
-                </div>
-                <p
-                  style={{
-                    fontSize: "12px",
-                    color: "var(--text)",
-                    margin: 0,
-                    lineHeight: 1.6,
-                  }}
-                >
-                  The most common score band is <strong>{peakBin.range}</strong>{" "}
-                  with <strong>{peakBin.count} countries</strong>. The
-                  distribution is right-skewed, with a small cluster of high
-                  performers pulling the mean above the median — indicating that
-                  most OIC nations are still in early-to-mid digital development
-                  stages.
-                </p>
-              </div>
-            );
-          })()}
-          <div
-            style={{
-              marginTop: "12px",
-              padding: "12px",
-              background: "var(--surface-2)",
-              borderRadius: "8px",
-              border: "1px solid var(--tint-line)",
-            }}
-          >
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr 1fr",
-                gap: "8px",
-                textAlign: "center",
-              }}
-            >
-              {[
-                { label: "Mean", value: OIC_AVERAGE.toFixed(1) },
-                { label: "Median", value: sorted[28].adei.toFixed(1) },
-                {
-                  label: "Std Dev",
-                  value: Math.sqrt(
-                    COUNTRIES.reduce(
-                      (s, c) => s + (c.adei - OIC_AVERAGE) ** 2,
-                      0,
-                    ) / COUNTRIES.length,
-                  ).toFixed(1),
+
+          <div style={{ marginTop: "var(--s-16)" }}>
+            <InsightBlock>
+              The most common score band is <strong>{peakBin.range}</strong> with{" "}
+              <strong>{peakBin.count} countries</strong>. The distribution is right-skewed,
+              with a small cluster of high performers pulling the mean above the median —
+              indicating that most OIC nations are still in early-to-mid digital development
+              stages.
+            </InsightBlock>
+          </div>
+        </ChartFrame>
+
+        <Card
+          title={`Country ladder (${REFERENCE_YEAR} rankings)`}
+          subtitle={`${fmt.SCORE_UNIT} · sortable`}
+          footer={fmt.SOURCE_LINE}
+        >
+          <DataTable
+            caption={`All ${COUNTRIES.length} OIC member states ranked by Digital Economy Index score.`}
+            maxHeight="360px"
+            rowKey={(c) => c.name}
+            onRowClick={(c) => openCountry(c.name)}
+            initialSort={{ key: "rank", dir: "asc" }}
+            rows={sorted}
+            columns={[
+              {
+                key: "rank",
+                label: "Rank",
+                numeric: true,
+                render: (c) => <RankPill rank={c.rank} top={c.rank <= 3} />,
+              },
+              { key: "name", label: "Country", nameCell: true },
+              {
+                key: "adei",
+                label: "DEI",
+                numeric: true,
+                render: (c) => fmt.score(c.adei),
+              },
+              {
+                key: "cluster",
+                label: "Cluster",
+                sortable: false,
+                sortValue: (c) => c.adei,
+                render: (c) => {
+                  const tone = toneFor(getCluster(c.adei).label);
+                  return (
+                    <span style={{ display: "block", minWidth: "80px" }}>
+                      <ScoreBar
+                        value={c.adei}
+                        color={`var(--cluster-${tone})`}
+                        label={`${c.name}, ${CLUSTER_SHORT[tone]}`}
+                        showValue={false}
+                      />
+                    </span>
+                  );
                 },
-              ].map((s) => (
-                <div key={s.label}>
-                  <div
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: 700,
-                      color: "var(--text)",
-                    }}
-                  >
-                    {s.value}
-                  </div>
-                  <div style={{ fontSize: "11px", color: "var(--interactive)" }}>
-                    {s.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Country Ladder */}
-        <div style={styles.card}>
-          <div style={styles.cardTitle}>Country Ladder (2025 Rankings)</div>
-          <div style={{ maxHeight: "280px", overflowY: "auto" }}>
-            {sorted.map((c, i) => {
-              const cl = getCluster(c.adei);
-              return (
-                <div
-                  key={c.name}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    padding: "8px 0",
-                    borderBottom: "1px solid var(--tint-line)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      color: "var(--text)",
-                      width: "20px",
-                      textAlign: "right",
-                    }}
-                  >
-                    {i + 1}
-                  </div>
-                  <div
-                    style={{
-                      flex: 1,
-                      fontSize: "12px",
-                      color: "var(--interactive)",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {c.name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: 700,
-                      color: cl.color,
-                    }}
-                  >
-                    {c.adei.toFixed(1)}
-                  </div>
-                  <div
-                    style={{
-                      width: "60px",
-                      height: "4px",
-                      borderRadius: "2px",
-                      background: "var(--tint)",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        height: "100%",
-                        width: `${c.adei}%`,
-                        background: cl.color,
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div style={{ marginTop: "10px" }}>
-        <ProgressTracker hideTrajectory={true} />
+              },
+            ]}
+          />
+        </Card>
       </div>
     </div>
   );

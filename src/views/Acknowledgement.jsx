@@ -2,12 +2,11 @@
 
 function Acknowledgement() {
   const cardStyle = {
-    background: "linear-gradient(135deg, var(--surface) 0%, #F1F5F9 100%)",
-    border: "1px solid var(--border-strong)",
-    borderRadius: "12px",
-    padding: "32px 36px",
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
+    borderRadius: "var(--r-md)",
+    padding: "var(--s-24)",
     marginBottom: "24px",
-    transition: "all 0.3s ease",
   };
   const headingStyle = {
     fontSize: "16px",
@@ -26,7 +25,7 @@ function Acknowledgement() {
   };
   const nameStyle = {
     display: "inline-block",
-    background: "linear-gradient(135deg, var(--accent-soft), #FFFBF0)",
+    background: "var(--accent-soft)",
     border: "1px solid var(--accent-soft)",
     borderRadius: "6px",
     padding: "6px 14px",
@@ -34,7 +33,6 @@ function Acknowledgement() {
     fontSize: "13px",
     color: "var(--text)",
     fontWeight: 500,
-    transition: "all 0.2s ease",
   };
   const authorEntry = {
     fontSize: "14px",
@@ -44,18 +42,15 @@ function Acknowledgement() {
     display: "flex",
     alignItems: "center",
     gap: "12px",
-    transition: "all 0.2s ease",
   };
 
   return (
-    <>
-      <div
-        style={{ maxWidth: "1000px", margin: "0 auto", padding: "32px 16px" }}
-      >
+    <div className="view-prose">
+      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         {/* Hero Banner */}
         <div
           style={{
-            background: "linear-gradient(135deg, var(--text) 0%, #00152b 100%)",
+            background: "var(--seq-7)",
             borderRadius: "14px",
             padding: "48px 40px",
             marginBottom: "32px",
@@ -190,7 +185,7 @@ function Acknowledgement() {
                     width: "28px",
                     height: "28px",
                     borderRadius: "50%",
-                    background: "linear-gradient(135deg, var(--accent), #A07810)",
+                    background: "var(--accent)",
                     color: "var(--on-brand)",
                     display: "flex",
                     alignItems: "center",
@@ -234,23 +229,10 @@ function Acknowledgement() {
               <span key={person.name} style={nameStyle}>
                 {person.url ? (
                   <a
+                    className="person-link"
                     href={person.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{
-                      color: "inherit",
-                      textDecoration: "none",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.color = "var(--accent)";
-                      e.target.style.textDecoration = "underline";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.color = "inherit";
-                      e.target.style.textDecoration = "none";
-                    }}
                   >
                     {person.name}
                   </a>
@@ -266,7 +248,7 @@ function Acknowledgement() {
         <div
           style={{
             ...cardStyle,
-            background: "linear-gradient(135deg, var(--accent-soft) 0%, #FFFBF0 100%)",
+            background: "var(--accent-soft)",
             border: "1px solid var(--accent-soft)",
             borderLeft: "4px solid var(--accent-line)",
           }}
@@ -379,7 +361,7 @@ function Acknowledgement() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

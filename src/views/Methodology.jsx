@@ -102,7 +102,7 @@ function Methodology() {
     overview: (
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
         <div style={styles.card}>
-          <div style={styles.cardTitle}>Index Overview</div>
+          <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>Index Overview</h2>
           <p
             style={{
               color: "var(--text-muted)",
@@ -187,10 +187,10 @@ function Methodology() {
         </div>
 
         <div style={styles.card}>
-          <div style={styles.cardTitle}>
+          <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>
             {INDICATOR_COUNTS.pillars} Pillars, {INDICATOR_COUNTS.indicators}{" "}
             Indicators & {INDICATOR_COUNTS.subIndicators} Sub-Indicators
-          </div>
+          </h2>
           <div
             style={{
               display: "flex",
@@ -347,7 +347,7 @@ function Methodology() {
     methodology: (
       <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
         <div style={styles.card}>
-          <div style={styles.cardTitle}>Data Processing & Normalization</div>
+          <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>Data Processing & Normalization</h2>
           <div
             style={{
               display: "grid",
@@ -445,7 +445,7 @@ function Methodology() {
         </div>
 
         <div style={styles.card}>
-          <div style={styles.cardTitle}>Performance Clusters</div>
+          <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>Performance Clusters</h2>
           <div
             style={{ display: "grid", gridTemplateColumns: "1fr", gap: "12px" }}
           >
@@ -556,7 +556,7 @@ function Methodology() {
     sources: (
       <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       <div style={styles.card}>
-        <div style={styles.cardTitle}>Primary Data Sources</div>
+        <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>Primary Data Sources</h2>
         <p
           style={{
             color: "var(--text-muted)",
@@ -571,27 +571,14 @@ function Methodology() {
           Solutions Network. The 2025 edition uses lagged annual data from
           multiple reporting periods for accuracy.
         </p>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            fontSize: "13px",
-            marginTop: "16px",
-          }}
-        >
+        <table className="data-table zebra" style={{ marginTop: "16px" }}>
+          <caption className="visually-hidden">
+            Every indicator in the index and the organisation the data comes from.
+          </caption>
           <thead>
-            <tr style={{ borderBottom: "2px solid var(--tint-line)" }}>
+            <tr>
               {["Indicator", "Code", "Source"].map((h) => (
-                <th
-                  key={h}
-                  style={{
-                    padding: "12px 8px",
-                    color: "var(--text)",
-                    textAlign: "left",
-                    fontWeight: 700,
-                    fontSize: "12px",
-                  }}
-                >
+                <th key={h} scope="col">
                   {h}
                 </th>
               ))}
@@ -631,7 +618,7 @@ function Methodology() {
       {/* Coverage notes generated from the workbook by the data-build step, so
           they always describe the dataset actually on screen. */}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>Data Coverage &amp; Known Limitations</div>
+        <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>Data Coverage &amp; Known Limitations</h2>
         <p
           style={{
             color: "var(--text-muted)",
@@ -743,42 +730,46 @@ function Methodology() {
     ),
   };
 
+  const TABS = [
+    { id: "overview", label: "Overview" },
+    { id: "methodology", label: "Methodology" },
+    { id: "sources", label: "Data Sources" },
+  ];
+
+  // Left/right move between tabs, as the tablist pattern expects.
+  const onTabKeyDown = (event) => {
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    const i = TABS.findIndex((t) => t.id === activeTab);
+    const next = event.key === "ArrowRight" ? i + 1 : i - 1;
+    const tab = TABS[(next + TABS.length) % TABS.length];
+    setActiveTab(tab.id);
+    document.getElementById(`methodology-tab-${tab.id}`)?.focus();
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-      <div
-        style={{
-          display: "flex",
-          gap: "8px",
-          borderBottom: "2px solid var(--surface-2)",
-          paddingBottom: "12px",
-        }}
-      >
-        {[
-          { id: "overview", label: "Overview" },
-          { id: "methodology", label: "Methodology" },
-          { id: "sources", label: "Data Sources" },
-        ].map((tab) => (
+    <div className="stack view-prose">
+      <div className="row" role="tablist" aria-label="Methodology sections" onKeyDown={onTabKeyDown}>
+        {TABS.map((tab) => (
           <button
+            type="button"
             key={tab.id}
+            id={`methodology-tab-${tab.id}`}
+            className="btn"
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-pressed={activeTab === tab.id}
+            aria-controls="methodology-panel"
+            tabIndex={activeTab === tab.id ? 0 : -1}
             onClick={() => setActiveTab(tab.id)}
-            style={{
-              padding: "12px 20px",
-              border: "none",
-              borderRadius: "6px",
-              cursor: "pointer",
-              fontSize: "14px",
-              fontWeight: 600,
-              background: activeTab === tab.id ? "var(--surface-2)" : "transparent",
-              color: activeTab === tab.id ? "var(--seq-7)" : "var(--text-muted)",
-              borderBottom: activeTab === tab.id ? "3px solid #1B4332" : "none",
-              transition: "all 0.2s ease",
-            }}
           >
             {tab.label}
           </button>
         ))}
       </div>
-      {tabContents[activeTab]}
+      <div id="methodology-panel" role="tabpanel" aria-labelledby={`methodology-tab-${activeTab}`}>
+        {tabContents[activeTab]}
+      </div>
       <div
         style={{
           padding: "20px",

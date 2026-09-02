@@ -13,6 +13,7 @@ import {
 import { styles } from "../styles/styles.js";
 import CustomTooltip from "../components/CustomTooltip.jsx";
 import {
+  COUNTRIES,
   PILLARS,
   TREND_DATA,
   YEARS,
@@ -48,7 +49,7 @@ function ProgressTracker({ hideTrajectory = false }) {
     <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
       {!hideTrajectory && (
         <div style={styles.card}>
-          <div style={styles.cardTitle}>Score Trajectory {YEAR_RANGE}</div>
+          <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>Score Trajectory {YEAR_RANGE}</h2>
           <ResponsiveContainer width="100%" height={340}>
             <LineChart data={lineData}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border-strong)" />
@@ -138,7 +139,7 @@ function ProgressTracker({ hideTrajectory = false }) {
         </div>
       )}
       <div style={styles.card}>
-        <div style={styles.cardTitle}>🔄 Score Change 2021 → 2025</div>
+        <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>🔄 Score Change 2021 → 2025</h2>
         <div style={{ overflowX: "auto" }}>
           <table
             style={{

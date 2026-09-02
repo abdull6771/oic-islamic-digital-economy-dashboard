@@ -54,6 +54,7 @@ const THEME_LABEL = { system: "System", light: "Light", dark: "Dark" };
 const THEME_ICON = { system: "◐", light: "☀", dark: "☾" };
 
 const readStored = (key, fallback) => {
+  if (typeof window === "undefined") return fallback;
   try {
     return window.localStorage.getItem(key) ?? fallback;
   } catch {
@@ -62,6 +63,7 @@ const readStored = (key, fallback) => {
 };
 
 const store = (key, value) => {
+  if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(key, value);
   } catch {

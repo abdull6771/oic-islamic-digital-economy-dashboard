@@ -81,9 +81,9 @@ function PriorityMatrix() {
         </div>
       </div>
       <div style={{ ...styles.card, borderColor: "var(--accent-line)" }}>
-        <div style={styles.cardTitle}>
+        <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>
           📌 Priority Matrix — Impact vs. Achievability for {country.name}
-        </div>
+        </h2>
         <div
           style={{
             position: "relative",

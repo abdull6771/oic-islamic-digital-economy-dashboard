@@ -131,6 +131,9 @@
 }
 
 .sidebar-foot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-8);
   padding: var(--s-12) var(--s-16);
   border-top: 1px solid var(--border);
   color: var(--text-subtle);
@@ -449,7 +452,7 @@
 }
 
 .delta .delta-arrow {
-  font-size: 0.7em;
+  font-size: 0.6875rem;
 }
 
 /* -- Badge / cluster chip ------------------------------------------------ */
@@ -525,8 +528,9 @@
 
 /* The tier glyph carries the cluster without relying on colour. */
 .badge .tier {
-  letter-spacing: 0.12em;
-  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  font-size: 0.6875rem;
+  line-height: 1;
 }
 
 /* -- Score bar ----------------------------------------------------------- */
@@ -538,6 +542,7 @@
 }
 
 .score-bar-track {
+  display: block;
   flex: 1;
   min-width: 0;
   height: 6px;
@@ -546,7 +551,10 @@
   overflow: hidden;
 }
 
+/* Both are <span>s: without an explicit block display the fill is inline and
+   its width is ignored, which renders every bar at zero. */
 .score-bar-fill {
+  display: block;
   height: 100%;
   border-radius: var(--r-full);
   transition: width var(--dur) var(--ease);
@@ -664,7 +672,7 @@
 
 .sort-ind {
   color: var(--text-subtle);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
 }
 
 th[aria-sort="ascending"] .sort-ind,

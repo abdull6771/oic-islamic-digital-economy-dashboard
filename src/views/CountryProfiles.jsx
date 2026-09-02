@@ -471,12 +471,10 @@ function CountryProfiles() {
               <div key={p.id}>
                 <div className="row" style={{ gap: "var(--s-8)", flexWrap: "nowrap" }}>
                   <span className="swatch-dot" style={{ background: p.color }} aria-hidden="true" />
-                  <span className="t-caption muted" style={{ flex: 1, minWidth: 0 }}>
+                  <span className="t-caption" style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {p.name}
                   </span>
-                  <span className="t-caption tnum" style={{ fontWeight: 600 }}>
-                    {fmt.weight(p.weight)}
-                  </span>
+                  <span className="t-caption subtle tnum">{fmt.weight(p.weight)}</span>
                 </div>
                 <div style={{ marginTop: "var(--s-4)" }}>
                   <ScoreBar value={country[p.key]} color={p.color} label={p.name} />

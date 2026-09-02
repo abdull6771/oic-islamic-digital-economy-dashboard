@@ -132,6 +132,7 @@ function Sidebar({ activeView, onNavigate, collapsed, onToggleCollapse, onCloseD
                 key={view.id}
                 className="nav-item"
                 data-label={view.label}
+                title={view.label}
                 aria-current={activeView === view.id ? "page" : undefined}
                 onClick={() => {
                   onNavigate(view.id);
@@ -154,7 +155,7 @@ function Sidebar({ activeView, onNavigate, collapsed, onToggleCollapse, onCloseD
           onClick={onToggleCollapse}
           aria-pressed={collapsed}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          style={{ width: "100%", marginBottom: "var(--s-8)" }}
+          style={{ width: "100%" }}
         >
           <span aria-hidden="true">{collapsed ? "»" : "«"}</span>
           <span className="nav-label">Collapse</span>

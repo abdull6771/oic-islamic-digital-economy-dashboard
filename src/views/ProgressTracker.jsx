@@ -239,7 +239,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                         textAlign: "center",
                         fontSize: "11px",
                         color: "var(--text)",
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                       }}
                     >
                       {hist

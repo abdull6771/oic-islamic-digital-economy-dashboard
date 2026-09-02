@@ -137,6 +137,9 @@
     "Helvetica Neue", Arial, sans-serif;
   --font-display: "Instrument Serif", "Iowan Old Style", Palatino, Georgia,
     ui-serif, serif;
+  /* Indicator codes only — the system ships two families, not three. */
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
 
   /* Shell */
   --sidebar-w: 240px;

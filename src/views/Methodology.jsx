@@ -383,7 +383,7 @@ function Methodology() {
                   border: "1px solid var(--tint-line)",
                   borderRadius: "6px",
                   padding: "12px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "12px",
                   color: "var(--text)",
                   marginBottom: "12px",
@@ -425,7 +425,7 @@ function Methodology() {
                   border: "1px solid var(--tint-line)",
                   borderRadius: "6px",
                   padding: "12px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "12px",
                   color: "var(--text)",
                   marginBottom: "12px",
@@ -600,7 +600,7 @@ function Methodology() {
                   style={{
                     padding: "10px 8px",
                     color: "var(--text)",
-                    fontFamily: "monospace",
+                    fontFamily: "var(--font-mono)",
                     fontWeight: 600,
                   }}
                 >
@@ -628,11 +628,11 @@ function Methodology() {
           }}
         >
           Scores are read directly from{" "}
-          <span style={{ fontFamily: "monospace", color: "var(--text)" }}>
+          <span style={{ fontFamily: "var(--font-mono)", color: "var(--text)" }}>
             {META.source}
           </span>{" "}
           (sheet{" "}
-          <span style={{ fontFamily: "monospace", color: "var(--text)" }}>
+          <span style={{ fontFamily: "var(--font-mono)", color: "var(--text)" }}>
             {META.sheets.panel}
           </span>
           ), covering {META.countryCount} member states for {YEARS[0]}–

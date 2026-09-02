@@ -56,12 +56,11 @@ function PillarAnalysis() {
               style={{
                 padding: "8px 16px",
                 borderRadius: "8px",
-                border: `1px solid ${i === pillarIdx ? p.color : "#CBD5E1"}`,
+                border: `1px solid ${i === pillarIdx ? p.color : "var(--text-subtle)"}`,
                 cursor: "pointer",
                 fontSize: "12px",
                 background: i === pillarIdx ? `${p.color}20` : "transparent",
-                color: i === pillarIdx ? p.color : "#64748B",
-                fontFamily: "'Georgia', serif",
+                color: i === pillarIdx ? p.color : "var(--text-muted)",
                 fontWeight: i === pillarIdx ? 700 : 400,
               }}
             >
@@ -75,9 +74,9 @@ function PillarAnalysis() {
       <div style={styles.grid4}>
         {[
           { label: "Pillar Name", value: pillar.name, color: pillar.color },
-          { label: "Weight", value: `${pillar.weight}%`, color: "#000000" },
-          { label: "OIC Average", value: avg.toFixed(1), color: "#10B981" },
-          { label: "Dimension", value: pillar.dim, color: "#8B5CF6" },
+          { label: "Weight", value: `${pillar.weight}%`, color: "var(--text)" },
+          { label: "OIC Average", value: avg.toFixed(1), color: "var(--positive)" },
+          { label: "Dimension", value: pillar.dim, color: "var(--info)" },
         ].map((s, i) => (
           <div
             key={i}
@@ -87,13 +86,13 @@ function PillarAnalysis() {
               borderColor: `${pillar.color}40`,
             }}
           >
-            <div style={{ fontSize: "18px", fontWeight: 900, color: s.color }}>
+            <div style={{ fontSize: "18px", fontWeight: 700, color: s.color }}>
               {s.value}
             </div>
             <div
               style={{
                 fontSize: "11px",
-                color: "#1E293B",
+                color: "var(--text)",
                 marginTop: "4px",
               }}
             >
@@ -108,7 +107,7 @@ function PillarAnalysis() {
         style={{
           ...styles.card,
           borderColor: `${pillar.color}40`,
-          background: `linear-gradient(135deg, #FFFFFF 0%, ${pillar.color}08 100%)`,
+          background: `linear-gradient(135deg, var(--surface) 0%, ${pillar.color}08 100%)`,
         }}
       >
         <div
@@ -124,9 +123,9 @@ function PillarAnalysis() {
           <div>Key insight</div>
           <div
             style={{
-              fontSize: "9px",
+              fontSize: "11px",
               fontWeight: 400,
-              color: "#94A3B8",
+              color: "var(--text-subtle)",
               whiteSpace: "nowrap",
             }}
           >
@@ -135,14 +134,14 @@ function PillarAnalysis() {
         </div>
         <p
           style={{
-            color: "#1E293B",
+            color: "var(--text)",
             fontSize: "14px",
             lineHeight: 1.7,
             margin: 0,
           }}
         >
           {INSIGHTS[pillar.key]}{" "}
-          <strong style={{ color: "#1B4332" }}>{leaders[0].name}</strong> leads
+          <strong style={{ color: "var(--text)" }}>{leaders[0].name}</strong> leads
           on {pillar.name} ({scoreOf(leaders[0])}), ahead of {leaders[1].name} (
           {scoreOf(leaders[1])}) and {leaders[2].name} ({scoreOf(leaders[2])}),
           against an OIC average of {avg.toFixed(2)}.
@@ -184,10 +183,10 @@ function PillarAnalysis() {
                   <span
                     style={{
                       background: pillar.color,
-                      color: "#FFFFFF",
+                      color: "var(--on-brand)",
                       borderRadius: "4px",
                       padding: "2px 8px",
-                      fontSize: "10px",
+                      fontSize: "11px",
                       fontWeight: 700,
                     }}
                   >
@@ -207,12 +206,12 @@ function PillarAnalysis() {
                     <div
                       key={subIdx}
                       style={{
-                        background: "#FFFFFF",
+                        background: "var(--surface)",
                         border: `1px solid ${pillar.color}40`,
                         borderRadius: "6px",
                         padding: "6px 10px",
                         fontSize: "11px",
-                        color: "#1E293B",
+                        color: "var(--text)",
                         display: "flex",
                         alignItems: "center",
                         gap: "6px",
@@ -220,7 +219,7 @@ function PillarAnalysis() {
                     >
                       <span
                         style={{
-                          fontSize: "9px",
+                          fontSize: "11px",
                           fontWeight: 600,
                           color: pillar.color,
                         }}
@@ -252,7 +251,7 @@ function PillarAnalysis() {
           >
             <CartesianGrid
               strokeDasharray="0"
-              stroke="#E2E8F0"
+              stroke="var(--surface-2)"
               vertical={false}
             />
             <XAxis
@@ -260,13 +259,13 @@ function PillarAnalysis() {
               tickFormatter={(name) =>
                 name.length > 15 ? name.slice(0, 14) + "…" : name
               }
-              tick={{ fill: "#64748B", fontSize: 9, fontWeight: 500 }}
+              tick={{ fill: "var(--text-muted)", fontSize: 11, fontWeight: 500 }}
               interval={0}
               angle={-45}
               textAnchor="end"
               height={80}
             />
-            <YAxis domain={[0, 100]} tick={{ fill: "#64748B", fontSize: 11 }} />
+            <YAxis domain={[0, 100]} tick={{ fill: "var(--text-muted)", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Bar
               dataKey="score"
@@ -277,11 +276,11 @@ function PillarAnalysis() {
             />
             <ReferenceLine
               y={avg}
-              stroke="#B8922A"
+              stroke="var(--accent)"
               strokeDasharray="4 4"
               label={{
                 value: `Avg: ${avg.toFixed(1)}`,
-                fill: "#B8922A",
+                fill: "var(--accent-ink)",
                 fontSize: 11,
                 fontWeight: 600,
                 position: "insideTopRight",
@@ -291,8 +290,8 @@ function PillarAnalysis() {
         </ResponsiveContainer>
         <div
           style={{
-            background: "#FDF6E3",
-            border: "1px solid #F0C96A",
+            background: "var(--accent-soft)",
+            border: "1px solid var(--accent)",
             borderRadius: "8px",
             padding: "10px 14px",
             marginTop: "12px",
@@ -311,16 +310,16 @@ function PillarAnalysis() {
               style={{
                 fontSize: "11px",
                 fontWeight: 700,
-                color: "#000000",
+                color: "var(--text)",
               }}
             >
               Key insight
             </div>
             <div
               style={{
-                fontSize: "9px",
+                fontSize: "11px",
                 fontWeight: 400,
-                color: "#94A3B8",
+                color: "var(--text-subtle)",
                 whiteSpace: "nowrap",
               }}
             >
@@ -330,7 +329,7 @@ function PillarAnalysis() {
           <p
             style={{
               fontSize: "12px",
-              color: "#1E293B",
+              color: "var(--text)",
               margin: 0,
               lineHeight: 1.6,
             }}

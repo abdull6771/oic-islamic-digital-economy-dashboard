@@ -43,12 +43,12 @@ function PeerLearning() {
     return row;
   });
   const PEER_COLORS = [
-    "#1B4332",
-    "#2D6A4F",
-    "#40916C",
-    "#52B788",
-    "#74C69D",
-    "#95D5B2",
+    "var(--seq-7)",
+    "var(--seq-6)",
+    "var(--seq-5)",
+    "var(--seq-4)",
+    "var(--seq-3)",
+    "var(--seq-2)",
   ];
   const CASE_STUDIES = {
     p1: {
@@ -116,7 +116,7 @@ function PeerLearning() {
                 display: "block",
                 fontSize: "12px",
                 fontWeight: 600,
-                color: "#1B4332",
+                color: "var(--text)",
                 marginBottom: "8px",
               }}
             >
@@ -142,7 +142,7 @@ function PeerLearning() {
                 display: "block",
                 fontSize: "12px",
                 fontWeight: 600,
-                color: "#1B4332",
+                color: "var(--text)",
                 marginBottom: "8px",
               }}
             >
@@ -177,12 +177,12 @@ function PeerLearning() {
             {
               label: "OIC DEI Rank",
               value: `#${country.rank}`,
-              color: "#1B4332",
+              color: "var(--text)",
             },
             {
               label: "OIC DEI Score",
               value: country.adei.toFixed(1),
-              color: "#2D6A4F",
+              color: "var(--interactive)",
             },
             {
               label: `${focusPillar.name} Score`,
@@ -192,7 +192,7 @@ function PeerLearning() {
             {
               label: "Performance Gap",
               value: `-${(Math.max(...COUNTRIES.map((c) => c[pillarFocus])) - country[pillarFocus]).toFixed(1)} pts`,
-              color: "#EF4444",
+              color: "var(--negative)",
             },
           ].map((s, i) => (
             <div
@@ -208,14 +208,14 @@ function PeerLearning() {
               <div
                 style={{
                   fontSize: "12px",
-                  color: "#64748B",
+                  color: "var(--text-muted)",
                   marginBottom: "6px",
                 }}
               >
                 {s.label}
               </div>
               <div
-                style={{ fontSize: "28px", fontWeight: 900, color: s.color }}
+                style={{ fontSize: "28px", fontWeight: 700, color: s.color }}
               >
                 {s.value}
               </div>
@@ -229,7 +229,7 @@ function PeerLearning() {
         style={{
           display: "flex",
           gap: "8px",
-          borderBottom: "2px solid #E8F5E9",
+          borderBottom: "2px solid var(--surface-2)",
           paddingBottom: "12px",
         }}
       >
@@ -247,9 +247,8 @@ function PeerLearning() {
               cursor: "pointer",
               fontSize: "13px",
               fontWeight: 600,
-              fontFamily: "'Georgia', serif",
-              background: viewMode === tab.id ? "#1B433210" : "transparent",
-              color: viewMode === tab.id ? "#1B4332" : "#64748B",
+              background: viewMode === tab.id ? "var(--surface-2)" : "transparent",
+              color: viewMode === tab.id ? "var(--seq-7)" : "var(--text-muted)",
               borderBottom: viewMode === tab.id ? "3px solid #1B4332" : "none",
               transition: "all 0.2s ease",
             }}
@@ -297,7 +296,7 @@ function PeerLearning() {
                         style={{
                           fontSize: "14px",
                           fontWeight: 700,
-                          color: "#1E293B",
+                          color: "var(--text)",
                           marginBottom: "3px",
                         }}
                       >
@@ -306,7 +305,7 @@ function PeerLearning() {
                       <div
                         style={{
                           fontSize: "11px",
-                          color: "#64748B",
+                          color: "var(--text-muted)",
                         }}
                       >
                         Rank #{peer.rank}
@@ -316,7 +315,7 @@ function PeerLearning() {
                       style={{
                         fontSize: "11px",
                         background: PEER_COLORS[i],
-                        color: "#FFFFFF",
+                        color: "var(--on-brand)",
                         padding: "4px 10px",
                         borderRadius: "4px",
                         fontWeight: 600,
@@ -337,8 +336,8 @@ function PeerLearning() {
                     <div>
                       <div
                         style={{
-                          fontSize: "10px",
-                          color: "#64748B",
+                          fontSize: "11px",
+                          color: "var(--text-muted)",
                           marginBottom: "2px",
                         }}
                       >
@@ -348,7 +347,7 @@ function PeerLearning() {
                         style={{
                           fontSize: "14px",
                           fontWeight: 700,
-                          color: "#1B4332",
+                          color: "var(--text)",
                         }}
                       >
                         {peer.adei.toFixed(1)}
@@ -357,8 +356,8 @@ function PeerLearning() {
                     <div>
                       <div
                         style={{
-                          fontSize: "10px",
-                          color: "#64748B",
+                          fontSize: "11px",
+                          color: "var(--text-muted)",
                           marginBottom: "2px",
                         }}
                       >
@@ -389,20 +388,20 @@ function PeerLearning() {
             </div>
             <ResponsiveContainer width="100%" height={320}>
               <RadarChart data={radarData}>
-                <PolarGrid stroke="#E8F5E9" />
+                <PolarGrid stroke="var(--surface-2)" />
                 <PolarAngleAxis
                   dataKey="subject"
-                  tick={{ fill: "#1E293B", fontSize: 11 }}
+                  tick={{ fill: "var(--text)", fontSize: 11 }}
                 />
                 <PolarRadiusAxis
                   domain={[0, 100]}
-                  tick={{ fill: "#1E293B", fontSize: 9 }}
+                  tick={{ fill: "var(--text)", fontSize: 11 }}
                 />
                 <Radar
                   name={country.name}
                   dataKey={country.name}
-                  stroke="#1B4332"
-                  fill="#1B4332"
+                  stroke="var(--seq-7)"
+                  fill="var(--seq-7)"
                   fillOpacity={0.25}
                   strokeWidth={2.5}
                 />
@@ -420,7 +419,6 @@ function PeerLearning() {
                 <Legend
                   wrapperStyle={{
                     fontSize: "11px",
-                    fontFamily: "'Georgia',serif",
                   }}
                 />
                 <Tooltip content={<CustomTooltip />} />
@@ -438,8 +436,8 @@ function PeerLearning() {
                 <div
                   style={{
                     ...styles.card,
-                    background: "#D8F3DC",
-                    border: "1px solid #40916C40",
+                    background: "var(--tint)",
+                    border: "1px solid var(--tint-line)",
                   }}
                 >
                   <div
@@ -455,16 +453,16 @@ function PeerLearning() {
                       style={{
                         fontSize: "13px",
                         fontWeight: 700,
-                        color: "#1B4332",
+                        color: "var(--text)",
                       }}
                     >
                       Strategic Insight
                     </div>
                     <div
                       style={{
-                        fontSize: "9px",
+                        fontSize: "11px",
                         fontWeight: 400,
-                        color: "#94A3B8",
+                        color: "var(--text-subtle)",
                         whiteSpace: "nowrap",
                       }}
                     >
@@ -474,7 +472,7 @@ function PeerLearning() {
                   <p
                     style={{
                       fontSize: "13px",
-                      color: "#1E293B",
+                      color: "var(--text)",
                       margin: 0,
                       lineHeight: 1.7,
                     }}
@@ -515,17 +513,17 @@ function PeerLearning() {
                   <div
                     key={i}
                     style={{
-                      background: "#1B433210",
+                      background: "var(--surface-2)",
                       borderRadius: "10px",
                       padding: "16px",
-                      border: "1px solid #40916C40",
+                      border: "1px solid var(--tint-line)",
                     }}
                   >
                     <div
                       style={{
                         fontSize: "14px",
                         fontWeight: 700,
-                        color: "#1B4332",
+                        color: "var(--text)",
                         marginBottom: "12px",
                       }}
                     >
@@ -534,7 +532,7 @@ function PeerLearning() {
                     <p
                       style={{
                         fontSize: "13px",
-                        color: "#1E293B",
+                        color: "var(--text)",
                         lineHeight: 1.7,
                         margin: 0,
                       }}
@@ -546,12 +544,12 @@ function PeerLearning() {
             </div>
           </div>
 
-          <div style={{ ...styles.card, background: "#E8F5E915" }}>
+          <div style={{ ...styles.card, background: "var(--surface-2)" }}>
             <div
               style={{
                 fontSize: "13px",
                 fontWeight: 700,
-                color: "#1B4332",
+                color: "var(--text)",
                 marginBottom: "8px",
               }}
             >
@@ -560,7 +558,7 @@ function PeerLearning() {
             <ol
               style={{
                 fontSize: "13px",
-                color: "#1E293B",
+                color: "var(--text)",
                 lineHeight: 1.8,
                 margin: 0,
                 paddingLeft: "20px",
@@ -588,10 +586,10 @@ function PeerLearning() {
           <div style={{ fontSize: "32px", marginBottom: "12px" }}>
             Achievement
           </div>
-          <div style={{ fontSize: "16px", color: "#000000", fontWeight: 700 }}>
+          <div style={{ fontSize: "16px", color: "var(--text)", fontWeight: 700 }}>
             Leading Performance in {focusPillar.name}
           </div>
-          <div style={{ fontSize: "13px", color: "#64748B", marginTop: "8px" }}>
+          <div style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "8px" }}>
             {country.name} is among the top performers in {focusPillar.name}{" "}
             relative to similar OIC DEI countries. Focus on maintaining
             competitive advantage and thought leadership.

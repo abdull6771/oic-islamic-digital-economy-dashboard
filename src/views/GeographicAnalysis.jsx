@@ -43,19 +43,19 @@ function GeographicAnalysis() {
     .sort((a, b) => b.avg - a.avg);
 
   const REGION_COLORS = {
-    GCC: "#1B4332",
-    "Southeast Asia": "#2D6A4F",
-    "Central Asia": "#40916C",
-    "South Asia": "#52B788",
-    "Middle East": "#74C69D",
-    "North Africa": "#95D5B2",
-    "West Africa": "#1F4E38",
-    "East Africa": "#388E7F",
-    "Central Africa": "#2D6A4F",
-    "Southeastern Africa": "#40916C",
-    "South America": "#52B788",
-    Europe: "#74C69D",
-    Americas: "#1B4332",
+    GCC: "var(--seq-7)",
+    "Southeast Asia": "var(--seq-6)",
+    "Central Asia": "var(--seq-5)",
+    "South Asia": "var(--seq-4)",
+    "Middle East": "var(--seq-3)",
+    "North Africa": "var(--seq-2)",
+    "West Africa": "var(--seq-7)",
+    "East Africa": "var(--seq-5)",
+    "Central Africa": "var(--seq-6)",
+    "Southeastern Africa": "var(--seq-5)",
+    "South America": "var(--seq-4)",
+    Europe: "var(--seq-3)",
+    Americas: "var(--seq-7)",
   };
 
   const clusterByRegion = regionStats.map((r) => ({
@@ -130,7 +130,7 @@ function GeographicAnalysis() {
     x: GEO_COORDS[c.name][1],
     y: GEO_COORDS[c.name][0],
     score: parseFloat(c.adei.toFixed(1)),
-    color: c.adei >= 60 ? "#1B4332" : c.adei >= 40 ? "#52B788" : "#95D5B2",
+    color: c.adei >= 60 ? "var(--seq-7)" : c.adei >= 40 ? "var(--seq-4)" : "var(--seq-2)",
   }));
 
   return (
@@ -149,7 +149,7 @@ function GeographicAnalysis() {
             style={{
               ...styles.card,
               background:
-                REGION_COLORS[r.region] === "#1B4332" ? "#D8F3DC" : "#F8FDFC",
+                REGION_COLORS[r.region] === "var(--seq-7)" ? "var(--tint)" : "var(--surface-2)",
               borderColor: REGION_COLORS[r.region],
               borderWidth: "2px",
             }}
@@ -167,19 +167,19 @@ function GeographicAnalysis() {
             <div
               style={{
                 fontSize: "24px",
-                fontWeight: 900,
+                fontWeight: 700,
                 color: REGION_COLORS[r.region],
               }}
             >
               {r.avg.toFixed(1)}
             </div>
-            <div style={{ fontSize: "11px", color: "#64748B" }}>
+            <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>
               {r.count} countries
             </div>
             <div
               style={{
-                fontSize: "10px",
-                color: "#64748B",
+                fontSize: "11px",
+                color: "var(--text-muted)",
                 marginTop: "6px",
                 fontWeight: 500,
               }}
@@ -200,7 +200,7 @@ function GeographicAnalysis() {
             display: "flex",
             gap: "16px",
             fontSize: "11px",
-            color: "#1B4332",
+            color: "var(--text)",
             marginBottom: "12px",
             flexWrap: "wrap",
           }}
@@ -210,7 +210,7 @@ function GeographicAnalysis() {
               style={{
                 width: "12px",
                 height: "12px",
-                background: "#1B4332",
+                background: "var(--seq-7)",
                 borderRadius: "50%",
               }}
             />
@@ -221,7 +221,7 @@ function GeographicAnalysis() {
               style={{
                 width: "12px",
                 height: "12px",
-                background: "#52B788",
+                background: "var(--seq-4)",
                 borderRadius: "50%",
               }}
             />
@@ -232,7 +232,7 @@ function GeographicAnalysis() {
               style={{
                 width: "12px",
                 height: "12px",
-                background: "#95D5B2",
+                background: "var(--seq-2)",
                 borderRadius: "50%",
               }}
             />
@@ -241,17 +241,17 @@ function GeographicAnalysis() {
         </div>
         <ResponsiveContainer width="100%" height={300}>
           <ScatterChart margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
-            <CartesianGrid strokeDasharray="0" stroke="#E2E8F0" />
+            <CartesianGrid strokeDasharray="0" stroke="var(--surface-2)" />
             <XAxis
               type="number"
               dataKey="x"
               domain={[-70, 130]}
               name="Longitude"
-              tick={{ fill: "#1B4332", fontSize: 9, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               label={{
                 value: "West   Longitude   East",
-                fill: "#1B4332",
-                fontSize: 10,
+                fill: "var(--text)",
+                fontSize: 11,
                 fontWeight: 600,
                 position: "insideBottom",
                 offset: -2,
@@ -262,11 +262,11 @@ function GeographicAnalysis() {
               dataKey="y"
               domain={[-25, 55]}
               name="Latitude"
-              tick={{ fill: "#1B4332", fontSize: 9, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               label={{
                 value: "Latitude",
-                fill: "#1B4332",
-                fontSize: 10,
+                fill: "var(--text)",
+                fontSize: 11,
                 fontWeight: 600,
                 angle: -90,
                 position: "insideLeft",
@@ -300,7 +300,7 @@ function GeographicAnalysis() {
         <div
           style={{
             fontSize: "11px",
-            color: "#64748B",
+            color: "var(--text-muted)",
             marginTop: "8px",
             fontStyle: "italic",
           }}
@@ -320,8 +320,8 @@ function GeographicAnalysis() {
           return (
             <div
               style={{
-                background: "#D8F3DC",
-                border: "1px solid #1B4332",
+                background: "var(--tint)",
+                border: "1px solid var(--border-strong)",
                 borderRadius: "8px",
                 padding: "12px 14px",
                 marginTop: "12px",
@@ -340,16 +340,16 @@ function GeographicAnalysis() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#1B4332",
+                    color: "var(--text)",
                   }}
                 >
                   Strategic Insight
                 </div>
                 <div
                   style={{
-                    fontSize: "9px",
+                    fontSize: "11px",
                     fontWeight: 400,
-                    color: "#94A3B8",
+                    color: "var(--text-subtle)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -359,7 +359,7 @@ function GeographicAnalysis() {
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#1E293B",
+                  color: "var(--text)",
                   margin: 0,
                   lineHeight: 1.6,
                 }}
@@ -393,34 +393,34 @@ function GeographicAnalysis() {
           >
             <CartesianGrid
               strokeDasharray="0"
-              stroke="#E2E8F0"
+              stroke="var(--surface-2)"
               vertical={false}
             />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
             <YAxis
               domain={[0, 80]}
-              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="avg" name="Regional Average" radius={[6, 6, 0, 0]}>
               {regionStats.map((r, i) => (
-                <Cell key={i} fill={REGION_COLORS[r.region] || "#1B4332"} />
+                <Cell key={i} fill={REGION_COLORS[r.region] || "var(--seq-7)"} />
               ))}
             </Bar>
             <ReferenceLine
               y={OIC_AVERAGE}
-              stroke="#1B4332"
+              stroke="var(--seq-7)"
               strokeDasharray="4 4"
               strokeWidth={2}
               label={{
                 value: `OIC Average: ${OIC_AVERAGE.toFixed(1)}`,
-                fill: "#1B4332",
+                fill: "var(--text)",
                 fontSize: 11,
                 fontWeight: 700,
               }}
@@ -437,8 +437,8 @@ function GeographicAnalysis() {
           return (
             <div
               style={{
-                background: "#D8F3DC",
-                border: "1px solid #1B4332",
+                background: "var(--tint)",
+                border: "1px solid var(--border-strong)",
                 borderRadius: "8px",
                 padding: "12px 14px",
                 marginTop: "12px",
@@ -457,16 +457,16 @@ function GeographicAnalysis() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#1B4332",
+                    color: "var(--text)",
                   }}
                 >
                   Strategic Insight
                 </div>
                 <div
                   style={{
-                    fontSize: "9px",
+                    fontSize: "11px",
                     fontWeight: 400,
-                    color: "#94A3B8",
+                    color: "var(--text-subtle)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -476,7 +476,7 @@ function GeographicAnalysis() {
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#1E293B",
+                  color: "var(--text)",
                   margin: 0,
                   lineHeight: 1.6,
                 }}
@@ -507,17 +507,17 @@ function GeographicAnalysis() {
           <BarChart data={clusterByRegion} barSize={20}>
             <CartesianGrid
               strokeDasharray="0"
-              stroke="#E2E8F0"
+              stroke="var(--surface-2)"
               vertical={false}
             />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
-            <YAxis tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
+            <YAxis tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{
@@ -528,12 +528,12 @@ function GeographicAnalysis() {
             />
             <Bar
               dataKey="Advanced"
-              fill="#1B4332"
+              fill="var(--seq-7)"
               stackId="a"
               radius={[4, 4, 0, 0]}
             />
-            <Bar dataKey="Emerging" fill="#52B788" stackId="a" />
-            <Bar dataKey="Foundational" fill="#95D5B2" stackId="a" />
+            <Bar dataKey="Emerging" fill="var(--seq-4)" stackId="a" />
+            <Bar dataKey="Foundational" fill="var(--seq-2)" stackId="a" />
           </BarChart>
         </ResponsiveContainer>
         {(() => {
@@ -546,8 +546,8 @@ function GeographicAnalysis() {
           return (
             <div
               style={{
-                background: "#D8F3DC",
-                border: "1px solid #1B4332",
+                background: "var(--tint)",
+                border: "1px solid var(--border-strong)",
                 borderRadius: "8px",
                 padding: "12px 14px",
                 marginTop: "12px",
@@ -566,16 +566,16 @@ function GeographicAnalysis() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#1B4332",
+                    color: "var(--text)",
                   }}
                 >
                   Strategic Insight
                 </div>
                 <div
                   style={{
-                    fontSize: "9px",
+                    fontSize: "11px",
                     fontWeight: 400,
-                    color: "#94A3B8",
+                    color: "var(--text-subtle)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -585,7 +585,7 @@ function GeographicAnalysis() {
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#1E293B",
+                  color: "var(--text)",
                   margin: 0,
                   lineHeight: 1.6,
                 }}
@@ -634,7 +634,7 @@ function GeographicAnalysis() {
                       style={{
                         fontSize: "12px",
                         fontWeight: 700,
-                        color: "#1B4332",
+                        color: "var(--text)",
                       }}
                     >
                       {c.name}
@@ -642,7 +642,7 @@ function GeographicAnalysis() {
                     <div
                       style={{
                         fontSize: "18px",
-                        fontWeight: 900,
+                        fontWeight: 700,
                         color: cl.color,
                         marginTop: "4px",
                       }}
@@ -652,7 +652,7 @@ function GeographicAnalysis() {
                     <div
                       style={{
                         fontSize: "11px",
-                        color: "#2D6A4F",
+                        color: "var(--interactive)",
                         fontWeight: 600,
                         marginTop: "2px",
                       }}

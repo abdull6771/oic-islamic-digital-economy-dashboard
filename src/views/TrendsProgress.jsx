@@ -47,18 +47,18 @@ function TrendsProgress() {
   const deselectAll = () => setSelectedCountries([]);
 
   const trendColors = {
-    "United Arab Emirates": "#1B4332",
-    "Saudi Arabia": "#2D6A4F",
-    Malaysia: "#40916C",
-    Indonesia: "#52B788",
-    Qatar: "#74C69D",
-    Türkiye: "#95D5B2",
-    Kazakhstan: "#1F4E38",
-    Jordan: "#388E7F",
-    [OIC_AVERAGE_LABEL]: "#1B4332",
+    "United Arab Emirates": "var(--seq-7)",
+    "Saudi Arabia": "var(--seq-6)",
+    Malaysia: "var(--seq-5)",
+    Indonesia: "var(--seq-4)",
+    Qatar: "var(--seq-3)",
+    Türkiye: "var(--seq-2)",
+    Kazakhstan: "var(--seq-7)",
+    Jordan: "var(--seq-5)",
+    [OIC_AVERAGE_LABEL]: "var(--seq-7)",
   };
 
-  const OTHER_COLORS = ["#2D6A4F", "#40916C", "#52B788", "#74C69D", "#95D5B2"];
+  const OTHER_COLORS = ["var(--seq-6)", "var(--seq-5)", "var(--seq-4)", "var(--seq-3)", "var(--seq-2)"];
   const getColor = (c, i) =>
     trendColors[c] || OTHER_COLORS[i % OTHER_COLORS.length];
 
@@ -101,8 +101,8 @@ function TrendsProgress() {
             <button
               onClick={selectAll}
               style={{
-                background: "#40916C",
-                color: "#FFFFFF",
+                background: "var(--seq-5)",
+                color: "var(--on-brand)",
                 border: "none",
                 padding: "6px 12px",
                 borderRadius: "6px",
@@ -116,8 +116,8 @@ function TrendsProgress() {
             <button
               onClick={deselectAll}
               style={{
-                background: "#95D5B2",
-                color: "#1B4332",
+                background: "var(--seq-2)",
+                color: "var(--text)",
                 border: "none",
                 padding: "6px 12px",
                 borderRadius: "6px",
@@ -137,9 +137,9 @@ function TrendsProgress() {
               onClick={() => toggleCountry(c)}
               style={{
                 background: selectedCountries.includes(c)
-                  ? "#1B4332"
-                  : "#F0F9F7",
-                color: selectedCountries.includes(c) ? "#FFFFFF" : "#1B4332",
+                  ? "var(--seq-7)"
+                  : "var(--surface-2)",
+                color: selectedCountries.includes(c) ? "var(--surface)" : "var(--seq-7)",
                 border: selectedCountries.includes(c)
                   ? "none"
                   : "1px solid #D8F3DC",
@@ -164,22 +164,21 @@ function TrendsProgress() {
           <LineChart data={lineData}>
             <CartesianGrid
               strokeDasharray="0"
-              stroke="#E2E8F0"
+              stroke="var(--surface-2)"
               vertical={false}
             />
             <XAxis
               dataKey="year"
-              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
             />
             <YAxis
               domain={[25, 80]}
-              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{
                 fontSize: "12px",
-                fontFamily: "'Georgia', serif",
                 paddingTop: "12px",
               }}
             />
@@ -194,7 +193,7 @@ function TrendsProgress() {
                   fill: getColor(country, i),
                   r: country === OIC_AVERAGE_LABEL ? 0 : 4,
                   strokeWidth: country === OIC_AVERAGE_LABEL ? 0 : 2,
-                  stroke: "#FFFFFF",
+                  stroke: "var(--on-brand)",
                 }}
                 strokeDasharray={country === OIC_AVERAGE_LABEL ? "5 5" : undefined}
                 isAnimationActive={true}
@@ -220,8 +219,8 @@ function TrendsProgress() {
             return (
               <div
                 style={{
-                  background: "#D8F3DC",
-                  border: "1px solid #1B4332",
+                  background: "var(--tint)",
+                  border: "1px solid var(--border-strong)",
                   borderRadius: "8px",
                   padding: "12px 14px",
                   marginTop: "12px",
@@ -240,16 +239,16 @@ function TrendsProgress() {
                     style={{
                       fontSize: "11px",
                       fontWeight: 700,
-                      color: "#1B4332",
+                      color: "var(--text)",
                     }}
                   >
                     Strategic Insight
                   </div>
                   <div
                     style={{
-                      fontSize: "9px",
+                      fontSize: "11px",
                       fontWeight: 400,
-                      color: "#94A3B8",
+                      color: "var(--text-subtle)",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -259,7 +258,7 @@ function TrendsProgress() {
                 <p
                   style={{
                     fontSize: "12px",
-                    color: "#1E293B",
+                    color: "var(--text)",
                     margin: 0,
                     lineHeight: 1.6,
                   }}
@@ -304,21 +303,21 @@ function TrendsProgress() {
             <BarChart data={bins} barSize={28}>
               <CartesianGrid
                 strokeDasharray="0"
-                stroke="#E2E8F0"
+                stroke="var(--surface-2)"
                 vertical={false}
               />
               <XAxis
                 dataKey="range"
-                tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
+                tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               />
               <YAxis
-                tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+                tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Bar
                 dataKey="count"
                 name="Countries"
-                fill="#40916C"
+                fill="var(--seq-5)"
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>
@@ -332,8 +331,8 @@ function TrendsProgress() {
             return (
               <div
                 style={{
-                  background: "#D8F3DC",
-                  border: "1px solid #1B4332",
+                  background: "var(--tint)",
+                  border: "1px solid var(--border-strong)",
                   borderRadius: "8px",
                   padding: "12px 14px",
                   marginTop: "12px",
@@ -343,7 +342,7 @@ function TrendsProgress() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#1B4332",
+                    color: "var(--text)",
                     marginBottom: "6px",
                   }}
                 >
@@ -352,7 +351,7 @@ function TrendsProgress() {
                 <p
                   style={{
                     fontSize: "12px",
-                    color: "#1E293B",
+                    color: "var(--text)",
                     margin: 0,
                     lineHeight: 1.6,
                   }}
@@ -371,9 +370,9 @@ function TrendsProgress() {
             style={{
               marginTop: "12px",
               padding: "12px",
-              background: "#F0F9F7",
+              background: "var(--surface-2)",
               borderRadius: "8px",
-              border: "1px solid #D8F3DC",
+              border: "1px solid var(--tint-line)",
             }}
           >
             <div
@@ -401,13 +400,13 @@ function TrendsProgress() {
                   <div
                     style={{
                       fontSize: "18px",
-                      fontWeight: 900,
-                      color: "#1B4332",
+                      fontWeight: 700,
+                      color: "var(--text)",
                     }}
                   >
                     {s.value}
                   </div>
-                  <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
+                  <div style={{ fontSize: "11px", color: "var(--interactive)" }}>
                     {s.label}
                   </div>
                 </div>
@@ -430,14 +429,14 @@ function TrendsProgress() {
                     alignItems: "center",
                     gap: "8px",
                     padding: "8px 0",
-                    borderBottom: "1px solid #D8F3DC",
+                    borderBottom: "1px solid var(--tint-line)",
                   }}
                 >
                   <div
                     style={{
                       fontSize: "11px",
                       fontWeight: 700,
-                      color: "#1B4332",
+                      color: "var(--text)",
                       width: "20px",
                       textAlign: "right",
                     }}
@@ -448,7 +447,7 @@ function TrendsProgress() {
                     style={{
                       flex: 1,
                       fontSize: "12px",
-                      color: "#2D6A4F",
+                      color: "var(--interactive)",
                       fontWeight: 500,
                     }}
                   >
@@ -468,7 +467,7 @@ function TrendsProgress() {
                       width: "60px",
                       height: "4px",
                       borderRadius: "2px",
-                      background: "#D8F3DC",
+                      background: "var(--tint)",
                       overflow: "hidden",
                     }}
                   >

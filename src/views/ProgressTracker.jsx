@@ -51,11 +51,11 @@ function ProgressTracker({ hideTrajectory = false }) {
           <div style={styles.cardTitle}>Score Trajectory {YEAR_RANGE}</div>
           <ResponsiveContainer width="100%" height={340}>
             <LineChart data={lineData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
-              <XAxis dataKey="year" tick={{ fill: "#1E293B", fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-strong)" />
+              <XAxis dataKey="year" tick={{ fill: "var(--text)", fontSize: 11 }} />
               <YAxis
                 domain={[0, 85]}
-                tick={{ fill: "#1E293B", fontSize: 11 }}
+                tick={{ fill: "var(--text)", fontSize: 11 }}
               />
               <Tooltip content={<CustomTooltip />} />
               {Object.keys(TREND_FULL)
@@ -82,8 +82,8 @@ function ProgressTracker({ hideTrajectory = false }) {
             return (
               <div
                 style={{
-                  background: "#FDF6E3",
-                  border: "1px solid #F0C96A",
+                  background: "var(--accent-soft)",
+                  border: "1px solid var(--accent)",
                   borderRadius: "8px",
                   padding: "10px 14px",
                   marginTop: "12px",
@@ -102,16 +102,16 @@ function ProgressTracker({ hideTrajectory = false }) {
                     style={{
                       fontSize: "11px",
                       fontWeight: 700,
-                      color: "#000000",
+                      color: "var(--text)",
                     }}
                   >
                     Key insight
                   </div>
                   <div
                     style={{
-                      fontSize: "9px",
+                      fontSize: "11px",
                       fontWeight: 400,
-                      color: "#94A3B8",
+                      color: "var(--text-subtle)",
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -121,7 +121,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                 <p
                   style={{
                     fontSize: "12px",
-                    color: "#1E293B",
+                    color: "var(--text)",
                     margin: 0,
                     lineHeight: 1.6,
                   }}
@@ -148,7 +148,7 @@ function ProgressTracker({ hideTrajectory = false }) {
             }}
           >
             <thead>
-              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
+              <tr style={{ borderBottom: "1px solid var(--accent-line)" }}>
                 {[
                   "Country",
                   "2025 Rank",
@@ -161,9 +161,8 @@ function ProgressTracker({ hideTrajectory = false }) {
                     key={h}
                     style={{
                       padding: "10px 8px",
-                      color: "#000000",
+                      color: "var(--text)",
                       textAlign: "center",
-                      fontFamily: "'Georgia',serif",
                       fontSize: "11px",
                     }}
                   >
@@ -181,14 +180,14 @@ function ProgressTracker({ hideTrajectory = false }) {
                   <tr
                     key={c.name}
                     style={{
-                      borderBottom: "1px solid #F1F5F9",
-                      background: i % 2 === 0 ? "transparent" : "#64748B10",
+                      borderBottom: "1px solid var(--border)",
+                      background: i % 2 === 0 ? "transparent" : "var(--surface-2)",
                     }}
                   >
                     <td
                       style={{
                         padding: "8px",
-                        color: "#1E293B",
+                        color: "var(--text)",
                         fontWeight: 600,
                       }}
                     >
@@ -198,7 +197,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                       style={{
                         padding: "8px",
                         textAlign: "center",
-                        color: "#000000",
+                        color: "var(--text)",
                         fontWeight: 700,
                       }}
                     >
@@ -221,10 +220,10 @@ function ProgressTracker({ hideTrajectory = false }) {
                         fontWeight: 700,
                         color:
                           change === null
-                            ? "#64748B"
+                            ? "var(--text-muted)"
                             : change >= 0
-                              ? "#10B981"
-                              : "#EF4444",
+                              ? "var(--positive)"
+                              : "var(--negative)",
                       }}
                     >
                       {change === null
@@ -237,8 +236,8 @@ function ProgressTracker({ hideTrajectory = false }) {
                       style={{
                         padding: "8px",
                         textAlign: "center",
-                        fontSize: "10px",
-                        color: "#1E293B",
+                        fontSize: "11px",
+                        color: "var(--text)",
                         fontFamily: "monospace",
                       }}
                     >
@@ -254,7 +253,7 @@ function ProgressTracker({ hideTrajectory = false }) {
                       <span
                         style={{
                           ...styles.badge(cl.color, cl.bg),
-                          fontSize: "9px",
+                          fontSize: "11px",
                         }}
                       >
                         {cl.label}
@@ -268,7 +267,7 @@ function ProgressTracker({ hideTrajectory = false }) {
         </div>
       </div>
       <div style={styles.card}>
-        <div style={{ ...styles.cardTitle, color: "#10B981" }}>
+        <div style={{ ...styles.cardTitle, color: "var(--positive)" }}>
           🚀 Fastest Growing Countries (4-Year Score Gain)
         </div>
         <ResponsiveContainer width="100%" height={220}>
@@ -279,19 +278,19 @@ function ProgressTracker({ hideTrajectory = false }) {
             }))}
             barSize={28}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-strong)" />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1E293B", fontSize: 10 }}
+              tick={{ fill: "var(--text)", fontSize: 11 }}
               angle={-20}
               textAnchor="end"
               height={60}
             />
-            <YAxis tick={{ fill: "#1E293B", fontSize: 11 }} />
+            <YAxis tick={{ fill: "var(--text)", fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="growth" name={`Score Gain (${YEAR_RANGE})`}>
               {fastestGrowing.map((c, i) => (
-                <Cell key={i} fill={c.growth > 0 ? "#10B981" : "#EF4444"} />
+                <Cell key={i} fill={c.growth > 0 ? "var(--positive)" : "var(--negative)"} />
               ))}
             </Bar>
           </BarChart>
@@ -302,8 +301,8 @@ function ProgressTracker({ hideTrajectory = false }) {
           return (
             <div
               style={{
-                background: "#FDF6E3",
-                border: "1px solid #F0C96A",
+                background: "var(--accent-soft)",
+                border: "1px solid var(--accent)",
                 borderRadius: "8px",
                 padding: "10px 14px",
                 marginTop: "12px",
@@ -322,16 +321,16 @@ function ProgressTracker({ hideTrajectory = false }) {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#000000",
+                    color: "var(--text)",
                   }}
                 >
                   Key insight
                 </div>
                 <div
                   style={{
-                    fontSize: "9px",
+                    fontSize: "11px",
                     fontWeight: 400,
-                    color: "#94A3B8",
+                    color: "var(--text-subtle)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -341,7 +340,7 @@ function ProgressTracker({ hideTrajectory = false }) {
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#1E293B",
+                  color: "var(--text)",
                   margin: 0,
                   lineHeight: 1.6,
                 }}

@@ -2,19 +2,17 @@
 
 function Acknowledgement() {
   const cardStyle = {
-    background: "linear-gradient(135deg, #FFFFFF 0%, #F1F5F9 100%)",
-    border: "1px solid #CBD5E1",
+    background: "linear-gradient(135deg, var(--surface) 0%, #F1F5F9 100%)",
+    border: "1px solid var(--border-strong)",
     borderRadius: "12px",
     padding: "32px 36px",
     marginBottom: "24px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04)",
     transition: "all 0.3s ease",
   };
   const headingStyle = {
-    fontFamily: "'Georgia', serif",
     fontSize: "16px",
     fontWeight: 600,
-    color: "#000000",
+    color: "var(--text)",
     letterSpacing: "0.05em",
     marginBottom: "16px",
     display: "flex",
@@ -22,29 +20,27 @@ function Acknowledgement() {
     gap: "10px",
   };
   const bodyStyle = {
-    color: "#1E293B",
+    color: "var(--text)",
     fontSize: "14px",
     lineHeight: 1.8,
-    fontFamily: "'Georgia', serif",
   };
   const nameStyle = {
     display: "inline-block",
-    background: "linear-gradient(135deg, #FEF9EC, #FFFBF0)",
-    border: "1px solid #F0D67A",
+    background: "linear-gradient(135deg, var(--accent-soft), #FFFBF0)",
+    border: "1px solid var(--accent-soft)",
     borderRadius: "6px",
     padding: "6px 14px",
     margin: "4px 6px",
     fontSize: "13px",
-    color: "#1E293B",
+    color: "var(--text)",
     fontWeight: 500,
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
     transition: "all 0.2s ease",
   };
   const authorEntry = {
     fontSize: "14px",
-    color: "#1E293B",
+    color: "var(--text)",
     padding: "10px 0",
-    borderBottom: "1px solid #E2E8F0",
+    borderBottom: "1px solid var(--border)",
     display: "flex",
     alignItems: "center",
     gap: "12px",
@@ -59,13 +55,12 @@ function Acknowledgement() {
         {/* Hero Banner */}
         <div
           style={{
-            background: "linear-gradient(135deg, #001f3f 0%, #00152b 100%)",
+            background: "linear-gradient(135deg, var(--text) 0%, #00152b 100%)",
             borderRadius: "14px",
             padding: "48px 40px",
             marginBottom: "32px",
             position: "relative",
             overflow: "hidden",
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.12)",
           }}
         >
           <div
@@ -84,10 +79,9 @@ function Acknowledgement() {
           <div style={{ position: "relative", zIndex: 1 }}>
             <h2
               style={{
-                fontFamily: "'Georgia', serif",
-                color: "#FFFFFF",
+                color: "var(--on-brand)",
                 fontSize: "28px",
-                fontWeight: 900,
+                fontWeight: 700,
                 margin: "0 0 8px",
                 letterSpacing: "0.02em",
               }}
@@ -96,7 +90,7 @@ function Acknowledgement() {
             </h2>
             <p
               style={{
-                color: "#E0E7FF",
+                color: "var(--info-bg)",
                 fontSize: "14px",
                 margin: 0,
                 fontStyle: "italic",
@@ -117,11 +111,11 @@ function Acknowledgement() {
           </div>
           <p style={bodyStyle}>
             This report was prepared as part of the{" "}
-            <strong style={{ color: "#000000" }}>
+            <strong style={{ color: "var(--text)" }}>
               Islamic Digital Economy Project
             </strong>
             , supported by a grant from the{" "}
-            <strong style={{ color: "#000000" }}>
+            <strong style={{ color: "var(--text)" }}>
               Islamic Economics Research &amp; Innovation Fund (IERIF)
             </strong>
             . The project aims to advance research and policy dialogue on the
@@ -137,7 +131,7 @@ function Acknowledgement() {
             <span style={{ fontSize: "20px" }}>🏛</span> About INCEIF University
           </div>
           <p style={bodyStyle}>
-            <strong style={{ color: "#000000" }}>
+            <strong style={{ color: "var(--text)" }}>
               INCEIF University — The Global University of Islamic Finance
             </strong>{" "}
             is a world-class institution dedicated to advancing knowledge and
@@ -196,20 +190,19 @@ function Acknowledgement() {
                     width: "28px",
                     height: "28px",
                     borderRadius: "50%",
-                    background: "linear-gradient(135deg, #B8922A, #A07810)",
-                    color: "#FFFFFF",
+                    background: "linear-gradient(135deg, var(--accent), #A07810)",
+                    color: "var(--on-brand)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "12px",
                     fontWeight: 700,
                     flexShrink: 0,
-                    boxShadow: "0 2px 4px rgba(184, 146, 42, 0.2)",
                   }}
                 >
                   {i + 1}
                 </span>
-                <span style={{ fontWeight: 500, color: "#000000" }}>
+                <span style={{ fontWeight: 500, color: "var(--text)" }}>
                   {name}
                 </span>
               </div>
@@ -251,7 +244,7 @@ function Acknowledgement() {
                       transition: "all 0.2s ease",
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.color = "#B8922A";
+                      e.target.style.color = "var(--accent)";
                       e.target.style.textDecoration = "underline";
                     }}
                     onMouseLeave={(e) => {
@@ -273,15 +266,15 @@ function Acknowledgement() {
         <div
           style={{
             ...cardStyle,
-            background: "linear-gradient(135deg, #FEF9EC 0%, #FFFBF0 100%)",
-            border: "1px solid #F0D67A",
-            borderLeft: "4px solid #B8922A",
+            background: "linear-gradient(135deg, var(--accent-soft) 0%, #FFFBF0 100%)",
+            border: "1px solid var(--accent-soft)",
+            borderLeft: "4px solid var(--accent-line)",
           }}
         >
           <div style={headingStyle}>
             <span style={{ fontSize: "20px" }}>⚖️</span> Disclaimer
           </div>
-          <p style={{ ...bodyStyle, color: "#1E293B", fontSize: "13px" }}>
+          <p style={{ ...bodyStyle, color: "var(--text)", fontSize: "13px" }}>
             The views expressed in this report are those of the authors and do
             not necessarily reflect the official positions of INCEIF University,
             IERIF, or any affiliated organisations. The data presented is
@@ -292,8 +285,8 @@ function Acknowledgement() {
         {/* Footer Attribution */}
         <div
           style={{
-            background: "#F8FAFC",
-            borderTop: "2px solid #E2E8F0",
+            background: "var(--surface-2)",
+            borderTop: "2px solid var(--border)",
             borderRadius: "8px",
             marginTop: "40px",
             padding: "32px 40px",
@@ -313,11 +306,11 @@ function Acknowledgement() {
             <div
               style={{
                 fontSize: "13px",
-                color: "#1E293B",
+                color: "var(--text)",
                 letterSpacing: "0.02em",
               }}
             >
-              <strong style={{ color: "#1E293B" }}>
+              <strong style={{ color: "var(--text)" }}>
                 OIC Digital Economy Index (OIC DEI)
               </strong>{" "}
               · Developed by INCEIF University
@@ -327,13 +320,13 @@ function Acknowledgement() {
                 display: "flex",
                 gap: "20px",
                 fontSize: "12px",
-                color: "#1E293B",
+                color: "var(--text)",
               }}
             >
               <a
                 href="#"
                 style={{
-                  color: "#00a8e8",
+                  color: "var(--interactive)",
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
@@ -343,7 +336,7 @@ function Acknowledgement() {
               <a
                 href="#"
                 style={{
-                  color: "#00a8e8",
+                  color: "var(--interactive)",
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
@@ -353,7 +346,7 @@ function Acknowledgement() {
               <a
                 href="#"
                 style={{
-                  color: "#00a8e8",
+                  color: "var(--interactive)",
                   textDecoration: "none",
                   transition: "color 0.2s",
                 }}
@@ -364,10 +357,10 @@ function Acknowledgement() {
           </div>
           <div
             style={{
-              borderTop: "1px solid #E2E8F0",
+              borderTop: "1px solid var(--border)",
               paddingTop: "16px",
               fontSize: "12px",
-              color: "#1E293B",
+              color: "var(--text)",
               letterSpacing: "0.01em",
               lineHeight: "1.6",
               textAlign: "center",
@@ -375,10 +368,10 @@ function Acknowledgement() {
           >
             <p style={{ margin: "0 0 8px 0" }}>
               © 2026{" "}
-              <strong style={{ color: "#000000" }}>INCEIF University</strong> —
+              <strong style={{ color: "var(--text)" }}>INCEIF University</strong> —
               The Global University of Islamic Finance
             </p>
-            <p style={{ margin: 0, fontSize: "11px", color: "#475569" }}>
+            <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted)" }}>
               This dashboard is for informational purposes only. Data presented
               reflects the 2025 OIC Digital Economy Assessment. The findings do
               not necessarily reflect the views of INCEIF University.

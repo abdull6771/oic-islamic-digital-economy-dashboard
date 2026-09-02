@@ -99,10 +99,10 @@ function PolicyRecommendations() {
   const recs = generateRecommendations(country);
 
   const PRIORITY_STYLES = {
-    IMMEDIATE: { color: "#EF4444", bg: "#FEE2E2", border: "#EF4444" },
-    HIGH: { color: "#F59E0B", bg: "#FEF3C7", border: "#F59E0B" },
-    MEDIUM: { color: "#3B82F6", bg: "#DBEAFE", border: "#3B82F6" },
-    STRATEGIC: { color: "#10B981", bg: "#D1FAE5", border: "#10B981" },
+    IMMEDIATE: { color: "var(--negative)", bg: "var(--negative-bg)", border: "var(--negative-line)" },
+    HIGH: { color: "var(--warning)", bg: "var(--warning-bg)", border: "var(--warning-line)" },
+    MEDIUM: { color: "var(--info)", bg: "var(--info-bg)", border: "var(--info)" },
+    STRATEGIC: { color: "var(--positive)", bg: "var(--surface-2)", border: "var(--positive-line)" },
   };
 
   return (
@@ -137,7 +137,7 @@ function PolicyRecommendations() {
         style={{
           ...styles.card,
           borderColor: `${cluster.color}40`,
-          background: `linear-gradient(135deg, #FFFFFF, ${cluster.color}08)`,
+          background: `linear-gradient(135deg, var(--surface), ${cluster.color}08)`,
         }}
       >
         <div style={{ ...styles.cardTitle, color: cluster.color }}>
@@ -145,7 +145,7 @@ function PolicyRecommendations() {
         </div>
         <p
           style={{
-            color: "#1E293B",
+            color: "var(--text)",
             fontSize: "13px",
             lineHeight: 1.8,
             margin: 0,
@@ -154,7 +154,7 @@ function PolicyRecommendations() {
           {country.name} is classified as a{" "}
           <strong style={{ color: cluster.color }}>{cluster.label}</strong> with
           an OIC DEI score of{" "}
-          <strong style={{ color: "#000000" }}>
+          <strong style={{ color: "var(--text)" }}>
             {country.adei.toFixed(1)}
           </strong>{" "}
           (Rank #{country.rank} of {META.countryCount} OIC states). The
@@ -204,7 +204,7 @@ function PolicyRecommendations() {
                     <span
                       style={{
                         ...styles.badge(ps.color, `${ps.border}20`),
-                        fontSize: "10px",
+                        fontSize: "11px",
                       }}
                     >
                       {rec.priority}
@@ -213,13 +213,12 @@ function PolicyRecommendations() {
                       style={{
                         fontSize: "14px",
                         fontWeight: 700,
-                        color: "#1E293B",
-                        fontFamily: "'Georgia', serif",
+                        color: "var(--text)",
                       }}
                     >
                       {rec.pillar}
                     </span>
-                    <span style={{ fontSize: "11px", color: "#64748B" }}>
+                    <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>
                       Current Score:{" "}
                       {country[
                         PILLARS.find(
@@ -233,7 +232,7 @@ function PolicyRecommendations() {
                   </div>
                   <p
                     style={{
-                      color: "#1E293B",
+                      color: "var(--text)",
                       fontSize: "13px",
                       lineHeight: 1.7,
                       margin: 0,
@@ -280,7 +279,7 @@ function PolicyRecommendations() {
               display: "flex",
               gap: "12px",
               padding: "12px 0",
-              borderBottom: "1px solid #FFFFFF",
+              borderBottom: "1px solid var(--border)",
             }}
           >
             <span style={{ fontSize: "20px" }}>{r.icon}</span>
@@ -289,15 +288,14 @@ function PolicyRecommendations() {
                 style={{
                   fontSize: "13px",
                   fontWeight: 700,
-                  color: "#1E293B",
+                  color: "var(--text)",
                   marginBottom: "4px",
-                  fontFamily: "'Georgia', serif",
                 }}
               >
                 {r.title}
               </div>
               <div
-                style={{ fontSize: "12px", color: "#1E293B", lineHeight: 1.6 }}
+                style={{ fontSize: "12px", color: "var(--text)", lineHeight: 1.6 }}
               >
                 {r.desc}
               </div>

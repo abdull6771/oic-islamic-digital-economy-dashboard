@@ -36,22 +36,22 @@ function DigitalDivide() {
           {
             label: "Countries Above OIC Avg",
             value: above.length,
-            color: "#40916C",
+            color: "var(--interactive)",
           },
           {
             label: "Countries Below OIC Avg",
             value: below.length,
-            color: "#74C69D",
+            color: "var(--text-muted)",
           },
           {
             label: "OIC Average Score",
             value: oicAvg.toFixed(1),
-            color: "#1B4332",
+            color: "var(--text)",
           },
           {
             label: "Max Digital Divide",
             value: `${(sorted[0].adei - sorted[sorted.length - 1].adei).toFixed(0)} pts`,
-            color: "#52B788",
+            color: "var(--interactive)",
           },
         ].map((k, i) => (
           <div
@@ -59,17 +59,17 @@ function DigitalDivide() {
             style={{
               ...styles.card,
               textAlign: "center",
-              background: i === 0 ? "#D8F3DC" : "#F0F9F7",
+              background: i === 0 ? "var(--tint)" : "var(--surface-2)",
               border: `1px solid ${k.color}`,
             }}
           >
-            <div style={{ fontSize: "28px", fontWeight: 900, color: k.color }}>
+            <div style={{ fontSize: "28px", fontWeight: 700, color: k.color }}>
               {k.value}
             </div>
             <div
               style={{
                 fontSize: "11px",
-                color: "#1B4332",
+                color: "var(--text)",
                 marginTop: "4px",
                 fontWeight: 600,
               }}
@@ -88,41 +88,41 @@ function DigitalDivide() {
           <BarChart data={gapData} barSize={10}>
             <CartesianGrid
               strokeDasharray="0"
-              stroke="#E2E8F0"
+              stroke="var(--surface-2)"
               vertical={false}
             />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1B4332", fontSize: 9, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               angle={-45}
               textAnchor="end"
               height={80}
             />
-            <YAxis tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }} />
+            <YAxis tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }} />
             <Tooltip content={<CustomTooltip />} />
             <ReferenceLine
               y={0}
-              stroke="#1B4332"
+              stroke="var(--seq-7)"
               strokeDasharray="4 4"
               strokeWidth={2}
               label={{
                 value: "OIC Average",
-                fill: "#1B4332",
+                fill: "var(--text)",
                 fontSize: 11,
                 fontWeight: 700,
               }}
             />
             <Bar dataKey="gap" name="Gap from OIC Avg">
               {gapData.map((d, i) => (
-                <Cell key={i} fill={d.gap >= 0 ? "#40916C" : "#95D5B2"} />
+                <Cell key={i} fill={d.gap >= 0 ? "var(--seq-5)" : "var(--seq-2)"} />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
         <div
           style={{
-            background: "#D8F3DC",
-            border: "1px solid #1B4332",
+            background: "var(--tint)",
+            border: "1px solid var(--border-strong)",
             borderRadius: "8px",
             padding: "12px 14px",
             marginTop: "12px",
@@ -141,16 +141,16 @@ function DigitalDivide() {
               style={{
                 fontSize: "11px",
                 fontWeight: 700,
-                color: "#1B4332",
+                color: "var(--text)",
               }}
             >
               Strategic Insight
             </div>
             <div
               style={{
-                fontSize: "9px",
+                fontSize: "11px",
                 fontWeight: 400,
-                color: "#94A3B8",
+                color: "var(--text-subtle)",
                 whiteSpace: "nowrap",
               }}
             >
@@ -160,7 +160,7 @@ function DigitalDivide() {
           <p
             style={{
               fontSize: "12px",
-              color: "#1E293B",
+              color: "var(--text)",
               margin: 0,
               lineHeight: 1.6,
             }}
@@ -183,9 +183,9 @@ function DigitalDivide() {
 
       <div style={styles.grid2}>
         <div
-          style={{ ...styles.card, borderColor: "#40916C", borderWidth: "2px" }}
+          style={{ ...styles.card, borderColor: "var(--tint-line)", borderWidth: "2px" }}
         >
-          <div style={{ ...styles.cardTitle, color: "#40916C" }}>
+          <div style={{ ...styles.cardTitle, color: "var(--interactive)" }}>
             Above OIC Average ({above.length})
           </div>
           {above.map((c) => (
@@ -195,23 +195,23 @@ function DigitalDivide() {
                 display: "flex",
                 justifyContent: "space-between",
                 padding: "8px 0",
-                borderBottom: "1px solid #D8F3DC",
+                borderBottom: "1px solid var(--tint-line)",
                 fontSize: "12px",
               }}
             >
-              <span style={{ color: "#2D6A4F", fontWeight: 500 }}>
+              <span style={{ color: "var(--interactive)", fontWeight: 500 }}>
                 {c.name}
               </span>
-              <span style={{ color: "#40916C", fontWeight: 700 }}>
+              <span style={{ color: "var(--interactive)", fontWeight: 700 }}>
                 +{(c.adei - oicAvg).toFixed(1)}
               </span>
             </div>
           ))}
         </div>
         <div
-          style={{ ...styles.card, borderColor: "#95D5B2", borderWidth: "2px" }}
+          style={{ ...styles.card, borderColor: "var(--tint-line)", borderWidth: "2px" }}
         >
-          <div style={{ ...styles.cardTitle, color: "#74C69D" }}>
+          <div style={{ ...styles.cardTitle, color: "var(--text-muted)" }}>
             Below OIC Average ({below.length})
           </div>
           {below.map((c) => (
@@ -221,14 +221,14 @@ function DigitalDivide() {
                 display: "flex",
                 justifyContent: "space-between",
                 padding: "8px 0",
-                borderBottom: "1px solid #D8F3DC",
+                borderBottom: "1px solid var(--tint-line)",
                 fontSize: "12px",
               }}
             >
-              <span style={{ color: "#2D6A4F", fontWeight: 500 }}>
+              <span style={{ color: "var(--interactive)", fontWeight: 500 }}>
                 {c.name}
               </span>
-              <span style={{ color: "#74C69D", fontWeight: 700 }}>
+              <span style={{ color: "var(--text-muted)", fontWeight: 700 }}>
                 {(c.adei - oicAvg).toFixed(1)}
               </span>
             </div>

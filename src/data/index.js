@@ -26,15 +26,15 @@ export const INDICATOR_COUNTS = dataset.meta.counts;
 // weight of each pillar is *not* here: it is read from the workbook's `ref`
 // sheet so that a re-weighted index flows through automatically.
 const PILLAR_PRESENTATION = {
-  1: { name: "Institutions", short: "Institutions", color: "#1B4332", dim: "Digital Foundation" },
-  2: { name: "Infrastructure", short: "Infrastructure", color: "#2D6A4F", dim: "Digital Foundation" },
-  3: { name: "Workforce", short: "Workforce", color: "#40916C", dim: "Digital Works" },
-  4: { name: "E-Government", short: "E-Gov", color: "#52B788", dim: "E-Government" },
-  5: { name: "Innovation", short: "Innovation", color: "#74C69D", dim: "Innovation" },
-  6: { name: "Future Technologies", short: "Future Tech", color: "#95D5B2", dim: "Readiness in Digital for the Citizen" },
-  7: { name: "Market Development & Sophistication", short: "Market Dev", color: "#2D6A4F", dim: "Readiness in Digital for the Citizen" },
-  8: { name: "Financial Market Development", short: "Fin. Markets", color: "#388E7F", dim: "Readiness in Digital for the Citizen" },
-  9: { name: "Sustainable Development Goals", short: "SDGs", color: "#1F4E38", dim: "Readiness in Digital for the Citizen" },
+  1: { name: "Institutions", short: "Institutions", color: "var(--p1)", dim: "Digital Foundation" },
+  2: { name: "Infrastructure", short: "Infrastructure", color: "var(--p2)", dim: "Digital Foundation" },
+  3: { name: "Workforce", short: "Workforce", color: "var(--p3)", dim: "Digital Works" },
+  4: { name: "E-Government", short: "E-Gov", color: "var(--p4)", dim: "E-Government" },
+  5: { name: "Innovation", short: "Innovation", color: "var(--p5)", dim: "Innovation" },
+  6: { name: "Future Technologies", short: "Future Tech", color: "var(--p6)", dim: "Readiness in Digital for the Citizen" },
+  7: { name: "Market Development & Sophistication", short: "Market Dev", color: "var(--p7)", dim: "Readiness in Digital for the Citizen" },
+  8: { name: "Financial Market Development", short: "Fin. Markets", color: "var(--p8)", dim: "Readiness in Digital for the Citizen" },
+  9: { name: "Sustainable Development Goals", short: "SDGs", color: "var(--p9)", dim: "Readiness in Digital for the Citizen" },
 };
 
 /**
@@ -100,9 +100,18 @@ const INDICATOR_LABELS = {
 };
 
 const CLUSTER_STYLE = {
-  "Advanced Digital Economies": { color: "#1B4332", bg: "#D8F3DC" },
-  "Emerging Digital Economies": { color: "#52B788", bg: "#E8F5E9" },
-  "Foundational Digital Economies": { color: "#95D5B2", bg: "#F1F8F6" },
+  "Advanced Digital Economies": {
+    color: "var(--cluster-advanced)",
+    bg: "var(--cluster-advanced-bg)",
+  },
+  "Emerging Digital Economies": {
+    color: "var(--cluster-emerging)",
+    bg: "var(--cluster-emerging-bg)",
+  },
+  "Foundational Digital Economies": {
+    color: "var(--cluster-foundational)",
+    bg: "var(--cluster-foundational-bg)",
+  },
 };
 
 /**
@@ -206,7 +215,7 @@ export const PILLARS = dataset.pillars.map((p) => ({
   ...(PILLAR_PRESENTATION[p.id] || {
     name: p.refName || p.workbookName,
     short: p.refName || p.workbookName,
-    color: "#40916C",
+    color: "var(--p4)",
     dim: p.dimension,
   }),
 }));
@@ -312,7 +321,10 @@ export const TREND_DATA = (() => {
 const CLUSTER_RULES = META.clusterRules.map((r) => ({
   label: r.label,
   min: r.min === null ? -Infinity : r.min,
-  ...(CLUSTER_STYLE[r.label] || { color: "#40916C", bg: "#F1F8F6" }),
+  ...(CLUSTER_STYLE[r.label] || {
+    color: "var(--text-muted)",
+    bg: "var(--surface-2)",
+  }),
 }));
 
 export const CLUSTERS = CLUSTER_RULES.map(({ label, color, bg }) => ({

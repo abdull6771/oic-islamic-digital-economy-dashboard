@@ -31,14 +31,14 @@ function StatisticalAnalysis() {
   }));
   const corrColor = (v) =>
     v >= 0.7
-      ? "#1B4332"
+      ? "var(--seq-7)"
       : v >= 0.4
-        ? "#40916C"
+        ? "var(--seq-5)"
         : v >= 0
-          ? "#95D5B2"
+          ? "var(--seq-2)"
           : v >= -0.4
-            ? "#D4A574"
-            : "#C1666B";
+            ? "var(--accent)"
+            : "var(--negative)";
   const descStats = PILLARS.map((p) => {
     const vals = COUNTRIES.map((c) => c[p.key]).sort((a, b) => a - b);
     const mean = vals.reduce((a, b) => a + b) / vals.length;
@@ -81,13 +81,13 @@ function StatisticalAnalysis() {
           <div
             style={{
               fontSize: "28px",
-              fontWeight: 900,
-              color: "#1B4332",
+              fontWeight: 700,
+              color: "var(--text)",
             }}
           >
             57
           </div>
-          <div style={{ fontSize: "12px", color: "#64748B" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
             OIC Member States
           </div>
         </div>
@@ -95,13 +95,13 @@ function StatisticalAnalysis() {
           <div
             style={{
               fontSize: "28px",
-              fontWeight: 900,
-              color: "#2D6A4F",
+              fontWeight: 700,
+              color: "var(--interactive)",
             }}
           >
             9
           </div>
-          <div style={{ fontSize: "12px", color: "#64748B" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
             Pillars Analyzed
           </div>
         </div>
@@ -109,13 +109,13 @@ function StatisticalAnalysis() {
           <div
             style={{
               fontSize: "28px",
-              fontWeight: 900,
-              color: "#40916C",
+              fontWeight: 700,
+              color: "var(--interactive)",
             }}
           >
             {strongCorrs.length}
           </div>
-          <div style={{ fontSize: "12px", color: "#64748B" }}>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>
             Strong Correlations
           </div>
         </div>
@@ -123,13 +123,13 @@ function StatisticalAnalysis() {
           <div
             style={{
               fontSize: "28px",
-              fontWeight: 900,
-              color: "#52B788",
+              fontWeight: 700,
+              color: "var(--interactive)",
             }}
           >
             0–100
           </div>
-          <div style={{ fontSize: "12px", color: "#64748B" }}>Score Range</div>
+          <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>Score Range</div>
         </div>
       </div>
 
@@ -148,7 +148,7 @@ function StatisticalAnalysis() {
             }}
           >
             <thead>
-              <tr style={{ borderBottom: "2px solid #1B4332" }}>
+              <tr style={{ borderBottom: "2px solid var(--border-strong)" }}>
                 {[
                   "Pillar",
                   "Mean",
@@ -164,12 +164,11 @@ function StatisticalAnalysis() {
                     key={h}
                     style={{
                       padding: "12px 10px",
-                      color: "#1B4332",
+                      color: "var(--text)",
                       textAlign: "center",
-                      fontFamily: "'Georgia',serif",
                       fontSize: "11px",
                       fontWeight: 700,
-                      background: "#F8FDFC",
+                      background: "var(--surface-2)",
                     }}
                   >
                     {h}
@@ -182,8 +181,8 @@ function StatisticalAnalysis() {
                 <tr
                   key={s.short}
                   style={{
-                    borderBottom: "1px solid #E2E8F0",
-                    background: i % 2 === 0 ? "transparent" : "#F8FDFC",
+                    borderBottom: "1px solid var(--border)",
+                    background: i % 2 === 0 ? "transparent" : "var(--surface-2)",
                   }}
                 >
                   <td
@@ -211,7 +210,7 @@ function StatisticalAnalysis() {
                       style={{
                         padding: "10px",
                         textAlign: "center",
-                        color: "#1E293B",
+                        color: "var(--text)",
                         fontSize: "11px",
                       }}
                     >
@@ -230,8 +229,8 @@ function StatisticalAnalysis() {
             gap: "8px",
             marginTop: "14px",
             padding: "12px",
-            background: "#D8F3DC",
-            border: "1px solid #1B4332",
+            background: "var(--tint)",
+            border: "1px solid var(--border-strong)",
             borderRadius: "8px",
           }}
         >
@@ -239,12 +238,12 @@ function StatisticalAnalysis() {
             style={{
               fontSize: "11px",
               fontWeight: 700,
-              color: "#1B4332",
+              color: "var(--text)",
             }}
           >
             Key Observations
           </div>
-          <div style={{ fontSize: "12px", color: "#1E293B", lineHeight: 1.6 }}>
+          <div style={{ fontSize: "12px", color: "var(--text)", lineHeight: 1.6 }}>
             The OIC member states display wide variability in pillar
             performance, with standard deviations ranging from ~15–25 points.
             This indicates substantial dispersion in digital economy maturity
@@ -258,7 +257,7 @@ function StatisticalAnalysis() {
       <div style={styles.card}>
         <div style={styles.cardTitle}>Inter-Pillar Correlation Analysis</div>
         <div
-          style={{ fontSize: "13px", color: "#64748B", marginBottom: "12px" }}
+          style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "12px" }}
         >
           Pearson correlation coefficients (r) between pillar scores across all
           57 OIC countries. Values closer to 1 indicate strong positive
@@ -267,13 +266,13 @@ function StatisticalAnalysis() {
         <div style={{ overflowX: "auto" }}>
           <table style={{ borderCollapse: "collapse", fontSize: "11px" }}>
             <thead>
-              <tr style={{ background: "#F8FDFC" }}>
+              <tr style={{ background: "var(--surface-2)" }}>
                 <th
                   style={{
                     padding: "8px 10px",
-                    color: "#1B4332",
+                    color: "var(--text)",
                     fontWeight: 700,
-                    borderBottom: "2px solid #1B4332",
+                    borderBottom: "2px solid var(--border-strong)",
                   }}
                 >
                   Pillar
@@ -284,10 +283,10 @@ function StatisticalAnalysis() {
                     style={{
                       padding: "8px 6px",
                       color: p.color,
-                      fontSize: "10px",
+                      fontSize: "11px",
                       textAlign: "center",
                       fontWeight: 700,
-                      borderBottom: "2px solid #1B4332",
+                      borderBottom: "2px solid var(--border-strong)",
                     }}
                   >
                     {p.short}
@@ -303,7 +302,7 @@ function StatisticalAnalysis() {
                       padding: "8px 10px",
                       color: PILLARS[ri].color,
                       fontWeight: 700,
-                      borderRight: "1px solid #E2E8F0",
+                      borderRight: "1px solid var(--border)",
                     }}
                   >
                     {row.name}
@@ -323,9 +322,9 @@ function StatisticalAnalysis() {
                               .padStart(2, "0")}`,
                             borderRadius: "4px",
                             padding: "6px 4px",
-                            color: v === 1 ? "#FFFFFF" : "#1E293B",
+                            color: v === 1 ? "var(--surface)" : "var(--text)",
                             fontWeight: v === 1 ? 900 : 600,
-                            fontSize: "10px",
+                            fontSize: "11px",
                           }}
                         >
                           {v}
@@ -344,11 +343,11 @@ function StatisticalAnalysis() {
           <div style={{ marginBottom: "10px" }}>
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
               {[
-                ["#1B4332", "Strong (≥0.7)", "Highly related"],
-                ["#40916C", "Moderate (0.4–0.7)", "Moderately related"],
-                ["#95D5B2", "Weak (0–0.4)", "Weakly related"],
-                ["#D4A574", "Very weak (−0.4–0)", "Minimal relationship"],
-                ["#C1666B", "Negative (<−0.4)", "Inverse relationship"],
+                ["var(--seq-7)", "Strong (≥0.7)", "Highly related"],
+                ["var(--seq-5)", "Moderate (0.4–0.7)", "Moderately related"],
+                ["var(--seq-2)", "Weak (0–0.4)", "Weakly related"],
+                ["var(--accent)", "Very weak (−0.4–0)", "Minimal relationship"],
+                ["var(--negative)", "Negative (<−0.4)", "Inverse relationship"],
               ].map(([c, label, desc]) => (
                 <div
                   key={label}
@@ -357,7 +356,7 @@ function StatisticalAnalysis() {
                     alignItems: "center",
                     gap: "6px",
                     fontSize: "11px",
-                    color: "#1E293B",
+                    color: "var(--text)",
                   }}
                 >
                   <div
@@ -382,8 +381,8 @@ function StatisticalAnalysis() {
                 gap: "8px",
                 marginTop: "12px",
                 padding: "12px",
-                background: "#D8F3DC",
-                border: "1px solid #1B4332",
+                background: "var(--tint)",
+                border: "1px solid var(--border-strong)",
                 borderRadius: "8px",
               }}
             >
@@ -391,7 +390,7 @@ function StatisticalAnalysis() {
                 style={{
                   fontSize: "11px",
                   fontWeight: 700,
-                  color: "#1B4332",
+                  color: "var(--text)",
                 }}
               >
                 Strong Pillar Relationships
@@ -404,7 +403,7 @@ function StatisticalAnalysis() {
                     key={i}
                     style={{
                       fontSize: "12px",
-                      color: "#1E293B",
+                      color: "var(--text)",
                       display: "flex",
                       justifyContent: "space-between",
                     }}
@@ -414,7 +413,7 @@ function StatisticalAnalysis() {
                     </span>
                     <span
                       style={{
-                        color: "#1B4332",
+                        color: "var(--text)",
                         fontWeight: 700,
                       }}
                     >

@@ -24,7 +24,7 @@ function IslamicDigitalSpecial() {
     x: c.p5,
     y: c.p8,
     z: c.adei,
-    color: c.adei >= 60 ? "#10B981" : c.adei >= 40 ? "#F59E0B" : "#EF4444",
+    color: c.adei >= 60 ? "var(--positive)" : c.adei >= 40 ? "var(--warning)" : "var(--negative)",
   }));
 
   return (
@@ -32,8 +32,8 @@ function IslamicDigitalSpecial() {
       <div
         style={{
           ...styles.card,
-          borderColor: "#B8922A40",
-          background: "linear-gradient(135deg, #FFFFFF 0%, #B8922A08 100%)",
+          borderColor: "var(--accent-line)",
+          background: "var(--surface)",
         }}
       >
         <div style={styles.cardTitle}>
@@ -41,7 +41,7 @@ function IslamicDigitalSpecial() {
         </div>
         <p
           style={{
-            color: "#1E293B",
+            color: "var(--text)",
             fontSize: "14px",
             lineHeight: 1.8,
             margin: 0,
@@ -49,8 +49,8 @@ function IslamicDigitalSpecial() {
         >
           A unique strategic opportunity is emerging within the OIC bloc: the
           convergence of{" "}
-          <strong style={{ color: "#000000" }}>Islamic Finance</strong> and{" "}
-          <strong style={{ color: "#10B981" }}>digital technology</strong>.
+          <strong style={{ color: "var(--text)" }}>Islamic Finance</strong> and{" "}
+          <strong style={{ color: "var(--positive)" }}>digital technology</strong>.
           Nations such as Malaysia, Saudi Arabia, and the UAE are leveraging
           Islamic Fintech as a globally competitive advantage. Meanwhile,
           Innovation remains a key systemic area for growth for the OIC — the
@@ -65,16 +65,16 @@ function IslamicDigitalSpecial() {
         </div>
         <ResponsiveContainer width="100%" height={320}>
           <ScatterChart>
-            <CartesianGrid strokeDasharray="3 3" stroke="#CBD5E1" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-strong)" />
             <XAxis
               type="number"
               dataKey="x"
               name="Innovation Score"
               domain={[0, 100]}
-              tick={{ fill: "#1E293B", fontSize: 11 }}
+              tick={{ fill: "var(--text)", fontSize: 11 }}
               label={{
                 value: "Innovation →",
-                fill: "#1E293B",
+                fill: "var(--text)",
                 fontSize: 11,
                 position: "insideBottom",
                 offset: -5,
@@ -85,10 +85,10 @@ function IslamicDigitalSpecial() {
               dataKey="y"
               name="Financial Market Score"
               domain={[0, 100]}
-              tick={{ fill: "#1E293B", fontSize: 11 }}
+              tick={{ fill: "var(--text)", fontSize: 11 }}
               label={{
                 value: "Financial Markets →",
-                fill: "#1E293B",
+                fill: "var(--text)",
                 fontSize: 11,
                 angle: -90,
                 position: "insideLeft",
@@ -101,7 +101,7 @@ function IslamicDigitalSpecial() {
                 const d = payload[0].payload;
                 return (
                   <div style={styles.tooltip}>
-                    <div style={{ color: "#000000", fontWeight: 700 }}>
+                    <div style={{ color: "var(--text)", fontWeight: 700 }}>
                       {d.name}
                     </div>
                     <div>Innovation: {d.x.toFixed(1)}</div>
@@ -135,8 +135,8 @@ function IslamicDigitalSpecial() {
           return (
             <div
               style={{
-                background: "#FDF6E3",
-                border: "1px solid #F0C96A",
+                background: "var(--accent-soft)",
+                border: "1px solid var(--accent)",
                 borderRadius: "8px",
                 padding: "10px 14px",
                 marginTop: "12px",
@@ -155,16 +155,16 @@ function IslamicDigitalSpecial() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#000000",
+                    color: "var(--text)",
                   }}
                 >
                   Key insight
                 </div>
                 <div
                   style={{
-                    fontSize: "9px",
+                    fontSize: "11px",
                     fontWeight: 400,
-                    color: "#94A3B8",
+                    color: "var(--text-subtle)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -174,7 +174,7 @@ function IslamicDigitalSpecial() {
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#1E293B",
+                  color: "var(--text)",
                   margin: 0,
                   lineHeight: 1.6,
                 }}
@@ -196,7 +196,7 @@ function IslamicDigitalSpecial() {
       <div style={styles.grid2}>
         {/* Leading Islamic Fintech */}
         <div style={styles.card}>
-          <div style={{ ...styles.cardTitle, color: "#EC4899" }}>
+          <div style={{ ...styles.cardTitle, color: "var(--negative)" }}>
             🏦 Leading 15 — Financial Market Development
           </div>
           {fintech.map((c, i) => (
@@ -215,9 +215,9 @@ function IslamicDigitalSpecial() {
                   background:
                     i < 3
                       ? "linear-gradient(135deg,#EC4899,#9D174D)"
-                      : "#FFFFFF",
-                  color: "#1E293B",
-                  fontSize: "10px",
+                      : "var(--surface)",
+                  color: "var(--text)",
+                  fontSize: "11px",
                 }}
               >
                 {i + 1}
@@ -226,20 +226,20 @@ function IslamicDigitalSpecial() {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <span style={{ fontSize: "12px", color: "#64748B" }}>
+                  <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                     {c.name}
                   </span>
                   <span
                     style={{
                       fontSize: "12px",
                       fontWeight: 700,
-                      color: "#EC4899",
+                      color: "var(--negative)",
                     }}
                   >
                     {c.p8.toFixed(1)}
                   </span>
                 </div>
-                <div style={styles.scoreBar(c.p8, "#EC4899")} />
+                <div style={styles.scoreBar(c.p8, "var(--negative)")} />
               </div>
             </div>
           ))}
@@ -247,7 +247,7 @@ function IslamicDigitalSpecial() {
 
         {/* Leading Innovators */}
         <div style={styles.card}>
-          <div style={{ ...styles.cardTitle, color: "#EF4444" }}>
+          <div style={{ ...styles.cardTitle, color: "var(--negative)" }}>
             Leading 15 — Innovation Leaders
           </div>
           {innovators.map((c, i) => (
@@ -266,9 +266,9 @@ function IslamicDigitalSpecial() {
                   background:
                     i < 3
                       ? "linear-gradient(135deg,#EF4444,#7F1D1D)"
-                      : "#FFFFFF",
-                  color: "#1E293B",
-                  fontSize: "10px",
+                      : "var(--surface)",
+                  color: "var(--text)",
+                  fontSize: "11px",
                 }}
               >
                 {i + 1}
@@ -277,20 +277,20 @@ function IslamicDigitalSpecial() {
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <span style={{ fontSize: "12px", color: "#64748B" }}>
+                  <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                     {c.name}
                   </span>
                   <span
                     style={{
                       fontSize: "12px",
                       fontWeight: 700,
-                      color: "#EF4444",
+                      color: "var(--negative)",
                     }}
                   >
                     {c.p5.toFixed(1)}
                   </span>
                 </div>
-                <div style={styles.scoreBar(c.p5, "#EF4444")} />
+                <div style={styles.scoreBar(c.p5, "var(--negative)")} />
               </div>
             </div>
           ))}

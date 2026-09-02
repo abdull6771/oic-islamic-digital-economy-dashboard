@@ -1,0 +1,313 @@
+/*
+ * Reset, base typography, focus, motion and print.
+ *
+ * Every value here reads a token from tokens.css. Nothing in this file - or in
+ * any component - carries a literal colour.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  line-height: 1.571;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* The body never scrolls sideways; wide content scrolls inside its own box. */
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote {
+  margin: 0;
+}
+
+img,
+svg {
+  max-width: 100%;
+}
+
+a {
+  color: var(--interactive);
+  text-underline-offset: 0.15em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* ── Type scale ─────────────────────────────────────────────────────────── */
+/* Sizes are rem against a 16px root. Weight 900 is not available anywhere. */
+
+.t-display {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  line-height: 3rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.t-h1 {
+  font-size: 2rem;
+  line-height: 2.375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.t-h2 {
+  font-size: 1.5rem;
+  line-height: 1.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.t-h3 {
+  font-size: 1.125rem;
+  line-height: 1.625rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+.t-body-lg {
+  font-size: 0.9375rem;
+  line-height: 1.5rem;
+  font-weight: 400;
+}
+
+.t-body {
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+  font-weight: 400;
+}
+
+.t-sm {
+  font-size: 0.8125rem;
+  line-height: 1.25rem;
+  font-weight: 400;
+}
+
+.t-caption {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+}
+
+.t-overline {
+  font-size: 0.6875rem;
+  line-height: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.t-metric {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.t-metric-sm {
+  font-size: 1.5rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Display face is reserved for 24px and up. */
+.t-display,
+.t-serif {
+  font-family: var(--font-display);
+}
+
+/* Every figure in a table, KPI or tooltip lines up. */
+.tnum,
+table,
+.t-metric,
+.t-metric-sm {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.subtle {
+  color: var(--text-subtle);
+}
+
+/* Body copy stays inside a readable measure. */
+.prose {
+  max-width: 68ch;
+}
+
+.prose p + p {
+  margin-top: var(--s-16);
+}
+
+/* ── Accessibility ──────────────────────────────────────────────────────── */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* A real, visible focus ring on everything focusable. */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* Recharts and react-simple-maps set tabindex on wrappers they do not style. */
+.recharts-wrapper:focus,
+.rsm-svg:focus {
+  outline: none;
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--s-8);
+  left: var(--s-8);
+  z-index: 400;
+  padding: var(--s-8) var(--s-16);
+  background: var(--surface);
+  color: var(--interactive);
+  border: 1px solid var(--interactive);
+  border-radius: var(--r-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border: 3px solid var(--bg);
+  border-radius: var(--r-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Print ──────────────────────────────────────────────────────────────── */
+
+@media print {
+  /* Force the light token set: dark backgrounds waste ink and read badly. */
+  :root,
+  :root[data-theme="dark"] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f4f4f2;
+    --border: #d4d1cb;
+    --border-strong: #b6b2aa;
+    --text: #16181a;
+    --text-muted: #4a515b;
+    --text-subtle: #6b7280;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  .app-sidebar,
+  .app-scrim,
+  .skip-link,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-shell {
+    display: block !important;
+  }
+
+  .app-main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .page-header {
+    position: static !important;
+    border-bottom: 1px solid #d4d1cb;
+  }
+
+  .card,
+  .chart-frame {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none !important;
+  }
+
+  .table-scroll {
+    overflow: visible !important;
+  }
+}

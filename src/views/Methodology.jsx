@@ -105,7 +105,7 @@ function Methodology() {
           <div style={styles.cardTitle}>Index Overview</div>
           <p
             style={{
-              color: "#64748B",
+              color: "var(--text-muted)",
               fontSize: "14px",
               lineHeight: 1.8,
               marginBottom: "16px",
@@ -151,18 +151,18 @@ function Methodology() {
               <div
                 key={item.label}
                 style={{
-                  background: "#D8F3DC",
+                  background: "var(--tint)",
                   borderRadius: "10px",
                   padding: "16px",
                   textAlign: "center",
-                  border: "1px solid #40916C40",
+                  border: "1px solid var(--tint-line)",
                 }}
               >
                 <div
                   style={{
                     fontSize: "28px",
-                    fontWeight: 900,
-                    color: "#1B4332",
+                    fontWeight: 700,
+                    color: "var(--text)",
                     marginBottom: "6px",
                   }}
                 >
@@ -172,13 +172,13 @@ function Methodology() {
                   style={{
                     fontSize: "13px",
                     fontWeight: 600,
-                    color: "#1B4332",
+                    color: "var(--text)",
                     marginBottom: "4px",
                   }}
                 >
                   {item.label}
                 </div>
-                <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
+                <div style={{ fontSize: "11px", color: "var(--interactive)" }}>
                   {item.desc}
                 </div>
               </div>
@@ -239,7 +239,7 @@ function Methodology() {
                         <div
                           style={{
                             fontSize: "12px",
-                            color: "#64748B",
+                            color: "var(--text-muted)",
                           }}
                         >
                           {p.dim}
@@ -250,7 +250,7 @@ function Methodology() {
                           fontSize: "14px",
                           fontWeight: 700,
                           color: p.color,
-                          background: "#FFFFFF",
+                          background: "var(--surface)",
                           padding: "6px 12px",
                           borderRadius: "6px",
                           border: `2px solid ${p.color}`,
@@ -287,10 +287,10 @@ function Methodology() {
                           <span
                             style={{
                               background: p.color,
-                              color: "#FFFFFF",
+                              color: "var(--on-brand)",
                               borderRadius: "4px",
                               padding: "2px 8px",
-                              fontSize: "10px",
+                              fontSize: "11px",
                               fontWeight: 700,
                             }}
                           >
@@ -310,12 +310,12 @@ function Methodology() {
                             <div
                               key={subIdx}
                               style={{
-                                background: "#FFFFFF",
+                                background: "var(--surface)",
                                 border: `1px solid ${p.color}40`,
                                 borderRadius: "6px",
                                 padding: "6px 10px",
                                 fontSize: "11px",
-                                color: "#1E293B",
+                                color: "var(--text)",
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "6px",
@@ -323,7 +323,7 @@ function Methodology() {
                             >
                               <span
                                 style={{
-                                  fontSize: "9px",
+                                  fontSize: "11px",
                                   fontWeight: 600,
                                   color: p.color,
                                 }}
@@ -360,7 +360,7 @@ function Methodology() {
                 style={{
                   fontSize: "14px",
                   fontWeight: 700,
-                  color: "#1B4332",
+                  color: "var(--text)",
                   marginBottom: "12px",
                 }}
               >
@@ -368,7 +368,7 @@ function Methodology() {
               </div>
               <p
                 style={{
-                  color: "#64748B",
+                  color: "var(--text-muted)",
                   fontSize: "13px",
                   lineHeight: 1.7,
                   marginBottom: "10px",
@@ -379,20 +379,20 @@ function Methodology() {
               </p>
               <div
                 style={{
-                  background: "#1B433210",
-                  border: "1px solid #40916C40",
+                  background: "var(--surface-2)",
+                  border: "1px solid var(--tint-line)",
                   borderRadius: "6px",
                   padding: "12px",
                   fontFamily: "monospace",
                   fontSize: "12px",
-                  color: "#1B4332",
+                  color: "var(--text)",
                   marginBottom: "12px",
                 }}
               >
                 Min - (5% × Min)
               </div>
               <p
-                style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}
+                style={{ color: "var(--text-muted)", fontSize: "12px", lineHeight: 1.6 }}
               >
                 This conservative approach ensures data integrity while
                 preventing underestimation of emerging markets.
@@ -403,7 +403,7 @@ function Methodology() {
                 style={{
                   fontSize: "14px",
                   fontWeight: 700,
-                  color: "#1B4332",
+                  color: "var(--text)",
                   marginBottom: "12px",
                 }}
               >
@@ -411,7 +411,7 @@ function Methodology() {
               </div>
               <p
                 style={{
-                  color: "#64748B",
+                  color: "var(--text-muted)",
                   fontSize: "13px",
                   lineHeight: 1.7,
                   marginBottom: "10px",
@@ -421,13 +421,13 @@ function Methodology() {
               </p>
               <div
                 style={{
-                  background: "#1B433210",
-                  border: "1px solid #40916C40",
+                  background: "var(--surface-2)",
+                  border: "1px solid var(--tint-line)",
                   borderRadius: "6px",
                   padding: "12px",
                   fontFamily: "monospace",
                   fontSize: "12px",
-                  color: "#1B4332",
+                  color: "var(--text)",
                   marginBottom: "12px",
                   lineHeight: 1.6,
                 }}
@@ -435,7 +435,7 @@ function Methodology() {
                 (Value - Min) / (Max - Min) × 100
               </div>
               <p
-                style={{ color: "#64748B", fontSize: "12px", lineHeight: 1.6 }}
+                style={{ color: "var(--text-muted)", fontSize: "12px", lineHeight: 1.6 }}
               >
                 Enables fair comparison across diverse indicators and geographic
                 contexts.
@@ -453,24 +453,24 @@ function Methodology() {
               {
                 title: "Advanced Digital Economies",
                 range: "Score ≥ 60",
-                color: "#1B4332",
-                bgColor: "#D8F3DC",
+                color: "var(--text)",
+                bgColor: "var(--tint)",
                 count: "6 States",
                 desc: "Well positioned to transition from infrastructure expansion toward innovation leadership. Priorities include scaling frontier R&D, strengthening patent commercialization, and contributing to global AI and data governance frameworks.",
               },
               {
                 title: "Emerging Digital Economies",
                 range: "Score 40–59",
-                color: "#52B788",
-                bgColor: "#E8F5E9",
+                color: "var(--interactive)",
+                bgColor: "var(--surface-2)",
                 count: "15 States",
                 desc: "Established core infrastructure but would benefit from strengthening digital skills, institutional capacity, SME digital transformation, and innovation financing to avoid middle digital stagnation.",
               },
               {
                 title: "Foundational Digital Economies",
                 range: "Score < 40",
-                color: "#95D5B2",
-                bgColor: "#F1F8F6",
+                color: "var(--text-muted)",
+                bgColor: "var(--surface-2)",
                 count: "36 States",
                 desc: "Require continued emphasis on foundational investments: affordable broadband access, digital inclusion, baseline digital literacy, and regulatory modernization to enable broad-based participation.",
               },
@@ -516,7 +516,7 @@ function Methodology() {
                       <div
                         style={{
                           fontSize: "12px",
-                          color: "#64748B",
+                          color: "var(--text-muted)",
                           marginTop: "2px",
                         }}
                       >
@@ -538,7 +538,7 @@ function Methodology() {
                   </div>
                   <p
                     style={{
-                      color: "#1E293B",
+                      color: "var(--text)",
                       fontSize: "13px",
                       lineHeight: 1.6,
                       margin: 0,
@@ -559,7 +559,7 @@ function Methodology() {
         <div style={styles.cardTitle}>Primary Data Sources</div>
         <p
           style={{
-            color: "#64748B",
+            color: "var(--text-muted)",
             fontSize: "13px",
             lineHeight: 1.8,
             marginBottom: "16px",
@@ -580,13 +580,13 @@ function Methodology() {
           }}
         >
           <thead>
-            <tr style={{ borderBottom: "2px solid #40916C40" }}>
+            <tr style={{ borderBottom: "2px solid var(--tint-line)" }}>
               {["Indicator", "Code", "Source"].map((h) => (
                 <th
                   key={h}
                   style={{
                     padding: "12px 8px",
-                    color: "#1B4332",
+                    color: "var(--text)",
                     textAlign: "left",
                     fontWeight: 700,
                     fontSize: "12px",
@@ -602,24 +602,24 @@ function Methodology() {
               <tr
                 key={i}
                 style={{
-                  borderBottom: "1px solid #E8F5E9",
-                  background: i % 2 === 0 ? "transparent" : "#F1F8F615",
+                  borderBottom: "1px solid var(--surface-2)",
+                  background: i % 2 === 0 ? "transparent" : "var(--surface-2)",
                 }}
               >
-                <td style={{ padding: "10px 8px", color: "#1E293B" }}>
+                <td style={{ padding: "10px 8px", color: "var(--text)" }}>
                   {s.indicator}
                 </td>
                 <td
                   style={{
                     padding: "10px 8px",
-                    color: "#1B4332",
+                    color: "var(--text)",
                     fontFamily: "monospace",
                     fontWeight: 600,
                   }}
                 >
                   {s.code}
                 </td>
-                <td style={{ padding: "10px 8px", color: "#64748B" }}>
+                <td style={{ padding: "10px 8px", color: "var(--text-muted)" }}>
                   {s.source}
                 </td>
               </tr>
@@ -634,18 +634,18 @@ function Methodology() {
         <div style={styles.cardTitle}>Data Coverage &amp; Known Limitations</div>
         <p
           style={{
-            color: "#64748B",
+            color: "var(--text-muted)",
             fontSize: "13px",
             lineHeight: 1.8,
             marginBottom: "16px",
           }}
         >
           Scores are read directly from{" "}
-          <span style={{ fontFamily: "monospace", color: "#1B4332" }}>
+          <span style={{ fontFamily: "monospace", color: "var(--text)" }}>
             {META.source}
           </span>{" "}
           (sheet{" "}
-          <span style={{ fontFamily: "monospace", color: "#1B4332" }}>
+          <span style={{ fontFamily: "monospace", color: "var(--text)" }}>
             {META.sheets.panel}
           </span>
           ), covering {META.countryCount} member states for {YEARS[0]}–
@@ -656,8 +656,8 @@ function Methodology() {
 
         <div
           style={{
-            background: "#FFF7ED",
-            border: "1px solid #FDBA74",
+            background: "var(--warning-bg)",
+            border: "1px solid var(--warning-line)",
             borderRadius: "10px",
             padding: "16px",
             marginBottom: "16px",
@@ -667,7 +667,7 @@ function Methodology() {
             style={{
               fontSize: "13px",
               fontWeight: 700,
-              color: "#9A3412",
+              color: "var(--warning)",
               marginBottom: "8px",
             }}
           >
@@ -677,7 +677,7 @@ function Methodology() {
           <p
             style={{
               fontSize: "13px",
-              color: "#7C2D12",
+              color: "var(--warning)",
               lineHeight: 1.7,
               margin: "0 0 10px 0",
             }}
@@ -692,7 +692,7 @@ function Methodology() {
             whose actual financial inclusion is far higher than the substituted
             value implies. Read pillar 8 for those countries with that in mind.
           </p>
-          <div style={{ fontSize: "12px", color: "#7C2D12", lineHeight: 1.7 }}>
+          <div style={{ fontSize: "12px", color: "var(--warning)", lineHeight: 1.7 }}>
             <strong>Imputed:</strong> {FINDEX_IMPUTED_COUNTRIES.join(", ")}
           </div>
         </div>
@@ -706,21 +706,21 @@ function Methodology() {
                   display: "flex",
                   gap: "10px",
                   alignItems: "flex-start",
-                  background: "#F1F8F6",
-                  border: "1px solid #40916C30",
+                  background: "var(--surface-2)",
+                  border: "1px solid var(--tint-line)",
                   borderRadius: "8px",
                   padding: "12px",
                 }}
               >
                 <span
                   style={{
-                    fontSize: "10px",
+                    fontSize: "11px",
                     fontWeight: 700,
                     letterSpacing: "0.05em",
                     textTransform: "uppercase",
-                    color: issue.severity === "info" ? "#2D6A4F" : "#9A3412",
+                    color: issue.severity === "info" ? "var(--seq-6)" : "var(--warning)",
                     background:
-                      issue.severity === "info" ? "#D8F3DC" : "#FFE4D5",
+                      issue.severity === "info" ? "var(--tint)" : "var(--warning-bg)",
                     borderRadius: "4px",
                     padding: "3px 7px",
                     whiteSpace: "nowrap",
@@ -730,7 +730,7 @@ function Methodology() {
                   {issue.severity}
                 </span>
                 <span
-                  style={{ fontSize: "13px", color: "#1E293B", lineHeight: 1.7 }}
+                  style={{ fontSize: "13px", color: "var(--text)", lineHeight: 1.7 }}
                 >
                   {issue.message}
                 </span>
@@ -749,7 +749,7 @@ function Methodology() {
         style={{
           display: "flex",
           gap: "8px",
-          borderBottom: "2px solid #E8F5E9",
+          borderBottom: "2px solid var(--surface-2)",
           paddingBottom: "12px",
         }}
       >
@@ -768,9 +768,8 @@ function Methodology() {
               cursor: "pointer",
               fontSize: "14px",
               fontWeight: 600,
-              fontFamily: "'Georgia', serif",
-              background: activeTab === tab.id ? "#1B433210" : "transparent",
-              color: activeTab === tab.id ? "#1B4332" : "#64748B",
+              background: activeTab === tab.id ? "var(--surface-2)" : "transparent",
+              color: activeTab === tab.id ? "var(--seq-7)" : "var(--text-muted)",
               borderBottom: activeTab === tab.id ? "3px solid #1B4332" : "none",
               transition: "all 0.2s ease",
             }}
@@ -785,8 +784,8 @@ function Methodology() {
           padding: "20px",
           textAlign: "center",
           fontSize: "12px",
-          color: "#64748B",
-          borderTop: "1px solid #E2E8F0",
+          color: "var(--text-muted)",
+          borderTop: "1px solid var(--border)",
           marginTop: "40px",
         }}
       >

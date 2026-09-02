@@ -40,10 +40,10 @@ function PriorityMatrix() {
     };
   });
   const QUADRANT_COLORS = {
-    "Quick Wins": "#10B981",
-    "Long-Term Investment": "#F59E0B",
-    "Low Priority": "#3B82F6",
-    Deprioritize: "#64748B",
+    "Quick Wins": "var(--positive)",
+    "Long-Term Investment": "var(--warning)",
+    "Low Priority": "var(--info)",
+    Deprioritize: "var(--text-muted)",
   };
   const QUADRANT_DESC = {
     "Quick Wins": "High impact & achievable — Prioritize immediately",
@@ -69,18 +69,18 @@ function PriorityMatrix() {
               </option>
             ))}
         </select>
-        <div style={{ fontSize: "13px", color: "#64748B" }}>
+        <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
           OIC DEI:{" "}
-          <span style={{ color: "#000000", fontWeight: 700 }}>
+          <span style={{ color: "var(--text)", fontWeight: 700 }}>
             {country.adei.toFixed(1)}
           </span>{" "}
           | Rank{" "}
-          <span style={{ color: "#000000", fontWeight: 700 }}>
+          <span style={{ color: "var(--text)", fontWeight: 700 }}>
             #{country.rank}
           </span>
         </div>
       </div>
-      <div style={{ ...styles.card, borderColor: "#B8922A40" }}>
+      <div style={{ ...styles.card, borderColor: "var(--accent-line)" }}>
         <div style={styles.cardTitle}>
           📌 Priority Matrix — Impact vs. Achievability for {country.name}
         </div>
@@ -88,7 +88,7 @@ function PriorityMatrix() {
           style={{
             position: "relative",
             height: "420px",
-            background: "#F1F5F9",
+            background: "var(--surface-2)",
             borderRadius: "10px",
             padding: "20px",
             overflow: "hidden",
@@ -101,7 +101,7 @@ function PriorityMatrix() {
               top: 0,
               bottom: 0,
               width: "1px",
-              background: "#CBD5E1",
+              background: "var(--border-strong)",
               transform: "translateX(-50%)",
             }}
           />
@@ -112,20 +112,20 @@ function PriorityMatrix() {
               left: 0,
               right: 0,
               height: "1px",
-              background: "#CBD5E1",
+              background: "var(--border-strong)",
               transform: "translateY(-50%)",
             }}
           />
           {[
-            { label: "🚀 Quick Wins", x: "75%", y: "10%", color: "#10B981" },
+            { label: "🚀 Quick Wins", x: "75%", y: "10%", color: "var(--positive)" },
             {
               label: "🏗 Long-Term Investment",
               x: "15%",
               y: "10%",
-              color: "#F59E0B",
+              color: "var(--warning)",
             },
-            { label: "📌 Low Priority", x: "75%", y: "85%", color: "#3B82F6" },
-            { label: "⬇ Deprioritize", x: "15%", y: "85%", color: "#64748B" },
+            { label: "📌 Low Priority", x: "75%", y: "85%", color: "var(--info)" },
+            { label: "⬇ Deprioritize", x: "15%", y: "85%", color: "var(--text-muted)" },
           ].map((q) => (
             <div
               key={q.label}
@@ -137,7 +137,6 @@ function PriorityMatrix() {
                 fontWeight: 700,
                 color: q.color,
                 transform: "translateX(-50%)",
-                fontFamily: "'Georgia',serif",
                 whiteSpace: "nowrap",
               }}
             >
@@ -151,7 +150,7 @@ function PriorityMatrix() {
               left: "50%",
               transform: "translateX(-50%)",
               fontSize: "11px",
-              color: "#1E293B",
+              color: "var(--text)",
             }}
           >
             ← Low Achievability | High Achievability →
@@ -163,7 +162,7 @@ function PriorityMatrix() {
               top: "50%",
               transform: "translateY(-50%) rotate(-90deg)",
               fontSize: "11px",
-              color: "#1E293B",
+              color: "var(--text)",
               whiteSpace: "nowrap",
             }}
           >
@@ -193,12 +192,12 @@ function PriorityMatrix() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "9px",
+                    fontSize: "11px",
                     fontWeight: 700,
-                    color: "#F8FAFC",
+                    color: "var(--on-brand)",
                     textAlign: "center",
                     lineHeight: 1.1,
-                    border: "2px solid #F8FAFC",
+                    border: "2px solid var(--surface-2)",
                     boxShadow: `0 0 12px ${d.color}60`,
                     cursor: "pointer",
                   }}
@@ -211,7 +210,7 @@ function PriorityMatrix() {
                     left: "50%",
                     top: "-20px",
                     transform: "translateX(-50%)",
-                    fontSize: "9px",
+                    fontSize: "11px",
                     color: d.color,
                     whiteSpace: "nowrap",
                     fontWeight: 700,
@@ -235,7 +234,7 @@ function PriorityMatrix() {
               <div
                 style={{
                   fontSize: "11px",
-                  color: "#1E293B",
+                  color: "var(--text)",
                   marginBottom: "10px",
                 }}
               >
@@ -248,21 +247,21 @@ function PriorityMatrix() {
                     display: "flex",
                     justifyContent: "space-between",
                     padding: "5px 0",
-                    borderBottom: "1px solid #F1F5F9",
+                    borderBottom: "1px solid var(--border)",
                     fontSize: "12px",
                   }}
                 >
                   <span style={{ color: d.color, fontWeight: 600 }}>
                     {d.name}
                   </span>
-                  <span style={{ color: "#64748B" }}>
+                  <span style={{ color: "var(--text-muted)" }}>
                     Score: {d.currentScore.toFixed(0)} | Gap:{" "}
                     {d.potential.toFixed(0)}
                   </span>
                 </div>
               ))}
               {items.length === 0 && (
-                <div style={{ color: "#64748B", fontSize: "12px" }}>
+                <div style={{ color: "var(--text-muted)", fontSize: "12px" }}>
                   None in this quadrant
                 </div>
               )}

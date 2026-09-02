@@ -1,0 +1,444 @@
+/*
+ * Design tokens. Every colour in the product is defined here once, in both
+ * themes, and nothing outside this file carries a literal hex value.
+ *
+ * Generated and contrast-verified together: see the verification report in the
+ * redesign notes. The dark block is written twice on purpose - once for the
+ * system preference and once for the explicit [data-theme] override - so the
+ * toggle wins in both directions.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Neutrals */
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f4f4f2;
+  --border: #e7e5e1;
+  --border-strong: #d4d1cb;
+  --text: #16181a;
+  --text-muted: #5c6470;
+  --text-subtle: #666e79;
+
+  /* Brand ramp */
+  --brand-950: #052e23;
+  --brand-900: #0b4032;
+  --brand-800: #145240;
+  --brand-700: #1b6b52;
+  --brand-600: #2e8b6b;
+  --brand-500: #55ac8c;
+  --brand-400: #8ecbb4;
+  --brand-300: #c4e5d8;
+  --brand-100: #e8f5ef;
+  --accent: #b8922a;
+  --accent-soft: #f5eac9;
+
+  /* Interactive roles */
+  --tint: #e8f5ef;
+  --tint-line: #c4e5d8;
+  --interactive: #1b6b52;
+  --interactive-hover: #145240;
+  --interactive-strong: #145240;
+  --on-brand: #ffffff;
+  --focus-ring: #1b6b52;
+  --accent-ink: #80651a;
+  --accent-line: #b38d25;
+  --map-nodata: #dad7d1;
+
+  /* Pillars 1-9 — categorical, CVD-checked */
+  --p1: #3579b6;
+  --p2: #35a0b6;
+  --p3: #22756a;
+  --p4: #2c955f;
+  --p5: #6ba02d;
+  --p6: #866a26;
+  --p7: #763f21;
+  --p8: #a13055;
+  --p9: #722c96;
+
+  /* Sequential ramp — DEI score, low to high */
+  --seq-1: #e8f3f0;
+  --seq-1-ink: #16181a;
+  --seq-2: #b9e0d4;
+  --seq-2-ink: #16181a;
+  --seq-3: #7fcdb5;
+  --seq-3-ink: #16181a;
+  --seq-4: #3cb490;
+  --seq-4-ink: #16181a;
+  --seq-5: #299272;
+  --seq-5-ink: #16181a;
+  --seq-6: #1a7157;
+  --seq-6-ink: #ffffff;
+  --seq-7: #0d4e3a;
+  --seq-7-ink: #ffffff;
+
+  /* Semantic */
+  --positive: #18825b;
+  --positive-bg: #eaf4f0;
+  --positive-line: #15855c;
+  --positive-ink: #147c56;
+  --negative: #c43627;
+  --negative-bg: #faedec;
+  --negative-line: #c83323;
+  --negative-ink: #c83323;
+  --warning: #a86500;
+  --warning-bg: #f7f1e8;
+  --warning-line: #a86500;
+  --warning-ink: #9e5f00;
+  --info: #2263ab;
+  --info-bg: #ebf1f7;
+  --info-line: #1f63ae;
+  --info-ink: #1f63ae;
+
+  /* Clusters — one encoding for map, cards and tables */
+  --cluster-advanced: #1a7157;
+  --cluster-advanced-bg: #dfebe7;
+  --cluster-advanced-line: #187358;
+  --cluster-advanced-ink: #187358;
+  --cluster-emerging: #3cb490;
+  --cluster-emerging-bg: #e4f5ef;
+  --cluster-emerging-line: #33a482;
+  --cluster-emerging-ink: #267960;
+  --cluster-foundational: #b9e0d4;
+  --cluster-foundational-bg: #f5fbf9;
+  --cluster-foundational-line: #45a285;
+  --cluster-foundational-ink: #357e68;
+
+  /* Space — 4px base. Nothing off-scale. */
+  --s-4: 4px;
+  --s-8: 8px;
+  --s-12: 12px;
+  --s-16: 16px;
+  --s-20: 20px;
+  --s-24: 24px;
+  --s-32: 32px;
+  --s-40: 40px;
+  --s-56: 56px;
+  --s-72: 72px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-full: 999px;
+
+  /* Elevation — three levels, and only overlays get one. */
+  --e1: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 12px rgb(0 0 0 / 0.06);
+  --e2: 0 8px 32px rgb(0 0 0 / 0.12);
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Type */
+  --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Instrument Serif", "Iowan Old Style", Palatino, Georgia,
+    ui-serif, serif;
+
+  /* Shell */
+  --sidebar-w: 240px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    /* Neutrals */
+    --bg: #0c0e10;
+    --surface: #141719;
+    --surface-2: #1b1f22;
+    --border: #262b2f;
+    --border-strong: #363c42;
+    --text: #eceef0;
+    --text-muted: #9ba3ac;
+    --text-subtle: #7f8891;
+
+    /* Brand ramp */
+    --brand-950: #052e23;
+    --brand-900: #0b4032;
+    --brand-800: #145240;
+    --brand-700: #1b6b52;
+    --brand-600: #2e8b6b;
+    --brand-500: #55ac8c;
+    --brand-400: #8ecbb4;
+    --brand-300: #c4e5d8;
+    --brand-100: #e8f5ef;
+    --accent: #b8922a;
+    --accent-soft: #2a2110;
+
+    /* Interactive roles */
+    --tint: #10251f;
+    --tint-line: #1e4438;
+    --interactive: #6fbf9e;
+    --interactive-hover: #8ecbb4;
+    --interactive-strong: #a8dcc6;
+    --on-brand: #06231b;
+    --focus-ring: #6fbf9e;
+    --accent-ink: #bc9426;
+    --accent-line: #bc9426;
+    --map-nodata: #2c3236;
+
+    /* Pillars 1-9 — categorical, CVD-checked */
+    --p1: #7aa6d3;
+    --p2: #abdae3;
+    --p3: #3a8875;
+    --p4: #37a660;
+    --p5: #88c542;
+    --p6: #e2d0a7;
+    --p7: #995533;
+    --p8: #dd99a5;
+    --p9: #9f53c6;
+
+    /* Sequential ramp — DEI score, low to high */
+    --seq-1: #122c25;
+    --seq-1-ink: #eceef0;
+    --seq-2: #174538;
+    --seq-2-ink: #eceef0;
+    --seq-3: #1d624e;
+    --seq-3-ink: #eceef0;
+    --seq-4: #258165;
+    --seq-4-ink: #ffffff;
+    --seq-5: #36a281;
+    --seq-5-ink: #000000;
+    --seq-6: #61c1a5;
+    --seq-6-ink: #000000;
+    --seq-7: #b6dcd1;
+    --seq-7-ink: #000000;
+
+    /* Semantic */
+    --positive: #4cc293;
+    --positive-bg: #1d322d;
+    --positive-line: #49c594;
+    --positive-ink: #49c594;
+    --negative: #eb7567;
+    --negative-bg: #362625;
+    --negative-line: #ee7264;
+    --negative-ink: #ee7264;
+    --warning: #e4a12c;
+    --warning-bg: #352d1c;
+    --warning-line: #e9a227;
+    --warning-ink: #e9a227;
+    --info: #68a6eb;
+    --info-bg: #212e3b;
+    --info-line: #65a6ee;
+    --info-ink: #65a6ee;
+
+    /* Clusters — one encoding for map, cards and tables */
+    --cluster-advanced: #61c1a5;
+    --cluster-advanced-bg: #233935;
+    --cluster-advanced-line: #5fc3a6;
+    --cluster-advanced-ink: #5fc3a6;
+    --cluster-emerging: #258165;
+    --cluster-emerging-bg: #172c28;
+    --cluster-emerging-line: #238366;
+    --cluster-emerging-ink: #2ba47f;
+    --cluster-foundational: #174538;
+    --cluster-foundational-bg: #15201f;
+    --cluster-foundational-line: #23715b;
+    --cluster-foundational-ink: #2f987a;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Neutrals */
+  --bg: #0c0e10;
+  --surface: #141719;
+  --surface-2: #1b1f22;
+  --border: #262b2f;
+  --border-strong: #363c42;
+  --text: #eceef0;
+  --text-muted: #9ba3ac;
+  --text-subtle: #7f8891;
+
+  /* Brand ramp */
+  --brand-950: #052e23;
+  --brand-900: #0b4032;
+  --brand-800: #145240;
+  --brand-700: #1b6b52;
+  --brand-600: #2e8b6b;
+  --brand-500: #55ac8c;
+  --brand-400: #8ecbb4;
+  --brand-300: #c4e5d8;
+  --brand-100: #e8f5ef;
+  --accent: #b8922a;
+  --accent-soft: #2a2110;
+
+  /* Interactive roles */
+  --tint: #10251f;
+  --tint-line: #1e4438;
+  --interactive: #6fbf9e;
+  --interactive-hover: #8ecbb4;
+  --interactive-strong: #a8dcc6;
+  --on-brand: #06231b;
+  --focus-ring: #6fbf9e;
+  --accent-ink: #bc9426;
+  --accent-line: #bc9426;
+  --map-nodata: #2c3236;
+
+  /* Pillars 1-9 — categorical, CVD-checked */
+  --p1: #7aa6d3;
+  --p2: #abdae3;
+  --p3: #3a8875;
+  --p4: #37a660;
+  --p5: #88c542;
+  --p6: #e2d0a7;
+  --p7: #995533;
+  --p8: #dd99a5;
+  --p9: #9f53c6;
+
+  /* Sequential ramp — DEI score, low to high */
+  --seq-1: #122c25;
+  --seq-1-ink: #eceef0;
+  --seq-2: #174538;
+  --seq-2-ink: #eceef0;
+  --seq-3: #1d624e;
+  --seq-3-ink: #eceef0;
+  --seq-4: #258165;
+  --seq-4-ink: #ffffff;
+  --seq-5: #36a281;
+  --seq-5-ink: #000000;
+  --seq-6: #61c1a5;
+  --seq-6-ink: #000000;
+  --seq-7: #b6dcd1;
+  --seq-7-ink: #000000;
+
+  /* Semantic */
+  --positive: #4cc293;
+  --positive-bg: #1d322d;
+  --positive-line: #49c594;
+  --positive-ink: #49c594;
+  --negative: #eb7567;
+  --negative-bg: #362625;
+  --negative-line: #ee7264;
+  --negative-ink: #ee7264;
+  --warning: #e4a12c;
+  --warning-bg: #352d1c;
+  --warning-line: #e9a227;
+  --warning-ink: #e9a227;
+  --info: #68a6eb;
+  --info-bg: #212e3b;
+  --info-line: #65a6ee;
+  --info-ink: #65a6ee;
+
+  /* Clusters — one encoding for map, cards and tables */
+  --cluster-advanced: #61c1a5;
+  --cluster-advanced-bg: #233935;
+  --cluster-advanced-line: #5fc3a6;
+  --cluster-advanced-ink: #5fc3a6;
+  --cluster-emerging: #258165;
+  --cluster-emerging-bg: #172c28;
+  --cluster-emerging-line: #238366;
+  --cluster-emerging-ink: #2ba47f;
+  --cluster-foundational: #174538;
+  --cluster-foundational-bg: #15201f;
+  --cluster-foundational-line: #23715b;
+  --cluster-foundational-ink: #2f987a;
+}
+
+/*
+ * The generated country report is a document, not a screen: it is rasterised
+ * to a PDF and printed on paper, so it pins the light token set whatever theme
+ * the app is showing.
+ */
+[data-report="light"] {
+  color-scheme: light;
+
+  /* Neutrals */
+  --bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-2: #f4f4f2;
+  --border: #e7e5e1;
+  --border-strong: #d4d1cb;
+  --text: #16181a;
+  --text-muted: #5c6470;
+  --text-subtle: #666e79;
+
+  /* Brand ramp */
+  --brand-950: #052e23;
+  --brand-900: #0b4032;
+  --brand-800: #145240;
+  --brand-700: #1b6b52;
+  --brand-600: #2e8b6b;
+  --brand-500: #55ac8c;
+  --brand-400: #8ecbb4;
+  --brand-300: #c4e5d8;
+  --brand-100: #e8f5ef;
+  --accent: #b8922a;
+  --accent-soft: #f5eac9;
+
+  /* Interactive roles */
+  --tint: #e8f5ef;
+  --tint-line: #c4e5d8;
+  --interactive: #1b6b52;
+  --interactive-hover: #145240;
+  --interactive-strong: #145240;
+  --on-brand: #ffffff;
+  --focus-ring: #1b6b52;
+  --accent-ink: #80651a;
+  --accent-line: #b38d25;
+  --map-nodata: #dad7d1;
+
+  /* Pillars 1-9 — categorical, CVD-checked */
+  --p1: #3579b6;
+  --p2: #35a0b6;
+  --p3: #22756a;
+  --p4: #2c955f;
+  --p5: #6ba02d;
+  --p6: #866a26;
+  --p7: #763f21;
+  --p8: #a13055;
+  --p9: #722c96;
+
+  /* Sequential ramp — DEI score, low to high */
+  --seq-1: #e8f3f0;
+  --seq-1-ink: #16181a;
+  --seq-2: #b9e0d4;
+  --seq-2-ink: #16181a;
+  --seq-3: #7fcdb5;
+  --seq-3-ink: #16181a;
+  --seq-4: #3cb490;
+  --seq-4-ink: #16181a;
+  --seq-5: #299272;
+  --seq-5-ink: #16181a;
+  --seq-6: #1a7157;
+  --seq-6-ink: #ffffff;
+  --seq-7: #0d4e3a;
+  --seq-7-ink: #ffffff;
+
+  /* Semantic */
+  --positive: #18825b;
+  --positive-bg: #eaf4f0;
+  --positive-line: #15855c;
+  --positive-ink: #147c56;
+  --negative: #c43627;
+  --negative-bg: #faedec;
+  --negative-line: #c83323;
+  --negative-ink: #c83323;
+  --warning: #a86500;
+  --warning-bg: #f7f1e8;
+  --warning-line: #a86500;
+  --warning-ink: #9e5f00;
+  --info: #2263ab;
+  --info-bg: #ebf1f7;
+  --info-line: #1f63ae;
+  --info-ink: #1f63ae;
+
+  /* Clusters — one encoding for map, cards and tables */
+  --cluster-advanced: #1a7157;
+  --cluster-advanced-bg: #dfebe7;
+  --cluster-advanced-line: #187358;
+  --cluster-advanced-ink: #187358;
+  --cluster-emerging: #3cb490;
+  --cluster-emerging-bg: #e4f5ef;
+  --cluster-emerging-line: #33a482;
+  --cluster-emerging-ink: #267960;
+  --cluster-foundational: #b9e0d4;
+  --cluster-foundational-bg: #f5fbf9;
+  --cluster-foundational-line: #45a285;
+  --cluster-foundational-ink: #357e68;
+}

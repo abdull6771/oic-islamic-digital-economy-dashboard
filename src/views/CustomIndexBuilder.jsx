@@ -121,17 +121,17 @@ function CustomIndexBuilder() {
       <div
         style={{
           ...styles.card,
-          borderColor: "#1B433240",
-          background: "linear-gradient(135deg,#FFFFFF,#D8F3DC40)",
+          borderColor: "var(--border-strong)",
+          background: "linear-gradient(135deg,var(--surface),var(--surface-2))",
           borderWidth: "2px",
         }}
       >
-        <div style={{ ...styles.cardTitle, color: "#1B4332" }}>
+        <div style={{ ...styles.cardTitle, color: "var(--text)" }}>
           Custom Index Builder — Sensitivity Analysis Tool
         </div>
         <p
           style={{
-            color: "#1E293B",
+            color: "var(--text)",
             fontSize: "13px",
             lineHeight: 1.7,
             margin: 0,
@@ -140,10 +140,10 @@ function CustomIndexBuilder() {
           Re-weight the 9 pillars to see how rankings shift under alternative
           policy priorities. Use presets or manually adjust sliders. Weights
           auto-normalize to 100%. Essential for{" "}
-          <strong style={{ color: "#1B4332" }}>
+          <strong style={{ color: "var(--text)" }}>
             academic sensitivity analysis
           </strong>{" "}
-          and <strong style={{ color: "#1B4332" }}>scenario planning</strong>.
+          and <strong style={{ color: "var(--text)" }}>scenario planning</strong>.
         </p>
       </div>
       <div style={styles.card}>
@@ -159,10 +159,9 @@ function CustomIndexBuilder() {
                 border: "1px solid",
                 cursor: "pointer",
                 fontSize: "12px",
-                fontFamily: "'Georgia',serif",
-                background: preset === key ? "#D8F3DC" : "#F0F9F7",
-                borderColor: preset === key ? "#1B4332" : "#95D5B2",
-                color: preset === key ? "#1B4332" : "#2D6A4F",
+                background: preset === key ? "var(--tint)" : "var(--surface-2)",
+                borderColor: preset === key ? "var(--seq-7)" : "var(--seq-2)",
+                color: preset === key ? "var(--seq-7)" : "var(--seq-6)",
                 fontWeight: preset === key ? 700 : 500,
               }}
             >
@@ -185,7 +184,7 @@ function CustomIndexBuilder() {
             style={{
               fontSize: "13px",
               fontWeight: 700,
-              color: Math.abs(totalWeight - 100) < 1 ? "#40916C" : "#74C69D",
+              color: Math.abs(totalWeight - 100) < 1 ? "var(--seq-5)" : "var(--seq-3)",
             }}
           >
             Total: {totalWeight}%{" "}
@@ -216,8 +215,8 @@ function CustomIndexBuilder() {
                 <span
                   style={{
                     fontSize: "13px",
-                    fontWeight: 900,
-                    color: "#1E293B",
+                    fontWeight: 700,
+                    color: "var(--text)",
                   }}
                 >
                   {weights[p.key]}%
@@ -245,8 +244,8 @@ function CustomIndexBuilder() {
                 style={{
                   display: "flex",
                   justifyContent: "space-between",
-                  fontSize: "10px",
-                  color: "#1E293B",
+                  fontSize: "11px",
+                  color: "var(--text)",
                 }}
               >
                 <span>0%</span>
@@ -259,9 +258,9 @@ function CustomIndexBuilder() {
       </div>
       <div style={styles.grid2}>
         <div
-          style={{ ...styles.card, borderColor: "#40916C", borderWidth: "2px" }}
+          style={{ ...styles.card, borderColor: "var(--tint-line)", borderWidth: "2px" }}
         >
-          <div style={{ ...styles.cardTitle, color: "#40916C" }}>
+          <div style={{ ...styles.cardTitle, color: "var(--interactive)" }}>
             Rank Gainers
           </div>
           {topMoverUp.map((c) => (
@@ -273,11 +272,11 @@ function CustomIndexBuilder() {
                 gap: "10px",
                 marginBottom: "8px",
                 padding: "8px",
-                background: "#D8F3DC",
+                background: "var(--tint)",
                 borderRadius: "6px",
               }}
             >
-              <div style={{ fontSize: "18px", color: "#40916C" }}>↑</div>
+              <div style={{ fontSize: "18px", color: "var(--interactive)" }}>↑</div>
               <div style={{ flex: 1 }}>
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
@@ -285,7 +284,7 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#1B4332",
+                      color: "var(--text)",
                       fontWeight: 600,
                     }}
                   >
@@ -294,14 +293,14 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#40916C",
+                      color: "var(--interactive)",
                       fontWeight: 700,
                     }}
                   >
                     +{c.rankChange} places
                   </span>
                 </div>
-                <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
+                <div style={{ fontSize: "11px", color: "var(--interactive)" }}>
                   #{c.rank} → #{c.customRank} | {c.adei.toFixed(1)} →{" "}
                   {c.customScore.toFixed(1)}
                 </div>
@@ -310,9 +309,9 @@ function CustomIndexBuilder() {
           ))}
         </div>
         <div
-          style={{ ...styles.card, borderColor: "#74C69D", borderWidth: "2px" }}
+          style={{ ...styles.card, borderColor: "var(--seq-3)", borderWidth: "2px" }}
         >
-          <div style={{ ...styles.cardTitle, color: "#74C69D" }}>
+          <div style={{ ...styles.cardTitle, color: "var(--text-muted)" }}>
             Rank Decliners
           </div>
           {topMoverDown.map((c) => (
@@ -324,11 +323,11 @@ function CustomIndexBuilder() {
                 gap: "10px",
                 marginBottom: "8px",
                 padding: "8px",
-                background: "#F0F9F7",
+                background: "var(--surface-2)",
                 borderRadius: "6px",
               }}
             >
-              <div style={{ fontSize: "18px", color: "#74C69D" }}>↓</div>
+              <div style={{ fontSize: "18px", color: "var(--text-muted)" }}>↓</div>
               <div style={{ flex: 1 }}>
                 <div
                   style={{ display: "flex", justifyContent: "space-between" }}
@@ -336,7 +335,7 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#1B4332",
+                      color: "var(--text)",
                       fontWeight: 600,
                     }}
                   >
@@ -345,14 +344,14 @@ function CustomIndexBuilder() {
                   <span
                     style={{
                       fontSize: "13px",
-                      color: "#74C69D",
+                      color: "var(--text-muted)",
                       fontWeight: 700,
                     }}
                   >
                     {c.rankChange} places
                   </span>
                 </div>
-                <div style={{ fontSize: "11px", color: "#2D6A4F" }}>
+                <div style={{ fontSize: "11px", color: "var(--interactive)" }}>
                   #{c.rank} → #{c.customRank} | {c.adei.toFixed(1)} →{" "}
                   {c.customScore.toFixed(1)}
                 </div>
@@ -369,30 +368,29 @@ function CustomIndexBuilder() {
           <BarChart data={compData} barSize={12}>
             <CartesianGrid
               strokeDasharray="0"
-              stroke="#E2E8F0"
+              stroke="var(--surface-2)"
               vertical={false}
             />
             <XAxis
               dataKey="name"
-              tick={{ fill: "#1B4332", fontSize: 10, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
               angle={-30}
               textAnchor="end"
               height={60}
             />
             <YAxis
               domain={[0, 100]}
-              tick={{ fill: "#1B4332", fontSize: 11, fontWeight: 600 }}
+              tick={{ fill: "var(--text)", fontSize: 11, fontWeight: 600 }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               wrapperStyle={{
                 fontSize: "12px",
-                fontFamily: "'Georgia', serif",
                 fontWeight: 600,
               }}
             />
-            <Bar dataKey="Official" fill="#95D5B2" />
-            <Bar dataKey="Custom" fill="#40916C" />
+            <Bar dataKey="Official" fill="var(--seq-2)" />
+            <Bar dataKey="Custom" fill="var(--seq-5)" />
           </BarChart>
         </ResponsiveContainer>
         {(() => {
@@ -408,8 +406,8 @@ function CustomIndexBuilder() {
           return (
             <div
               style={{
-                background: "#D8F3DC",
-                border: "1px solid #1B4332",
+                background: "var(--tint)",
+                border: "1px solid var(--border-strong)",
                 borderRadius: "8px",
                 padding: "12px 14px",
                 marginTop: "12px",
@@ -428,16 +426,16 @@ function CustomIndexBuilder() {
                   style={{
                     fontSize: "11px",
                     fontWeight: 700,
-                    color: "#1B4332",
+                    color: "var(--text)",
                   }}
                 >
                   Strategic Insight
                 </div>
                 <div
                   style={{
-                    fontSize: "9px",
+                    fontSize: "11px",
                     fontWeight: 400,
-                    color: "#94A3B8",
+                    color: "var(--text-subtle)",
                     whiteSpace: "nowrap",
                   }}
                 >
@@ -447,7 +445,7 @@ function CustomIndexBuilder() {
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#1E293B",
+                  color: "var(--text)",
                   margin: 0,
                   lineHeight: 1.6,
                 }}
@@ -479,9 +477,9 @@ function CustomIndexBuilder() {
             }}
           >
             <thead
-              style={{ position: "sticky", top: 0, background: "#FFFFFF" }}
+              style={{ position: "sticky", top: 0, background: "var(--surface)" }}
             >
-              <tr style={{ borderBottom: "1px solid #B8922A40" }}>
+              <tr style={{ borderBottom: "1px solid var(--accent-line)" }}>
                 {[
                   "Custom #",
                   "Official #",
@@ -494,9 +492,8 @@ function CustomIndexBuilder() {
                     key={h}
                     style={{
                       padding: "10px 8px",
-                      color: "#000000",
+                      color: "var(--text)",
                       textAlign: "center",
-                      fontFamily: "'Georgia',serif",
                       fontSize: "11px",
                       whiteSpace: "nowrap",
                     }}
@@ -511,16 +508,16 @@ function CustomIndexBuilder() {
                 <tr
                   key={c.name}
                   style={{
-                    borderBottom: "1px solid #F1F5F9",
-                    background: i % 2 === 0 ? "transparent" : "#64748B10",
+                    borderBottom: "1px solid var(--border)",
+                    background: i % 2 === 0 ? "transparent" : "var(--surface-2)",
                   }}
                 >
                   <td
                     style={{
                       padding: "7px 8px",
                       textAlign: "center",
-                      fontWeight: 900,
-                      color: "#8B5CF6",
+                      fontWeight: 700,
+                      color: "var(--info)",
                     }}
                   >
                     #{c.customRank}
@@ -529,7 +526,7 @@ function CustomIndexBuilder() {
                     style={{
                       padding: "7px 8px",
                       textAlign: "center",
-                      color: "#1E293B",
+                      color: "var(--text)",
                     }}
                   >
                     #{c.rank}
@@ -541,10 +538,10 @@ function CustomIndexBuilder() {
                       fontWeight: 700,
                       color:
                         c.rankChange > 0
-                          ? "#10B981"
+                          ? "var(--positive)"
                           : c.rankChange < 0
-                            ? "#EF4444"
-                            : "#64748B",
+                            ? "var(--negative)"
+                            : "var(--text-muted)",
                     }}
                   >
                     {c.rankChange > 0
@@ -556,7 +553,7 @@ function CustomIndexBuilder() {
                   <td
                     style={{
                       padding: "7px 8px",
-                      color: "#1E293B",
+                      color: "var(--text)",
                       fontWeight: 600,
                     }}
                   >
@@ -566,7 +563,7 @@ function CustomIndexBuilder() {
                     style={{
                       padding: "7px 8px",
                       textAlign: "center",
-                      color: "#000000",
+                      color: "var(--text)",
                     }}
                   >
                     {c.adei.toFixed(1)}
@@ -576,7 +573,7 @@ function CustomIndexBuilder() {
                       padding: "7px 8px",
                       textAlign: "center",
                       fontWeight: 700,
-                      color: "#8B5CF6",
+                      color: "var(--info)",
                     }}
                   >
                     {c.customScore.toFixed(1)}

@@ -169,12 +169,44 @@ function CountryProfiles() {
           : (regionPeersPdf[0].adei - country.adei).toFixed(1);
       const top3Regional = regionPeersPdf.slice(0, 3);
 
-      // The report is a document, so it pins the light token set and is attached
-      // off-screen: custom properties only resolve for an element in the tree.
+      // The report is a document: it is rasterised and printed, so it pins the
+      // light token set rather than inheriting whatever theme the app is showing.
+      // Resolve those values here, off a throwaway probe, and declare them inline
+      // on the element - html2pdf clones the node into its own off-screen
+      // container, and inline custom properties are the only ones guaranteed to
+      // travel with it. The element itself must stay unpositioned: a fixed or
+      // absolutely positioned clone escapes that container and rasterises blank.
+      const gapMark = (gap) =>
+        `<span style="color:${gap >= 0 ? "var(--positive)" : "var(--negative)"};">${fmt.deltaArrow(gap)} ${fmt.delta(gap)}</span>`;
+
+      const probe = document.createElement("div");
+      probe.setAttribute("data-report", "light");
+      probe.style.cssText =
+        "position:absolute;left:-9999px;top:0;width:0;height:0;overflow:hidden;";
+      document.body.appendChild(probe);
+      const probed = getComputedStyle(probe);
+      const reportTokens = [
+        "surface",
+        "surface-2",
+        "text",
+        "text-muted",
+        "text-subtle",
+        "border",
+        "border-strong",
+        "positive",
+        "negative",
+        "interactive",
+        "font-ui",
+        "font-display",
+      ].map((name) => [name, probed.getPropertyValue(`--${name}`).trim()]);
+      probe.remove();
+
       const element = document.createElement("div");
-      element.setAttribute("data-report", "light");
       element.style.cssText =
-        "position:fixed;left:-10000px;top:0;width:794px;padding:32px;background:var(--surface);color:var(--text);font-family:var(--font-ui);font-size:13px;line-height:1.6;";
+        "padding:32px;background:var(--surface);color:var(--text);font-family:var(--font-ui);font-size:13px;line-height:1.6;";
+      for (const [name, value] of reportTokens) {
+        element.style.setProperty(`--${name}`, value);
+      }
 
       const H2 = "font-family:var(--font-display);font-size:22px;font-weight:400;color:var(--text);border-bottom:1px solid var(--border-strong);padding-bottom:8px;margin:28px 0 12px;letter-spacing:-0.01em;";
       const TILE = "border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface);";
@@ -219,12 +251,12 @@ function CountryProfiles() {
           <div style="${TILE}">
             <p style="${LABEL}">Strongest pillar</p>
             <p style="margin:0 0 4px;font-weight:600;font-size:14px;">${strongest.pillar.name}</p>
-            <p style="margin:0;color:var(--text-muted);font-size:12px;">Score <strong>${fmt.score(strongest.score)}</strong> · <span style="color:var(--positive);">▲ ${fmt.delta(strongest.gap)}</span> vs OIC avg</p>
+            <p style="margin:0;color:var(--text-muted);font-size:12px;">Score <strong>${fmt.score(strongest.score)}</strong> · ${gapMark(strongest.gap)} vs OIC avg</p>
           </div>
           <div style="${TILE}">
             <p style="${LABEL}">Area for improvement</p>
             <p style="margin:0 0 4px;font-weight:600;font-size:14px;">${weakest.pillar.name}</p>
-            <p style="margin:0;color:var(--text-muted);font-size:12px;">Score <strong>${fmt.score(weakest.score)}</strong> · <span style="color:var(--negative);">▼ ${fmt.delta(weakest.gap)}</span> vs OIC avg</p>
+            <p style="margin:0;color:var(--text-muted);font-size:12px;">Score <strong>${fmt.score(weakest.score)}</strong> · ${gapMark(weakest.gap)} vs OIC avg</p>
           </div>
         </div>
 
@@ -262,7 +294,7 @@ function CountryProfiles() {
                 <td style="${CELL}">${p.name}</td>
                 <td style="${CELL}text-align:right;font-weight:600;">${fmt.score(country[p.key])}</td>
                 <td style="${CELL}text-align:right;color:var(--text-muted);">${fmt.score(oicAvgByPillar[p.key])}</td>
-                <td style="${CELL}text-align:right;font-weight:600;color:${gap >= 0 ? "var(--positive)" : "var(--negative)"};">${gap >= 0 ? "▲" : "▼"} ${fmt.delta(gap)}</td>
+                <td style="${CELL}text-align:right;font-weight:600;">${gapMark(gap)}</td>
                 <td style="${CELL}">
                   <span style="display:block;width:150px;height:6px;border-radius:999px;background:var(--surface-2);">
                     <span style="display:block;width:${barWidth}px;height:6px;border-radius:999px;background:${p.color};"></span>
@@ -308,8 +340,6 @@ function CountryProfiles() {
         </div>
       `;
 
-      document.body.appendChild(element);
-
       const opt = {
         margin: 10,
         filename: `${country.name.replace(/[^a-z0-9]/gi, "_")}_OIC_DEI_Profile.pdf`,
@@ -318,13 +348,7 @@ function CountryProfiles() {
         jsPDF: { orientation: "portrait", unit: "mm", format: "a4" },
       };
 
-      window
-        .html2pdf()
-        .set(opt)
-        .from(element)
-        .save()
-        .then(() => element.remove())
-        .catch(() => element.remove());
+      window.html2pdf().set(opt).from(element).save();
     };
     document.head.appendChild(script);
   };

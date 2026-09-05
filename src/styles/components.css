@@ -231,6 +231,12 @@
   .app-shell[data-sidebar="collapsed"] {
     --sidebar-w: 260px;
   }
+
+  /* The icon rail does not exist below this width, so the control that toggles
+     it has nothing to do — hide it rather than leave a button that does nothing. */
+  .sidebar-foot .btn {
+    display: none;
+  }
 }
 
 /* -- Page header --------------------------------------------------------- */

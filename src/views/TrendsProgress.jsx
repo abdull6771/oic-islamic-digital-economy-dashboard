@@ -14,6 +14,7 @@ import {
 
 import {
   COUNTRIES,
+  DATA_QUALITY,
   OIC_AVERAGE,
   OIC_AVERAGE_LABEL,
   REFERENCE_YEAR,
@@ -27,7 +28,7 @@ import { CLUSTER_SHORT, toneFor } from "../lib/clusters.js";
 import { openCountry } from "../lib/routing.js";
 import * as fmt from "../lib/format.js";
 import CustomTooltip from "../components/CustomTooltip.jsx";
-import ChartFrame, { LegendKey, animation, axis, grid, referenceLineProps } from "../components/ChartFrame.jsx";
+import ChartFrame, { LegendKey, animation, axis, grid, referenceLineProps, SCORE_DOMAIN } from "../components/ChartFrame.jsx";
 import {
   Badge,
   Button,
@@ -83,10 +84,14 @@ function TrendsProgress() {
 
   const bins = Array.from({ length: 10 }, (_, i) => ({
     range: `${i * 10}–${(i + 1) * 10}`,
-    count: COUNTRIES.filter((c) => c.adei >= i * 10 && c.adei < (i + 1) * 10).length,
+    count: COUNTRIES.filter((c) => c.adei >= i * 10 && (i === 9 ? c.adei <= 100 : c.adei < (i + 1) * 10)).length,
   }));
 
   const sorted = [...COUNTRIES].sort((a, b) => a.rank - b.rank);
+  const medianIndex = Math.floor(sorted.length / 2);
+  const median = sorted.length % 2
+    ? sorted[medianIndex].adei
+    : (sorted[medianIndex - 1].adei + sorted[medianIndex].adei) / 2;
   const peakBin = bins.reduce((a, b) => (a.count > b.count ? a : b));
   const stdDev = Math.sqrt(
     COUNTRIES.reduce((s, c) => s + (c.adei - OIC_AVERAGE) ** 2, 0) / COUNTRIES.length,
@@ -96,9 +101,14 @@ function TrendsProgress() {
   const startYear = lineData[0];
   const endYear = lineData[lineData.length - 1];
   const gains = nonAvg
-    .map((c) => ({ name: c, gain: (endYear?.[c] || 0) - (startYear?.[c] || 0) }))
-    .filter((x) => x.gain !== 0);
+    .filter((c) => Number.isFinite(startYear?.[c]) && Number.isFinite(endYear?.[c]))
+    .map((c) => ({ name: c, gain: endYear[c] - startYear[c] }))
+    .filter((x) => x.gain > 0);
   const topGainer = gains.length > 0 ? gains.reduce((a, b) => (a.gain > b.gain ? a : b)) : null;
+  const incompleteHistory = DATA_QUALITY
+    .filter((issue) => issue.id === "incomplete-pillars")
+    .flatMap((issue) => issue.detail.observations)
+    .filter((row) => selectedCountries.includes(row.country) || selectedCountries.includes(OIC_AVERAGE_LABEL));
 
   return (
     <div className="stack">
@@ -132,6 +142,14 @@ function TrendsProgress() {
         </div>
       </Card>
 
+      {incompleteHistory.length > 0 && (
+        <InsightBlock title="Historical data coverage">
+          {incompleteHistory.map((row) => `${row.country} ${row.year}`).join(", ")}
+          {" "}has an unavailable pillar score in the source workbook. Its published ADEI is retained in
+          the country trajectory and OIC average. Interpret comparisons involving that year with this gap in mind.
+        </InsightBlock>
+      )}
+
       <ChartFrame
         title={`OIC DEI score trends ${YEAR_RANGE}`}
         subtitle={`${fmt.SCORE_UNIT} · a gap in a line is a year with no observation, never a zero`}
@@ -155,7 +173,7 @@ function TrendsProgress() {
             <LineChart data={lineData} margin={{ top: 8, right: 24, bottom: 4, left: 0 }}>
               <CartesianGrid {...grid(tokens)} />
               <XAxis dataKey="year" {...axis(tokens)} />
-              <YAxis domain={[25, 80]} {...axis(tokens)} width={36} />
+              <YAxis domain={SCORE_DOMAIN} {...axis(tokens)} width={36} />
               <Tooltip content={<CustomTooltip />} />
               {selectedCountries.map((country, i) => (
                 <Line
@@ -189,7 +207,7 @@ function TrendsProgress() {
                 <>
                   Among selected countries, <strong>{topGainer.name}</strong> shows the
                   strongest upward trajectory with a{" "}
-                  <strong>+{topGainer.gain.toFixed(1)} pt</strong> gain from 2021 to 2025.
+                  <strong>+{topGainer.gain.toFixed(1)} pt</strong> gain from {YEARS[0]} to {YEARS[YEARS.length - 1]}.
                 </>
               ) : (
                 <>
@@ -215,7 +233,7 @@ function TrendsProgress() {
 
       <div className="cols-3">
         <StatTile label="Mean" value={fmt.score(OIC_AVERAGE)} support="Across all member states" />
-        <StatTile label="Median" value={fmt.score(sorted[28].adei)} support="29th of 57 by rank" />
+        <StatTile label="Median" value={fmt.score(median)} support={`Middle score across ${COUNTRIES.length} member states`} />
         <StatTile label="Standard deviation" value={fmt.score(stdDev)} support="Score variability" />
       </div>
 

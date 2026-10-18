@@ -298,6 +298,9 @@ export default function App() {
           <p className="t-caption subtle">
             © 2026 INCEIF University — The Global University of Islamic Finance ·{" "}
             {META.countryCount} member states · {REFERENCE_YEAR} assessment
+            {META.sourceUpdated && <> · Data updated {new Intl.DateTimeFormat("en-GB", {
+              day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+            }).format(new Date(`${META.sourceUpdated}T00:00:00Z`))}</>}
           </p>
         </footer>
       </div>

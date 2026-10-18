@@ -15,6 +15,14 @@ import {
 
 function Methodology() {
   const [activeTab, setActiveTab] = useState("overview");
+  const sourceUpdated = META.sourceUpdated
+    ? new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "UTC",
+      }).format(new Date(`${META.sourceUpdated}T00:00:00Z`))
+    : null;
   const SOURCES = [
     {
       indicator: "Political Environment (1.1)",
@@ -455,7 +463,6 @@ function Methodology() {
                 range: "Score ≥ 60",
                 color: "var(--text)",
                 bgColor: "var(--tint)",
-                count: "6 States",
                 desc: "Well positioned to transition from infrastructure expansion toward innovation leadership. Priorities include scaling frontier R&D, strengthening patent commercialization, and contributing to global AI and data governance frameworks.",
               },
               {
@@ -463,7 +470,6 @@ function Methodology() {
                 range: "Score 40–59",
                 color: "var(--interactive)",
                 bgColor: "var(--surface-2)",
-                count: "15 States",
                 desc: "Established core infrastructure but would benefit from strengthening digital skills, institutional capacity, SME digital transformation, and innovation financing to avoid middle digital stagnation.",
               },
               {
@@ -471,7 +477,6 @@ function Methodology() {
                 range: "Score < 40",
                 color: "var(--text-muted)",
                 bgColor: "var(--surface-2)",
-                count: "36 States",
                 desc: "Require continued emphasis on foundational investments: affordable broadband access, digital inclusion, baseline digital literacy, and regulatory modernization to enable broad-based participation.",
               },
             ].map((cluster) => (
@@ -533,7 +538,7 @@ function Methodology() {
                         borderRadius: "4px",
                       }}
                     >
-                      {cluster.count}
+                      {COUNTRIES.filter((country) => country.cluster === cluster.title).length} States
                     </div>
                   </div>
                   <p
@@ -636,7 +641,9 @@ function Methodology() {
             {META.sheets.panel}
           </span>
           ), covering {META.countryCount} member states for {YEARS[0]}–
-          {YEARS[YEARS.length - 1]}. The caveats below are detected when the
+          {YEARS[YEARS.length - 1]}.
+          {sourceUpdated && <> Source workbook updated {sourceUpdated}.</>}{" "}
+          The caveats below are detected when the
           dataset is built and are reproduced here unaltered rather than
           smoothed over.
         </p>
@@ -670,14 +677,14 @@ function Methodology() {
             }}
           >
             The Global Findex survey does not cover every OIC member state. Where
-            an economy has no observation, the workbook substitutes the
+            an economy has no observation for a sub-indicator, the workbook substitutes the
             documented floor value (minimum observed score less 5%) rather than
-            leaving a gap, which depresses that country's Financial Market
-            Development score and, through it, its overall index score. This
+            leaving a gap. These imputed values contribute to Financial Market
+            Development and the overall index; they are not observations of the
+            country's financial inclusion. This
             affects {FINDEX_IMPUTED_COUNTRIES.length} of {META.countryCount}{" "}
-            countries in {FINDEX.year}, including several high-income economies
-            whose actual financial inclusion is far higher than the substituted
-            value implies. Read pillar 8 for those countries with that in mind.
+            countries in {FINDEX.year}. Read pillar 8 for those countries with
+            that limitation in mind.
           </p>
           <div style={{ fontSize: "12px", color: "var(--warning)", lineHeight: 1.7 }}>
             <strong>Imputed:</strong> {FINDEX_IMPUTED_COUNTRIES.join(", ")}

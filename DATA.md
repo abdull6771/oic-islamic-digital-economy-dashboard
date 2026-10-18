@@ -1,149 +1,176 @@
-# Data pipeline
+# Data pipeline and source review
 
-The dashboard shows nothing but what the master Excel workbook contains. This
-document records where each number comes from, how it gets into the app, and
-which quirks of the workbook the pipeline deliberately works around.
+The current source is **18 Oct_New findex_Master_Data collection.xlsx**, supplied
+on 18 October 2026. This is a source revision of the **2025 assessment**, not a new
+2026 assessment. The dashboard covers 57 countries in 2021–2025: 285 country-year
+observations, with 9 pillars, 32 indicators, and 21 sub-indicators (62 score fields).
 
-```
-New findex_Master_Data collection.xlsx
-        │
-        │  npm run build:data      (scripts/build-dataset.mjs)
-        ▼
-src/data/adei-dataset.json         generated — never hand-edit
-        │
-        │  src/data/index.js       adds presentation metadata, derives series
-        ▼
-oic_dashboard.jsx                  views only; no index value is written here
+```text
+18 Oct_New findex_Master_Data collection.xlsx
+  -> npm run build:data
+  -> src/data/adei-dataset.json
+  -> src/data/index.js
+  -> src/views/ and src/App.jsx
 ```
 
-Re-run `npm run build:data` whenever a new workbook arrives, then
-`npm run validate:data` to confirm the app still agrees with the source.
+The workbooks are read without editing or recalculating them. Cached published
+scores are retained. Missing values stay `null`; a stored numeric zero stays
+zero. Historical ranks and clusters are derived from each year's published ADEI.
+The generated dataset records the source filename, source revision date, SHA-256
+fingerprint, build timestamp, sheet provenance, and data-quality findings.
 
-## Which sheets are authoritative
+Source workbooks are kept locally and excluded from Git. The committed generated
+dataset is sufficient to run or build the dashboard; rebuilding or validating
+the dataset requires a local copy of the source workbook.
 
-The workbook has 30 sheets. Most are untouched source extracts (`NRI 2020-2024`,
-`GII 2020-2024`, `UN EGDI`, `Governance`, `SDR2025 Data`, `Backdated SDG Index`,
-`AI`, `Findex`, `Findex 25`) kept for provenance. Four sheets carry the computed
-index, and only some of them are current.
+## What the 18 October revision changes
 
-| Sheet | Role | Used by the build |
-| --- | --- | --- |
-| `OIC_2024 origin` | Panel as collected. `0` marks "not observed". | Findex coverage only |
-| `OIC_2024 clear` | Same panel, raw units, gaps filled | Findex source percentages |
-| `OIC_2024 norm` | **Master normalised panel** — 57 countries × 5 years (2021–2025), 65 indicator/pillar columns plus ADEI, Rank, Clusters | **yes — every score** |
-| `2025 ranked` | The 2025 slice of `OIC_2024 norm` | validation cross-check |
-| `ref` | Source citations and the official pillar weights | weights, provenance |
-| `indicator` | Indicator hierarchy, without codes | not used — see below |
-| `01_raw_data_2025` | Staging, plus a country → ISO3 table | ISO3 codes only |
-| `02_data_filled_2025`, `04_normalised_2025`, `05_index_results_2025` | Staging | **no — stale** |
+A value-and-formula comparison of all 30 shared sheets with the preceding
+`New findex_Master_Data collection.xlsx` found **13 changed cached cell values**,
+**6 changed or removed formulas**, and no formula-only differences. Changes are
+confined to `OIC_2024 origin`, `OIC_2024 clear`, and `OIC_2024 norm`; the other 27
+shared sheets are unchanged. The new workbook has 31 sheets because it adds a
+linked `Malaysia` profile. That profile reads the master panel and is not a
+replacement data source.
 
-`OIC_2024 norm` carries the indicator hierarchy in its own header rows (row 1
-dimension, row 2 pillar, row 3 indicator, row 4 code, row 5 sub-indicator, row 6
-source variable), each aligned to the column it describes. The build reads the
-structure from there rather than from the `indicator` sheet, which lists the same
-hierarchy without codes and so could only be matched to columns by guessing.
+All six changed score fields concern **Malaysia in 2021**:
 
-## Data-quality findings
+| Measure | Previous | Updated | `OIC_2024 norm` cell |
+| --- | ---: | ---: | --- |
+| 3.1 Education expenditure | 4.5 | unavailable | AF265 |
+| 3 Workforce | 4.5 | unavailable | AI265 |
+| 5.2 University–industry collaboration | 25.08 | 68.3 | AO265 |
+| 5 Innovation | 41.12 | 51.925 | AR265 |
+| 8.2 Market capitalisation | 124.4 | 0 | BE265 |
+| 8 Financial Market Development | 91.713029 | 59.026059 | BF265 |
+| ADEI | 71.408479 | 68.230032 | BO265 |
+| Rank | 1 | 2 | BP265 |
 
-These are properties of the workbook. The pipeline handles each one explicitly
-and reports it; none of them is repaired by editing the source.
+The UAE's 2021 rank consequently changes from 2 to 1 (`BP290`). The 2021 OIC
+average changes from 31.030460 to 30.974697. Malaysia's published trajectory is
+now 68.230032, 68.531934, 69.166909, 71.087586, 71.566676 for 2021–2025.
+Trend charts, progress calculations, and historical averages use this revision.
 
-**1. The `01`–`05` staging sheets were not recomputed after the Findex refresh.**
-Those sheets carry their own checker columns, and in this workbook they read
-`DIFF` for pillar 8 and for ADEI on every country — `05_index_results_2025` still
-holds the pre-refresh scores (UAE 77.73 where the master panel now says 75.23).
-The build ignores them and reads `OIC_2024 norm`.
+**Every 2022–2025 score is unchanged.** In 2025 the leading countries remain the
+UAE (75.233937), Malaysia (71.566676), and Saudi Arabia (69.201872). The OIC mean
+remains 34.707373, with 6 Advanced, 15 Emerging, and 36 Foundational economies.
 
-**2. Global Findex does not cover every member state.** Sub-indicators 8.1.1–8.1.3
-come from the Global Findex database. In `OIC_2024 origin`, 14–17 of the 57
-countries have `0` — no observation — and `OIC_2024 clear` substitutes the
-documented floor value (minimum observed less 5%, per the `ref` sheet) instead of
-leaving a gap. Those countries therefore score near-zero on the FinTech
-indicators regardless of their actual financial inclusion, which pulls down
-pillar 8 and, through it, ADEI. The affected set includes several high-income
-economies — the UAE, Bahrain, Kuwait and Qatar among them. The dashboard states
-this on the Methodology → Data Sources tab and lists every affected country.
+### Traced source and calculation changes
 
-**3. `Rank` and `Clusters` are only current for the reference year.** In the
-master panel those two columns are correct and complete for 2025, but for
-2021–2024 they hold 55 stale ranks and 20 blanks, left over from before the
-Findex refresh; the cluster column is empty for every earlier year. The build
-therefore derives rank and cluster for *every* year from ADEI, using the index's
-own published rule (≥60 Advanced, ≥40 Emerging, otherwise Foundational). That
-rule reproduces the workbook's 2025 values exactly for all 57 countries, which is
-asserted on every build — if a future workbook changes the thresholds, the build
-fails rather than silently relabelling countries.
+- The university–industry collaboration lookup in `OIC_2024 origin!AJ274` now
+  uses the label `University/industry research collaboration`, matching
+  `GII 2020!B286:C286`. It returns 68.3 instead of zero. The corresponding filled
+  cell `OIC_2024 clear!AJ274` now links that observation instead of using the
+  25.08 floor. The missing-data diagnostics `origin!AJ303:AJ304` update from
+  123 to 122 missing values and from 42.560554% to 42.214533%.
+- The education and Workforce cells `norm!AF265` and `AI265` have been removed,
+  although the collected and filled education source still contains 4.5
+  (`origin!AA274`, `clear!AA274`). Their intended removal is not explained in
+  the workbook. The dashboard preserves these gaps and identifies Malaysia
+  2021 in its historical coverage notes.
+- `norm!BE265` replaces the link to `clear!AW274` (124.4) with a literal zero.
+  `BF265` changes from `AVERAGE(BD265:BE265)` to `AVERAGE(BD265)`, excluding 8.2
+  from that year's pillar aggregate. The published pillar score is retained and
+  this exception to the usual mean of 8.1 and 8.2 is disclosed.
+- `norm!BO265` keeps the same weighted ADEI formula. Excel treats the blank
+  Workforce input as a zero contribution to this formula. This explains the
+  cached 68.230032 ADEI; it does not establish an observed zero Workforce score.
+  All 284 complete country-year rows reconcile to the weighted nine-pillar sum
+  within 0.000001 points. The remaining row is separately identified as having
+  an incomplete pillar set.
 
-**4. Indicators 3.2 and 3.3 are unavailable for 2021.** Both are the literal
-string `dna` for all 57 countries in 2021 (and `0` in 2022). They are carried
-through as `null`, not zero. The workbook computes the 2021 pillar-3 aggregate
-from indicator 3.1 alone, and the build leaves that aggregate as it found it.
+## Authoritative sheets
 
-**5. The panel's `Region` column is unusable.** It is filled for 9 of 57 rows and
-several of those are wrong — Pakistan, Senegal and the Kyrgyz Republic are all
-tagged `GCC`. Geographic Analysis uses the curated `REGIONS` map in
-`src/data/index.js` instead.
-
-**6. One country is spelled differently from the rest of the app.** The workbook
-says `Gambia, The`; the dashboard and the world-map topology say `Gambia`.
-`COUNTRY_NAME_ALIASES` in the build script maps it, so region and map-coordinate
-lookups resolve. Any future spelling drift surfaces as a failed
-`npm run validate:data` check rather than a country silently losing its region.
-
-**7. 8.1.2 has two different descriptions in the workbook.** The sub-indicator
-label reads "the percentage of those who own a debit or credit card" while the
-source-variable row for the same column reads "Owns a credit card (% age 15+)".
-The dashboard uses the sub-indicator wording, matching the published index. The
-underlying values are unchanged either way.
-
-## What changed in this workbook
-
-Compared with the previous master (`check_updated yemen palestine_225 Jun_…`),
-the workbook adds one sheet — `Findex 25`, the Global Findex 2025 release (2024
-survey wave) — and a matching citation in `ref`. A cell-by-cell diff of every
-shared sheet shows the effect is confined to the Findex-derived chain:
-
-| Changed | Not changed |
+| Sheet | Role in the dashboard |
 | --- | --- |
-| 8.1.1, 8.1.2, 8.1.3 (all five years) | every indicator in pillars 1–7 and 9 |
-| 8.1 and pillar 8, as a consequence | 8.2 (market capitalisation) |
-| ADEI and Rank, as a consequence | the 9 pillars, their weights, the 32/21 indicator structure |
-| — | the 57 countries and the 2021–2025 year range |
+| `OIC_2024 norm` | Published master scores for every country-year. Its six header rows define aligned codes and the indicator hierarchy. |
+| `2025 ranked` | Independent cross-check of every reference-year score, ADEI, rank, and cluster. |
+| `OIC_2024 origin` | Collected Findex inputs and missing-observation flags. |
+| `OIC_2024 clear` | Filled Findex percentages used by the scoring workbook. |
+| `ref` | Official pillar weights and source/methodology references. |
+| `01_raw_data_2025` | Country-to-ISO3 lookup only. |
+| `Malaysia` | New linked country profile; no independent source values. |
+| `02_data_filled_2025`, `04_normalised_2025`, `05_index_results_2025` | Older staging calculations, excluded from scores. |
 
-27 of 57 countries change rank in 2025. Because the refresh reaches back through
-all five years, the historical ADEI trajectory changed for every country too, so
-the trend charts are rebuilt from the panel rather than from the previously
-hard-coded series.
+Source extracts such as NRI, GII, UN EGDI, governance, SDGs, AI, and the Findex
+releases remain available in the workbook for provenance. The `01`–`05` staging
+calculation chain was not refreshed after the earlier Findex update: its own
+checkers identify pillar-8 and ADEI differences. For example, the staging result
+for the UAE is 77.73, while the authoritative current result is 75.23.
 
-## Generated dataset
+## Other source limitations retained and disclosed
 
-`src/data/adei-dataset.json` (~200 KB) holds:
+### Findex coverage and a collected/filled discrepancy
 
-- `meta` — source file, build timestamp, years, reference year, pillar/indicator
-  counts, cluster rules, name aliases, and the numeric self-checks the build ran
-- `pillars` — id, weight (from `ref`), and the workbook's own naming
-- `codes` — the indicator codes, in workbook column order; `observations[].scores`
-  is aligned to this array
-- `indicators` — one entry per code with its level, parent, workbook label and
-  source variable
-- `countries` — name and ISO3
-- `observations` — one row per country-year: ADEI, derived rank and cluster, and
-  the score array
-- `findex` — the raw Global Findex percentages behind 8.1.1–8.1.3 and the list of
-  countries whose values are imputed
-- `dataQuality` — the findings above, as structured records the UI renders
+For 2025, the origin sheet records no observation as zero for 14 countries on
+8.1.1, 17 on 8.1.2, and 17 on 8.1.3. The filled sheet substitutes the documented
+floor (minimum observed less 5%). The dataset stores the exact affected-country
+list separately for each code, along with the filled inputs as adult percentages.
+Those values contribute to pillar 8 and ADEI but are not survey observations.
+Methodology lists the countries, while profiles, exports, and policy views show
+country-specific coverage notes.
 
-`src/data/index.js` turns that into the shapes the views use (`COUNTRIES`,
-`PANEL`, `TREND_DATA`, `PILLARS`, `PILLAR_INDICATORS`, `getCluster`, …) and is the
-only module that mixes measured values with presentation choices such as colour,
-short labels and regional grouping.
+An additional **pre-existing** inconsistency affects Türkiye's 2025 8.1.2:
+the collected card-ownership input in `OIC_2024 origin!AU60` is **43.670713%**,
+while `OIC_2024 clear!AU60` contains **0.444064%**, despite a nonzero collected
+observation. This is reported separately from missing-data imputation in
+`findex.sourceDifferences` and the dashboard. The source inputs and published
+scores are preserved. Policy advice based on affected low financial-market
+scores first calls for source validation.
 
-## Validation
+The workbook also labels 8.1.2 as debit-or-credit-card ownership while its
+source-variable row says credit-card ownership. The dashboard retains the
+sub-indicator wording; it does not relabel the underlying measure by assumption.
 
-`npm run validate:data` re-reads the workbook independently of the build — it
-walks `2025 ranked` where the build reads `OIC_2024 norm` — and asserts 36 checks
-against the data layer the views import: country coverage, every indicator value,
-ADEI, rank and cluster agreement, weights summing to 100, ADEI equalling the
-weighted pillar sum, trend-series shape, region/ISO3/map-coordinate coverage,
-indicator-tree structure, that every gap is one the build declared, and that no
-value is `NaN`. It exits non-zero on failure, so it can gate a commit or a CI run.
+### Historical ranks and unavailable indicators
+
+The reference-year ranks and clusters match the dashboard. Earlier years contain
+55 stale ranks and 20 missing/error rank values, including pre-existing Excel
+`#N/A` errors caused by incorrect ranking ranges. Earlier-year cluster cells are
+empty. Every year is therefore ranked from its own ADEI and clustered using the
+published thresholds: Advanced ≥60, Emerging ≥40, Foundational <40.
+
+Indicators 3.2 and 3.3 contain `dna` for all 57 countries in 2021, contributing
+114 unavailable score fields. Together with Malaysia's two newly absent cells,
+the panel has 116 null score fields. The workbook stores numeric zeros for 3.2
+and 3.3 in 2022; those zeros are retained. Every null is declared with its exact
+code, year, country, and original marker or blank status.
+
+### Geography and country names
+
+The workbook's region column is only partially populated and misclassifies
+several countries. Geographic views use the existing curated `REGIONS` map in
+`src/data/index.js`. `Gambia, The` is canonicalised to `Gambia` to match dashboard
+lookups and the map. Validation checks region, ISO3, coordinate, and name-alias
+coverage so missing lookups fail visibly.
+
+## Rebuild and verification
+
+```bash
+npm run build:data
+npm run validate:data
+npm run build
+```
+
+`build:data` defaults to the 18 October workbook. An explicit workbook path can
+be supplied to `node scripts/build-dataset.mjs`. If a build detects an ingestion
+error, it exits unsuccessfully without replacing the previous dataset.
+
+`validate:data` independently reads `2025 ranked`, the full master panel, raw and
+filled Findex inputs, and published weights. It checks the source identity and
+fingerprint, all 17,670 country-year score fields, ADEI, derived historical ranks
+and clusters, complete-row aggregation, exact missing-value declarations, Findex
+values and flags, trends, and all lookups used by the views. It exits nonzero on
+failure. Source warnings remain visible even when faithful ingestion passes.
+
+For a read-only comparison of every sheet, including cached values and formulas:
+
+```bash
+node scripts/review-workbook.mjs
+```
+
+Use `--panel-only` for a quicker comparison of the dashboard and supporting
+sheets. The script prints its JSON review and never modifies either workbook.
+The optional comparison requires the preceding workbook locally; it is not
+included in the repository. Alternative source paths can be supplied as the
+updated workbook followed by the previous workbook.

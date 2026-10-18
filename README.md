@@ -62,16 +62,17 @@ npm run preview
 ```
 .
 ├── index.html                        # HTML entry point
-├── New findex_Master_Data collection.xlsx   # master workbook — the source of truth
+├── 18 Oct_New findex_Master_Data collection.xlsx # local source; not committed
 ├── scripts/
 │   ├── build-dataset.mjs             # workbook → src/data/adei-dataset.json
-│   └── validate-dataset.mjs          # cross-checks the app against the workbook
+│   ├── validate-dataset.mjs          # checks every country-year against the workbook
+│   └── review-workbook.mjs           # compares revisions across all source sheets
 ├── src/
 │   ├── main.jsx                      # React bootstrap; mounts the app
 │   └── data/
 │       ├── adei-dataset.json         # generated — do not hand-edit
 │       └── index.js                  # data layer the views import
-├── oic_dashboard.jsx                 # all views
+├── oic_dashboard.jsx                 # entry shim and map coordinates
 ├── DATA.md                           # data pipeline, provenance, known caveats
 ├── vite.config.js
 └── package.json
@@ -82,9 +83,14 @@ npm run preview
 The Excel workbook is the source of truth. No score, rank or weight is written
 into `oic_dashboard.jsx` — the views read everything through `src/data/index.js`.
 
+Source workbooks stay local and are excluded from Git. The dashboard runs and
+builds from the committed JSON dataset without needing the workbook. To rebuild
+or validate that dataset, place the source workbook in the project folder or
+supply its path explicitly.
+
 ```bash
 npm run build:data       # regenerate src/data/adei-dataset.json from the workbook
-npm run validate:data    # 36 checks: the app's values vs the workbook
+npm run validate:data    # source identity, all panel values, rankings, and coverage
 npm run build            # bundle
 ```
 
@@ -95,11 +101,26 @@ different one:
 node scripts/build-dataset.mjs "some other workbook.xlsx"
 ```
 
-Both scripts print the data-quality findings they detect and exit non-zero on a
-real problem, so they work as a CI or pre-commit gate. See **[DATA.md](DATA.md)**
-for which sheets are authoritative, how the index is reconstructed, and the
-caveats that ship with the current workbook (notably Global Findex coverage gaps
-affecting pillar 8).
+Both scripts print their findings and exit non-zero on an ingestion or validation
+failure. The build preserves the previous dataset if its checks fail. See
+**[DATA.md](DATA.md)** for the 18 October revision, authoritative sheets, missing
+historical Workforce values, and Global Findex source limitations.
+
+To compare the current workbook with the preceding revision, including source
+values and formulas on every sheet:
+
+```bash
+node scripts/review-workbook.mjs
+```
+
+This optional comparison also needs the preceding workbook available locally.
+To use different files, pass the updated workbook path followed by the previous
+workbook path. The previous workbook is not included in the repository.
+
+The 18 October revision changes Malaysia's 2021 results and the corresponding
+historical comparison. The 2022–2025 scores, including the current 2025 rankings,
+are unchanged. The assessment year remains 2025; the source refresh date is
+18 October 2026.
 
 ---
 

@@ -16,7 +16,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { COUNTRIES, OIC_AVERAGE, PILLARS, REFERENCE_YEAR, REGIONS, getCluster } from "../data/index.js";
+import { COUNTRIES, FINDEX, OIC_AVERAGE, PILLARS, REFERENCE_YEAR, REGIONS, getCluster } from "../data/index.js";
 import { useChartTokens, pillarColor } from "../styles/tokens.js";
 import { clusterColor, toneFor } from "../lib/clusters.js";
 import { hashParam, navigate, onHashChange } from "../lib/routing.js";
@@ -70,6 +70,12 @@ function CountryProfiles() {
   };
 
   const country = COUNTRIES.find((c) => c.name === selected);
+  const imputedFindexCodes = FINDEX.codes.filter((code) =>
+    FINDEX.imputed[code]?.includes(country.name),
+  );
+  const findexSourceDifferences = (FINDEX.sourceDifferences || []).filter(
+    (difference) => difference.country === country.name,
+  );
   const cluster = getCluster(country.adei);
   const region = REGIONS[country.name] || "Other";
 
@@ -134,6 +140,13 @@ function CountryProfiles() {
       [`OIC DEI Score,${country.adei.toFixed(2)}`],
       [`Global Rank,#${country.rank}`],
       [`Region,${region}`],
+      ...(imputedFindexCodes.length
+        ? [["Findex inputs using an imputed floor", imputedFindexCodes.join("; ")]]
+        : []),
+      ...findexSourceDifferences.map((difference) => [
+        `Findex source difference ${difference.code}`,
+        `Collected ${difference.collectedPercent}%; filled ${difference.filledPercent}%`,
+      ]),
       [],
     ];
     const csv = [...meta, headers, ...rows].map((r) => r.join(",")).join("\n");
@@ -219,6 +232,8 @@ function CountryProfiles() {
           <p style="${LABEL}">OIC Digital Economy Index · Country profile</p>
           <h1 style="font-family:var(--font-display);font-size:38px;font-weight:400;letter-spacing:-0.02em;margin:4px 0 6px;color:var(--text);">${country.name}</h1>
           <p style="margin:0;color:var(--text-muted);font-size:12px;">${fmt.SCORE_UNIT} · ${REFERENCE_YEAR} assessment · ${region}</p>
+          ${imputedFindexCodes.length ? `<p style="margin:12px 0 0;color:var(--text-muted);font-size:12px;"><strong>Financial inclusion coverage:</strong> ${imputedFindexCodes.map((code) => `${code} (${FINDEX.labels[code]})`).join("; ")} use the workbook's imputed floor in ${FINDEX.year}. These are not survey observations; pillar 8 and the overall score incorporate them.</p>` : ""}
+          ${findexSourceDifferences.map((difference) => `<p style="margin:12px 0 0;color:var(--text-muted);font-size:12px;"><strong>Financial inclusion source difference:</strong> ${difference.code} (${FINDEX.labels[difference.code]}) has a collected input of ${fmt.percent(difference.collectedPercent)} and a filled input of ${fmt.percent(difference.filledPercent)}. This is a difference between raw source inputs, not a missing observation. Validate the difference when interpreting pillar 8; the published scores are preserved.</p>`).join("")}
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:8px;">
@@ -396,6 +411,29 @@ function CountryProfiles() {
           </Button>
         </div>
       </div>
+
+      {(imputedFindexCodes.length > 0 || findexSourceDifferences.length > 0) && (
+        <Card title="Financial inclusion data coverage">
+          {imputedFindexCodes.length > 0 && (
+            <p className="t-caption prose muted">
+              In {FINDEX.year}, {country.name} uses the workbook's imputed floor for{" "}
+              {imputedFindexCodes.map((code) => `${code} (${FINDEX.labels[code]})`).join("; ")}.
+              These values are not survey observations. Financial Market Development
+              (pillar 8) and the overall score incorporate these floor values.
+            </p>
+          )}
+          {findexSourceDifferences.map((difference) => (
+            <p key={difference.code} className="t-caption prose muted">
+              <strong>Source difference:</strong> {difference.code} ({FINDEX.labels[difference.code]})
+              {" "}has a collected input of {fmt.percent(difference.collectedPercent)} and
+              a filled input of {fmt.percent(difference.filledPercent)}. This is a
+              difference between raw source inputs, not a missing observation.
+              Validate the difference when interpreting pillar 8; the published
+              pillar and overall scores are preserved.
+            </p>
+          ))}
+        </Card>
+      )}
 
       <div className="cols-4">
         <StatTile

@@ -1,0 +1,4 @@
+# Keep local source workbooks out of the repository.
+*.xlsx
+*.xls
+*.xlsm

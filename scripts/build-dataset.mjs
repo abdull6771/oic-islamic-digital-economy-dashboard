@@ -11,7 +11,7 @@
  *
  * Sheet provenance (established by inspecting the workbook, see DATA.md):
  *   OIC_2024 norm   master normalised panel: 57 countries x 5 years (2021-2025),
- *                   65 indicator/pillar columns + ADEI + Rank + Clusters.
+ *                   62 indicator/pillar columns + ADEI + Rank + Clusters.
  *                   Header rows 1-6 carry dimension / pillar / indicator /
  *                   code / sub-indicator / source-variable labels per column.
  *   OIC_2024 clear  same panel before normalisation (raw units, gap-filled).
@@ -28,12 +28,14 @@
  *                       Regions come from the curated map in src/data/index.js.
  */
 import XLSX from "xlsx";
-import { writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { dirname, resolve } from "node:path";
+import { basename, dirname, resolve } from "node:path";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const DEFAULT_WORKBOOK = "New findex_Master_Data collection.xlsx";
+const DEFAULT_WORKBOOK = "18 Oct_New findex_Master_Data collection.xlsx";
+const SOURCE_DATES = { [DEFAULT_WORKBOOK]: "2026-10-18" };
 const OUT = resolve(ROOT, "src/data/adei-dataset.json");
 
 const PANEL = "OIC_2024 norm";
@@ -221,7 +223,7 @@ function main() {
   const YEAR_COL = 2;
   const observations = [];
   const seen = new Set();
-  const dnaByCode = {};
+  const unavailableByCode = {};
 
   for (const row of panel.slice(7)) {
     const name = canonicalName(text(row[NAME_COL]));
@@ -242,7 +244,12 @@ function main() {
     const scores = scoreCodes.map((code) => {
       const raw = row[colOf[code]];
       const v = num(raw);
-      if (v === null && text(raw) !== "") (dnaByCode[code] ||= new Set()).add(year);
+      if (v === null) {
+        const missing = (unavailableByCode[code] ||= { countriesByYear: {}, reasons: new Set(), count: 0 });
+        (missing.countriesByYear[year] ||= []).push(name);
+        missing.reasons.add(text(raw) || "blank");
+        missing.count++;
+      }
       return round(v);
     });
 
@@ -267,14 +274,17 @@ function main() {
     });
   }
 
-  for (const [code, years] of Object.entries(dnaByCode)) {
-    const list = [...years].sort();
+  for (const [code, missing] of Object.entries(unavailableByCode)) {
+    const list = Object.keys(missing.countriesByYear).map(Number).sort();
+    const reasons = [...missing.reasons];
     note(
       "not-available",
       "info",
-      `Indicator ${code} is recorded as "dna" (not available) for ${list.join(", ")}; it is carried ` +
-        `through as null and was excluded from that year's aggregate by the workbook.`,
-      { code, years: list },
+      `${code.includes(".") ? "Indicator" : "Pillar"} ${code} has ${missing.count} unavailable value(s) ` +
+        `in ${list.join(", ")} (${reasons.join(", ")}). These remain null. ` +
+        (missing.count <= 5 ? `Affected: ${Object.entries(missing.countriesByYear).flatMap(([year, names]) => names.map((name) => `${name} ${year}`)).join(", ")}. ` : "") +
+        `Published aggregates are retained as supplied by the workbook.`,
+      { code, years: list, countriesByYear: missing.countriesByYear, count: missing.count, reasons },
     );
   }
 
@@ -328,7 +338,7 @@ function main() {
       "info",
       `The workbook's "Rank" and "Clusters" columns are complete and current only for the reference ` +
         `year. Earlier years carry ${rankMismatch.length} stale rank(s) and ` +
-        `${blankRanks.reduce((s, y) => s + y.missing, 0)} blank(s) left over from before the Findex ` +
+        `${blankRanks.reduce((s, y) => s + y.missing, 0)} missing/error value(s) left over from before the Findex ` +
         `refresh. The dashboard ranks and clusters every year from ADEI instead, which reproduces the ` +
         `workbook exactly for the reference year.`,
       { staleRanks: rankMismatch.length, blankRanks },
@@ -336,6 +346,7 @@ function main() {
 
   // -- Cross-check: ADEI must equal the weighted pillar sum -------------------
   let worstAdeiError = 0;
+  const incompletePillars = [];
   const pillarIndex = Object.fromEntries(
     pillarIds.map((p) => [p, scoreCodes.indexOf(p)]),
   );
@@ -349,13 +360,42 @@ function main() {
     }
     if (complete)
       worstAdeiError = Math.max(worstAdeiError, Math.abs(sum - o.adei));
+    else incompletePillars.push({ country: o.country, year: o.year });
   }
+  if (incompletePillars.length)
+    note(
+      "incomplete-pillars",
+      "info",
+      `${incompletePillars.length} country-year row(s) have a missing pillar score. ` +
+        `Affected: ${incompletePillars.map((o) => `${o.country} ${o.year}`).join(", ")}. ` +
+        `Their published ADEI is retained, but cannot be independently reconciled with all nine pillars.`,
+      { observations: incompletePillars },
+    );
   if (worstAdeiError > 0.01)
     note(
       "adei-recompute",
       "error",
       `Recomputing ADEI from the pillar scores and the published weights differs from the workbook's ` +
         `ADEI by up to ${worstAdeiError.toFixed(3)} points.`,
+    );
+
+  // Financial Market Development normally averages 8.1 and 8.2. Preserve any
+  // workbook exception, but expose it so a revised formula is not hidden.
+  const financialExceptions = observations.flatMap((o) => {
+    const financial = o.scores[scoreCodes.indexOf("8")];
+    const inclusion = o.scores[scoreCodes.indexOf("8.1")];
+    const market = o.scores[scoreCodes.indexOf("8.2")];
+    if (![financial, inclusion, market].every(Number.isFinite) || Math.abs(financial - (inclusion + market) / 2) <= 1e-4) return [];
+    return [{ country: o.country, year: o.year, pillar: financial, financialInclusion: inclusion, marketCapitalisation: market }];
+  });
+  if (financialExceptions.length)
+    note(
+      "financial-market-aggregation",
+      "warning",
+      `Financial Market Development differs from the mean of indicators 8.1 and 8.2 for ` +
+        financialExceptions.map((o) => `${o.country} ${o.year}`).join(", ") +
+        `. The dashboard preserves the workbook's pillar score and its contribution to ADEI.`,
+      { observations: financialExceptions },
     );
 
   // -- Findex coverage: which countries carry an imputed value ---------------
@@ -375,9 +415,13 @@ function main() {
 
   const findexValues = {};
   const imputed = {};
+  const collectedFindex = {};
   for (const row of origin.slice(7)) {
     const name = canonicalName(text(row[NAME_COL]));
     if (!name || num(row[YEAR_COL]) !== referenceYear) continue;
+    collectedFindex[name] = Object.fromEntries(
+      FINDEX_CODES.map((code) => [code, num(row[originCol[code]])]),
+    );
     for (const code of FINDEX_CODES) {
       // The workbook records "no observation" as a literal 0 in `origin`, then
       // substitutes a floor value in `clear` (see the ref sheet, "Methodology
@@ -411,6 +455,26 @@ function main() {
         { code, countries: list },
       );
   }
+  const sourceDifferences = [];
+  for (const [country, values] of Object.entries(findexValues)) {
+    for (const code of FINDEX_CODES) {
+      const original = collectedFindex[country]?.[code];
+      const filledPercent = values[code];
+      if (original !== null && original !== undefined && original !== 0 && filledPercent !== null &&
+          Math.abs(original * 100 - filledPercent) > 1e-6) {
+        sourceDifferences.push({ country, code, collectedPercent: round(original * 100), filledPercent });
+      }
+    }
+  }
+  if (sourceDifferences.length)
+    note(
+      "findex-source-difference",
+      "warning",
+      `The filled Findex inputs differ from nonzero collected observations for ` +
+        sourceDifferences.map((d) => `${d.country} ${d.code} (${d.collectedPercent}% collected; ${d.filledPercent}% filled)`).join(", ") +
+        `. The dashboard retains the workbook's filled inputs and published scores; these differences require source review.`,
+      { differences: sourceDifferences },
+    );
 
   const countries = [...new Set(observations.map((o) => o.country))].sort();
   const withoutIso = countries.filter((c) => !iso3[c]);
@@ -430,7 +494,9 @@ function main() {
 
   const dataset = {
     meta: {
-      source: workbook,
+      source: basename(workbook),
+      sourceUpdated: SOURCE_DATES[basename(workbook)] || null,
+      sourceSha256: createHash("sha256").update(readFileSync(workbookPath)).digest("hex"),
       generatedAt: new Date().toISOString(),
       generatedBy: "scripts/build-dataset.mjs",
       sheets: {
@@ -451,6 +517,8 @@ function main() {
       })),
       checks: {
         adeiVsWeightedPillars: worstAdeiError,
+        weightedPillarRowsChecked: observations.length - incompletePillars.length,
+        incompletePillarRows: incompletePillars.length,
         clusterMismatches: clusterMismatch.length,
       },
     },
@@ -471,10 +539,16 @@ function main() {
       codes: FINDEX_CODES,
       values: findexValues,
       imputed,
+      sourceDifferences,
     },
     dataQuality: issues,
   };
 
+  // A failed import must never replace the dataset the dashboard currently uses.
+  if (issues.some((i) => i.severity === "error")) {
+    for (const issue of issues) console.error(`  [${issue.severity}] ${issue.message}`);
+    throw new Error("Dataset validation failed; the previous dataset was preserved.");
+  }
   mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, JSON.stringify(dataset) + "\n", "utf8");
 

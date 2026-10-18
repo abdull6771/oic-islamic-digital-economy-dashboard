@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { COUNTRIES, META, PILLARS, REFERENCE_YEAR, getCluster } from "../data/index.js";
+import { COUNTRIES, FINDEX, META, PILLARS, REFERENCE_YEAR, getCluster } from "../data/index.js";
 import * as fmt from "../lib/format.js";
 import CountryCombobox from "../components/CountryCombobox.jsx";
 import PageActions from "../components/PageActions.jsx";
@@ -21,6 +21,16 @@ function PolicyRecommendations() {
   const [selected, setSelected] = useState("United Arab Emirates");
   const country = COUNTRIES.find((c) => c.name === selected);
   const cluster = getCluster(country.adei);
+  const imputedFindexCodes = FINDEX.codes.filter((code) =>
+    FINDEX.imputed[code]?.includes(country.name),
+  );
+  const findexSourceDifferences = (FINDEX.sourceDifferences || []).filter(
+    (difference) => difference.country === country.name,
+  );
+  const findexValidationCodes = [...new Set([
+    ...imputedFindexCodes,
+    ...findexSourceDifferences.map((difference) => difference.code),
+  ])];
 
   const generateRecommendations = (c) => {
     const recs = [];
@@ -68,8 +78,9 @@ function PolicyRecommendations() {
       recs.push({
         pillar: "Financial Market Development",
         priority: "MEDIUM",
-        action:
-          "Develop Islamic FinTech regulatory sandbox to attract digital finance innovation. In many OIC economies, a substantial population remains outside the formal banking system. Promote mobile banking, digital wallets, and Shariah-compliant FinTech solutions to drive financial inclusion, especially in rural areas.",
+        action: findexValidationCodes.length > 0
+          ? `Validate the financial-inclusion source inputs (${findexValidationCodes.join(", ")}) before interpreting the low pillar score as evidence of low inclusion.${imputedFindexCodes.length ? " Obtain observations for inputs using the workbook's imputed floor." : ""}${findexSourceDifferences.length ? " Resolve the differences between collected and filled raw inputs." : ""} The published scores are preserved. Use verified observations to assess whether banking access, digital payments, or other financial-market policies need attention.`
+          : "Develop Islamic FinTech regulatory sandbox to attract digital finance innovation. In many OIC economies, a substantial population remains outside the formal banking system. Promote mobile banking, digital wallets, and Shariah-compliant FinTech solutions to drive financial inclusion, especially in rural areas.",
       });
     if (p.p6 < 40)
       recs.push({
@@ -141,6 +152,30 @@ function PolicyRecommendations() {
           support="Derived from pillar-level gaps"
         />
       </div>
+
+      {(imputedFindexCodes.length > 0 || findexSourceDifferences.length > 0) && (
+        <Card title="Financial inclusion data coverage">
+          {imputedFindexCodes.length > 0 && (
+            <p className="t-caption prose muted">
+              In {FINDEX.year}, {country.name} uses the workbook's imputed floor for{" "}
+              {imputedFindexCodes.map((code) => `${code} (${FINDEX.labels[code]})`).join("; ")}.
+              These values are not survey observations. Pillar 8 and the overall score
+              incorporate these floor values; validate source coverage before drawing
+              conclusions about financial inclusion.
+            </p>
+          )}
+          {findexSourceDifferences.map((difference) => (
+            <p key={difference.code} className="t-caption prose muted">
+              <strong>Source difference:</strong> {difference.code} ({FINDEX.labels[difference.code]})
+              {" "}has a collected input of {fmt.percent(difference.collectedPercent)} and
+              a filled input of {fmt.percent(difference.filledPercent)}. This is a
+              difference between raw source inputs, not a missing observation.
+              Validate the difference before drawing financial inclusion conclusions;
+              the published pillar and overall scores are preserved.
+            </p>
+          ))}
+        </Card>
+      )}
 
       <Card
         title={`Strategic context for ${country.name}`}

@@ -29,7 +29,7 @@ const INSIGHTS = {
   p5: "Innovation is the OIC's key area for growth. Even the strongest performers sit well below the global frontier, reflecting limited private-sector R&D intensity relative to digital infrastructure.",
   p6: "Technological readiness varies more widely than any other pillar. GCC states score highest on the strength of AI strategies and emerging-technology adoption.",
   p7: "Market development is strongest across Southeast Asia and the Levant, where startup ecosystems and access to finance are deepest.",
-  p8: "Financial Market Development is the most unevenly measured pillar. It combines stock-market capitalisation with Global Findex financial-inclusion data, and the Findex survey does not cover every member state — several high-income economies therefore carry an imputed floor value here rather than an observation. Islamic FinTech remains an emerging strategic advantage for the GCC and Malaysia.",
+  p8: "Financial Market Development combines stock-market capitalisation with Global Findex financial-inclusion data. Where Findex inputs are unavailable, the workbook uses an imputed floor value. That value contributes to the pillar score but is not an observation of the country's financial inclusion; consider source coverage when comparing countries.",
   p9: "SDG impact scores track progress on access and inclusion, particularly health-system integration and connectivity.",
 };
 

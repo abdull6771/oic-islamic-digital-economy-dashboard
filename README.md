@@ -11,7 +11,7 @@ Each country is scored 0–100 across **9 weighted pillars** (Institutions, Infr
 The dashboard presents this through interactive tabs, including:
 
 - **Global Overview** — world map, rankings, and headline statistics
-- **Country Profiles** — per-country pillar breakdowns
+- **Country Profiles** — per-country pillar breakdowns and indicator drill-down
 - **Compare Countries** — side-by-side comparison
 - **Pillar & Geographic Analysis** — performance by pillar and by region
 - **Trends & Progress** — 2021–2025 trajectories
@@ -24,6 +24,23 @@ The dashboard presents this through interactive tabs, including:
 - **Recharts** (charts) and **react-simple-maps** + **d3-scale** (world map)
 
 The app has no backend. The index is generated from the master Excel workbook into a JSON dataset that is bundled at build time, so the app runs and deploys as static files.
+
+## Explore indicators
+
+In **Country Profiles**, choose a country and click **View indicators** on any
+pillar in **Pillar score breakdown**. The expanded panel shows its indicators
+and sub-indicators, the country's published scores, same-year OIC means, and
+differences in score points. Switching country keeps the chosen pillar open.
+
+Expand **Source and notes** for an indicator to see its source family, workbook
+variable, and interpretation notes. Findex inputs distinguish collected values,
+imputed floors, and source differences. Other numeric values are labelled
+**Workbook value**; they are not automatically classified as observations.
+Unavailable values stay as dashes, and means exclude them while retaining
+published numeric zeros and filled inputs.
+
+Run `npm run validate:indicators` to verify the drill-down scores, hierarchy,
+benchmarks, and coverage notes against all five years of the generated dataset.
 
 ## Download country reports
 

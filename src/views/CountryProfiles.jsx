@@ -25,6 +25,7 @@ import { HEADLINE_RECOMMENDATIONS } from "../lib/country-report-data.js";
 import CustomTooltip from "../components/CustomTooltip.jsx";
 import CountryCombobox from "../components/CountryCombobox.jsx";
 import PageActions from "../components/PageActions.jsx";
+import PillarIndicatorDetails from "../components/PillarIndicatorDetails.jsx";
 import ChartFrame, { animation, axis, grid, referenceLineProps, SCORE_DOMAIN } from "../components/ChartFrame.jsx";
 import {
   Badge,
@@ -33,7 +34,6 @@ import {
   ClusterBadge,
   Delta,
   InsightBlock,
-  ScoreBar,
   StatTile,
 } from "../components/Primitives.jsx";
 
@@ -59,11 +59,22 @@ function CountryProfiles() {
     return c && COUNTRIES.find((x) => x.name === c) ? c : "United Arab Emirates";
   });
   const [copied, setCopied] = useState(false);
+  const [expandedPillarId, setExpandedPillarId] = useState(null);
+  const indicatorPanelRef = useRef(null);
   const [reportJob, setReportJob] = useState(null);
   const reportBusyRef = useRef(false);
   const reportAbortRef = useRef(null);
   const mountedRef = useRef(true);
   const reportBusy = reportJob?.status === "running";
+
+  useEffect(() => {
+    if (expandedPillarId === null || typeof window === "undefined") return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    indicatorPanelRef.current?.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "nearest",
+    });
+  }, [expandedPillarId]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -477,22 +488,45 @@ function CountryProfiles() {
         >
           <div className="stack-sm">
             {PILLARS.map((p) => (
-              <div key={p.id}>
-                <div className="row" style={{ gap: "var(--s-8)", flexWrap: "nowrap" }}>
+              <button
+                key={p.id}
+                type="button"
+                className="pillar-disclosure"
+                aria-expanded={expandedPillarId === p.id}
+                aria-controls={expandedPillarId === p.id ? `pillar-indicators-${p.id}` : undefined}
+                onClick={() => setExpandedPillarId((current) => current === p.id ? null : p.id)}
+              >
+                <span className="pillar-disclosure-label">
                   <span className="swatch-dot" style={{ background: p.color }} aria-hidden="true" />
-                  <span className="t-caption" style={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <span className="pillar-disclosure-name t-caption">
                     {p.name}
                   </span>
                   <span className="t-caption subtle tnum">{fmt.weight(p.weight)}</span>
-                </div>
-                <div style={{ marginTop: "var(--s-4)" }}>
-                  <ScoreBar value={country[p.key]} color={p.color} label={p.name} />
-                </div>
-              </div>
+                </span>
+                <span className="score-bar">
+                  <span className="score-bar-track" aria-hidden="true">
+                    <span className="score-bar-fill" style={{ width: `${Math.max(0, Math.min(100, country[p.key] ?? 0))}%`, background: p.color }} />
+                  </span>
+                  <span className="score-bar-value t-caption">{fmt.score(country[p.key])}</span>
+                </span>
+                <span className="pillar-disclosure-action t-caption">
+                  {expandedPillarId === p.id ? "Hide indicators" : "View indicators"}
+                  <span aria-hidden="true">{expandedPillarId === p.id ? "−" : "+"}</span>
+                </span>
+              </button>
             ))}
           </div>
         </Card>
       </div>
+
+      {expandedPillarId !== null && (
+        <div ref={indicatorPanelRef} className="pillar-indicator-anchor">
+          <PillarIndicatorDetails
+            country={country}
+            pillar={PILLARS.find((p) => p.id === expandedPillarId)}
+          />
+        </div>
+      )}
 
       <div className="cols-3">
         <Card title="Key strengths" subtitle="Highest three pillar scores">

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "build:data": "node scripts/build-dataset.mjs",
     "validate:data": "node scripts/validate-dataset.mjs",
-    "validate:reports": "node scripts/validate-country-reports.mjs"
+    "validate:reports": "node scripts/validate-country-reports.mjs",
+    "validate:indicators": "node scripts/validate-indicator-drilldown.mjs"
   },
   "dependencies": {
     "d3-scale": "^4.0.2",

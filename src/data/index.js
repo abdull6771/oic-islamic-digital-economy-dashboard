@@ -20,6 +20,10 @@ export const REFERENCE_YEAR = dataset.meta.referenceYear;
 /** "2021–2025" — for chart titles and copy, so labels track the data. */
 export const YEAR_RANGE = `${YEARS[0]}–${YEARS[YEARS.length - 1]}`;
 export const INDICATOR_COUNTS = dataset.meta.counts;
+/** Source labels and hierarchy aligned to every published score code. */
+export const INDICATOR_METADATA = Object.fromEntries(
+  dataset.indicators.map((indicator) => [indicator.code, indicator]),
+);
 
 // ─── PRESENTATION METADATA ──────────────────────────────────────────────────
 // Names, short labels, palette and dimension groupings used by the views. The

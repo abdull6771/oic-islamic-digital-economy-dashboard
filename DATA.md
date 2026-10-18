@@ -146,6 +146,43 @@ coverage so missing lookups fail visibly.
 
 ## Rebuild and verification
 
+### Revision archive
+
+`src/data/revision-history.json` stores derived score and rank changes for the
+three local workbooks, in the verified order: the earlier master workbook,
+the preceding Findex workbook, then the 18 October workbook. Only the last has
+an independently established refresh date; the other dates are left unknown.
+The baseline has no comparison, rather than an invented earlier history.
+
+`npm run build:history` reconstructs this initial archive from those local
+workbooks (or explicit workbook paths in oldest-to-newest order). The final
+workbook must match the current generated dataset, including every score and
+derived rank. Workbooks are read without editing or recalculation and remain
+excluded from Git. The archive contains source fingerprints and derived numeric
+changes, never workbook binary contents.
+
+Future `build:data` imports append a revision by comparing the previous committed
+dataset to the newly validated dataset. Repeated fingerprints are idempotent;
+out-of-sequence or mismatched history fails visibly before replacing data.
+Differences use the dashboard's six-decimal score precision and per-year derived
+ranks, including rank-only movements and null-versus-zero changes. Formula-only
+or raw-source changes without a published score difference are outside this
+score history. `npm run validate:history` reconstructs preceding snapshots and
+checks each chain entry and the current dataset fingerprint.
+
+### Data-quality explorer
+
+The explorer includes the 53 non-pillar detailed codes across 57 countries and
+all five assessment years. Its observed/imputed classification is supported only
+for the 2025 Findex leaves: 122 observed, 48 imputed and one source discrepancy
+(Türkiye 8.1.2). The remaining 2,850 current-year values are explicitly **Not
+classified**. Aggregate scores and non-Findex numeric values are not assumed to
+be observations. The historical detailed codes contain 115 unavailable cells;
+the 116th missing field is Malaysia's 2021 pillar aggregate, outside this table.
+The table preserves scores and filled Findex adult percentages in separate
+fields, supports exact filtered CSV output, and never applies 2025 provenance
+flags to historical years.
+
 ```bash
 npm run build:data
 npm run validate:data

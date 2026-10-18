@@ -7,12 +7,14 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import JSZip from "jszip";
-import { COUNTRIES, PILLARS, REFERENCE_YEAR, getCountryYear } from "../src/data/index.js";
+import { COUNTRIES, PILLARS, REFERENCE_YEAR, REGIONS, getCountryYear } from "../src/data/index.js";
 import { buildCountryReport } from "../src/lib/country-report-data.js";
 import {
   countryReportFilename,
   createAllCountryReports,
   createCountryReportPdf,
+  createCountryReports,
+  selectReportCountries,
 } from "../src/lib/country-reports.js";
 
 const generatedAt = new Date("2026-10-18T12:34:56.000Z");
@@ -86,6 +88,34 @@ check("every report filename is unique, portable and a PDF", () => {
     assert.match(filename, /\.pdf$/i);
     assert.doesNotMatch(filename, /[<>:"/\\|?*\x00-\x1f]/);
   }
+});
+
+check("country and region selections are deduplicated in published rank order", () => {
+  const region = REGIONS[countries[0].name];
+  const expected = countries.filter((country) => country.name === countries.at(-1).name || REGIONS[country.name] === region);
+  assert.deepEqual(selectReportCountries({ countryNames: [countries.at(-1).name, countries[0].name, countries[0].name], regions: [region, region] }), expected);
+  assert.deepEqual(selectReportCountries(), countries);
+  assert.deepEqual(selectReportCountries({ regions: [region] }), countries.filter((country) => REGIONS[country.name] === region));
+});
+
+await checkAsync("empty, unknown or malformed selections and unsupported formats fail before generating reports", async () => {
+  for (const selection of [{ countryNames: [] }, { regions: [] }, { countryNames: ["Singapore"] }, { regions: ["Unknown region"] }, { countryNames: "Malaysia" }, { regions: null }]) {
+    let started = false;
+    await assert.rejects(createCountryReports({ ...selection, onProgress: () => { started = true; } }));
+    assert.equal(started, false);
+  }
+  await assert.rejects(createCountryReports({ format: "docx" }));
+  await assert.rejects(createCountryReports({ generatedAt: "invalid date" }));
+});
+
+await checkAsync("a selected ZIP contains only the requested countries with no duplicates", async () => {
+  const chosen = [countries.at(-1), countries[0], countries[2]];
+  const result = await createCountryReports({ countryNames: [...chosen.map(({ name }) => name), chosen[0].name], generatedAt });
+  const selectedZip = await JSZip.loadAsync(result.bytes, { checkCRC32: true });
+  assert.equal(result.count, 3);
+  assert.equal(result.mimeType, "application/zip");
+  assert.match(result.filename, /Selected_3.*\.zip$/);
+  assert.deepEqual(Object.keys(selectedZip.files), [...chosen].sort((a, b) => a.rank - b.rank).map(countryReportFilename));
 });
 
 await checkAsync("a pre-cancelled export stops before generating any report", async () => {
@@ -178,6 +208,57 @@ check("the individual export returns actual PDF bytes using the same API", () =>
   assert.equal(Buffer.from(individual.slice(0, 5)).toString(), "%PDF-");
 });
 
+const combinedProgress = [];
+const combined = await createCountryReports({ format: "combined", generatedAt, onProgress: (event) => combinedProgress.push(event) });
+const selectedCombined = await createCountryReports({ countryNames: [countries.at(-1).name, countries[0].name, countries[2].name], format: "combined", generatedAt });
+
+check("combined PDFs use measured profile ranges and contents entries in rank order", () => {
+  assert.equal(combined.count, countries.length);
+  assert.equal(combined.mimeType, "application/pdf");
+  assert.match(combined.filename, /All_57.*\.pdf$/);
+  assert.equal(combined.contentsPages, 2);
+  assert.equal(combined.contents[0].firstPage, combined.contentsPages + 1);
+  assert.equal(combined.contents.at(-1).lastPage, combined.pageCount);
+  assert.deepEqual(combined.contents.map(({ name }) => name), countries.map(({ name }) => name));
+  for (let index = 0; index < combined.contents.length; index++) {
+    const entry = combined.contents[index];
+    assert.ok(entry.lastPage >= entry.firstPage);
+    if (index) assert.equal(entry.firstPage, combined.contents[index - 1].lastPage + 1);
+  }
+  assert.equal(selectedCombined.count, 3);
+  assert.equal(selectedCombined.contentsPages, 1);
+  assert.deepEqual(selectedCombined.contents.map(({ name }) => name), [countries[0], countries[2], countries.at(-1)].map(({ name }) => name));
+  assert.equal(combinedProgress.at(-1).percent, 100);
+  assert.equal(combinedProgress.at(-1).completed, countries.length);
+});
+
+check("every contents row links to its actual PDF page object", () => {
+  for (const result of [combined, selectedCombined]) {
+    assert.equal(Buffer.from(result.bytes.slice(0, 5)).toString(), "%PDF-");
+    const objects = [...Buffer.from(result.bytes).toString("latin1").matchAll(/\b(\d+) 0 obj\b([\s\S]*?)endobj/g)];
+    const pages = objects.filter(([, , body]) => /\/Type \/Page\b/.test(body));
+    assert.equal(pages.length, result.pageCount);
+    const destinations = pages.slice(0, result.contentsPages).flatMap(([, , body]) => [...body.matchAll(/\/Dest\s*\[(\d+) 0 R\b/g)].map((match) => Number(match[1])));
+    assert.equal(destinations.length, result.count);
+    assert.deepEqual(destinations, result.contents.map(({ firstPage }) => Number(pages[firstPage - 1][1])));
+  }
+});
+
+await checkAsync("combined exports honour cancellation before generation, mid-generation and during final assembly", async () => {
+  for (const stage of ["before", "generating", "packaging"]) {
+    const controller = new AbortController();
+    let lastCompleted = 0;
+    if (stage === "before") controller.abort();
+    await assert.rejects(createCountryReports({ format: "combined", generatedAt, signal: controller.signal, onProgress(event) {
+      lastCompleted = event.completed;
+      if (stage === "generating" && event.completed >= 2) controller.abort();
+      if (stage === "packaging" && event.phase === "packaging") controller.abort();
+    } }), isAbortError);
+    if (stage === "before") assert.equal(lastCompleted, 0);
+    if (stage === "generating") assert.equal(lastCompleted, 2);
+  }
+});
+
 const python = String.raw`
 import base64, io, json, sys
 from pypdf import PdfReader
@@ -185,12 +266,19 @@ reports = json.load(sys.stdin)
 result = []
 for item in reports:
     reader = PdfReader(io.BytesIO(base64.b64decode(item["pdf"])), strict=True)
-    result.append({"name": item["name"], "pages": len(reader.pages), "text": "\n".join(page.extract_text() or "" for page in reader.pages), "pageTexts": [page.extract_text() or "" for page in reader.pages]})
+    page_numbers = {page.indirect_reference.idnum: index for index, page in enumerate(reader.pages)}
+    links = []
+    for page in reader.pages:
+        for annotation in page.get("/Annots", []):
+            destination = annotation.get_object().get("/Dest")
+            if destination:
+                links.append(page_numbers[destination[0].idnum])
+    result.append({"name": item["name"], "pages": len(reader.pages), "text": "\n".join(page.extract_text() or "" for page in reader.pages), "pageTexts": [page.extract_text() or "" for page in reader.pages], "links": links})
 json.dump(result, sys.stdout)
 `;
 const pythonProbe = spawnSync("python", ["-c", "import pypdf"], { encoding: "utf8" });
 if (pythonProbe.status === 0) {
-  const input = [...pdfs, { name: "individual", country: countries[0], bytes: individual }]
+  const input = [...pdfs, { name: "individual", country: countries[0], bytes: individual }, { name: "combined", bytes: combined.bytes }, { name: "selected-combined", bytes: selectedCombined.bytes }]
     .map(({ name, bytes }) => ({ name, pdf: Buffer.from(bytes).toString("base64") }));
   const result = spawnSync("python", ["-c", python], {
     input: JSON.stringify(input), encoding: "utf8", maxBuffer: 16 * 1024 * 1024,
@@ -215,7 +303,19 @@ if (pythonProbe.status === 0) {
     }
   });
   check("single-country and ZIP reports have identical extracted content", () => {
-    assert.equal(extracted[0].text, extracted.at(-1).text);
+    assert.equal(extracted[0].text, extracted[pdfs.length].text);
+  });
+  check("combined PDFs parse strictly and every contents link opens the named country's first profile page", () => {
+    for (const [offset, result] of [[-2, combined], [-1, selectedCombined]]) {
+      const parsed = extracted.at(offset);
+      assert.equal(parsed.pages, result.pageCount);
+      assert.deepEqual(parsed.links, result.contents.map(({ firstPage }) => firstPage - 1));
+      assert.ok(parsed.pageTexts.every((page) => page.trim().length > 30));
+      for (const entry of result.contents) {
+        assert.ok(normalized(parsed.pageTexts[entry.firstPage - 1]).includes(normalized(entry.name)));
+        assert.ok(parsed.pageTexts[entry.firstPage - 1].includes(entry.score.toFixed(1)));
+      }
+    }
   });
 } else {
   const reason = pythonProbe.error?.message || pythonProbe.stderr?.trim() || "Python pypdf is unavailable";

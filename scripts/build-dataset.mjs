@@ -32,11 +32,13 @@ import { writeFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { basename, dirname, resolve } from "node:path";
+import { appendDatasetRevision } from "../src/lib/revision-history.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DEFAULT_WORKBOOK = "18 Oct_New findex_Master_Data collection.xlsx";
 const SOURCE_DATES = { [DEFAULT_WORKBOOK]: "2026-10-18" };
 const OUT = resolve(ROOT, "src/data/adei-dataset.json");
+const HISTORY = resolve(ROOT, "src/data/revision-history.json");
 
 const PANEL = "OIC_2024 norm";
 const CLEAR = "OIC_2024 clear";
@@ -550,7 +552,13 @@ function main() {
     throw new Error("Dataset validation failed; the previous dataset was preserved.");
   }
   mkdirSync(dirname(OUT), { recursive: true });
+  // Prepare the revision before replacing data, so a broken history chain fails
+  // without silently losing the previous published snapshot.
+  const history = existsSync(HISTORY) ? JSON.parse(readFileSync(HISTORY, "utf8")) : null;
+  const nextHistory = history ? appendDatasetRevision(history,
+    existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")) : null, dataset) : null;
   writeFileSync(OUT, JSON.stringify(dataset) + "\n", "utf8");
+  if (nextHistory && nextHistory !== history) writeFileSync(HISTORY, JSON.stringify(nextHistory) + "\n", "utf8");
 
   const bytes = JSON.stringify(dataset).length;
   console.log(`Wrote ${OUT} (${(bytes / 1024).toFixed(0)} KB)`);

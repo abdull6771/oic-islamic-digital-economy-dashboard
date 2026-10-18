@@ -5,7 +5,7 @@ import { CLUSTER_SHORT, toneFor } from "../lib/clusters.js";
 import * as fmt from "../lib/format.js";
 
 /**
- * Search across all 57 member states and all 13 views.
+ * Search across all covered member states and available views.
  *
  * With this many entities the palette is the highest-value navigation
  * affordance available: a country is two keystrokes away from anywhere.
@@ -102,7 +102,7 @@ export default function CommandPalette({ open, onClose, onSelectView, onSelectCo
           aria-controls="cmdk-list"
           aria-activedescendant={items[active] ? `cmdk-${items[active].id}` : undefined}
           aria-label="Search countries and views"
-          placeholder="Search 57 member states and 13 views…"
+          placeholder={`Search ${COUNTRIES.length} member states and ${VIEWS.length} views…`}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

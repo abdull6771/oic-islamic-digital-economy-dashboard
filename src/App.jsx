@@ -25,9 +25,13 @@ import PeerLearning from "./views/PeerLearning.jsx";
 import StatisticalAnalysis from "./views/StatisticalAnalysis.jsx";
 import Methodology from "./views/Methodology.jsx";
 import Acknowledgement from "./views/Acknowledgement.jsx";
+import ReportDownloads from "./views/ReportDownloads.jsx";
+import WhatIfCalculator from "./views/WhatIfCalculator.jsx";
+import DataQualityExplorer from "./views/DataQualityExplorer.jsx";
+import UpdateHistory from "./views/UpdateHistory.jsx";
 
 /**
- * The 13 live views. `IslamicDigitalSpecial`, `PriorityMatrix` and
+ * The live views. `IslamicDigitalSpecial`, `PriorityMatrix` and
  * `ProgressTracker` were commented out of the original TABS array and remain
  * unrouted; their code is still in src/views/ untouched.
  */
@@ -45,6 +49,10 @@ const COMPONENTS = {
   stats: StatisticalAnalysis,
   methodology: Methodology,
   acknowledgement: Acknowledgement,
+  reports: ReportDownloads,
+  whatif: WhatIfCalculator,
+  quality: DataQualityExplorer,
+  history: UpdateHistory,
 };
 
 const THEME_KEY = "oic-dei-theme";

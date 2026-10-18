@@ -10,7 +10,11 @@
     "build:data": "node scripts/build-dataset.mjs",
     "validate:data": "node scripts/validate-dataset.mjs",
     "validate:reports": "node scripts/validate-country-reports.mjs",
-    "validate:indicators": "node scripts/validate-indicator-drilldown.mjs"
+    "validate:indicators": "node scripts/validate-indicator-drilldown.mjs",
+    "validate:what-if": "node scripts/validate-what-if.mjs",
+    "validate:quality": "node scripts/validate-data-quality.mjs",
+    "build:history": "node scripts/build-history.mjs",
+    "validate:history": "node scripts/validate-revision-history.mjs"
   },
   "dependencies": {
     "d3-scale": "^4.0.2",

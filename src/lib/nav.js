@@ -24,12 +24,16 @@ export const VIEWS = [
   { id: "trends", label: "Trends & Progress", group: "analysis", icon: "↗" },
   { id: "divide", label: "Digital Divide", group: "analysis", icon: "⇕" },
   { id: "stats", label: "Statistical Analysis", group: "analysis", icon: "∑" },
+  { id: "quality", label: "Data-quality Explorer", group: "analysis", icon: "▦" },
 
   { id: "builder", label: "Custom Index Builder", group: "tools", icon: "⚙" },
+  { id: "reports", label: "Report Downloads", group: "tools", icon: "⇩" },
+  { id: "whatif", label: "What-if Calculator", group: "tools", icon: "±" },
   { id: "peers", label: "Peer Learning", group: "tools", icon: "⇉" },
   { id: "policy", label: "Strategic Recommendations", group: "tools", icon: "★" },
 
   { id: "methodology", label: "Methodology", group: "about", icon: "§" },
+  { id: "history", label: "Update History", group: "about", icon: "↺" },
   { id: "acknowledgement", label: "Acknowledgements", group: "about", icon: "¶" },
 ];
 

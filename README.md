@@ -16,6 +16,10 @@ The dashboard presents this through interactive tabs, including:
 - **Pillar & Geographic Analysis** — performance by pillar and by region
 - **Trends & Progress** — 2021–2025 trajectories
 - **Custom Index Builder** — re-weight the pillars to build your own index
+- **Report Downloads** — choose countries or regions, then download PDFs in a ZIP or one combined PDF with linked contents
+- **What-if Calculator** — simulate pillar improvements and their effect on score and rank
+- **Data-quality Explorer** — search country-by-indicator scores, coverage states, and source notes
+- **Update History** — review score and ranking changes across workbook revisions
 - **Statistical Analysis** and **Methodology** — data, sources, and how the index is built
 
 ## Tech stack
@@ -57,6 +61,37 @@ The country count follows the dataset automatically.
 Run `npm run validate:reports` to check the real PDF/ZIP output, country coverage,
 progress, and cancellation. PDF and ZIP libraries load only when a report
 download is requested.
+
+For a custom collection, open **Report Downloads** from Tools or follow
+**Choose countries, regions or combined PDF** in Country Profiles. Select whole
+regions, individual countries, or all 57. Choose separate PDFs in a single ZIP
+or a combined PDF with clickable contents and continuous page numbers. Both
+formats follow the published OIC ranking and support progress, cancellation,
+and retry.
+
+## Simulate improvements and inspect data
+
+**What-if Calculator** starts from the selected country's published 2025 scores.
+Raise one or more pillars to see the weighted score contribution, hypothetical
+rank, and classification. Official weights apply and other countries remain
+fixed. Ties share a competition rank. Reset restores the published baseline;
+the scenario never changes the dashboard dataset.
+
+**Data-quality Explorer** provides country, region, year, pillar, status and text
+filters, pagination, source notes and filtered CSV export. Verified 2025 Findex
+leaves distinguish observed inputs, imputed inputs and a source discrepancy.
+Other numeric scores are **Not classified** where provenance has not established
+observation or imputation. Unavailable scores stay distinct from numeric zero.
+
+**Update History** compares the three available local workbook revisions, with
+country-year score and rank differences, detailed pillar/indicator changes,
+filters and CSV export. Dates are shown only where established. The first
+workbook is the baseline; earlier unarchived revisions are not reconstructed.
+`build:data` automatically appends future revisions when the workbook fingerprint
+changes. Reimporting the same workbook does not duplicate history.
+
+Run `npm run validate:what-if`, `npm run validate:quality` and
+`npm run validate:history` for the corresponding model and archive checks.
 
 ## How to run
 

@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import JSZip from "jszip";
-import { COUNTRIES, REFERENCE_YEAR } from "../data/index.js";
+import { COUNTRIES, REFERENCE_YEAR, REGIONS } from "../data/index.js";
 import { buildCountryReport } from "./country-report-data.js";
 
 // Reports use a fixed light palette so saved PDFs are independent of app theme.
@@ -11,6 +11,7 @@ const LINE = "#d4d1cb";
 const SURFACE = "#f4f4f2";
 const POSITIVE = "#18825b";
 const NEGATIVE = "#c43627";
+const CONTENTS_ROWS_PER_PAGE = 29;
 const PILLAR_COLORS = ["#3579b6", "#35a0b6", "#22756a", "#2c955f", "#6ba02d", "#866a26", "#763f21", "#a13055", "#722c96"];
 const number = (value) => Number.isFinite(value) ? value.toFixed(1) : "n.a.";
 const signed = (value) => `${value > 0 ? "+" : ""}${number(value)}`;
@@ -28,17 +29,17 @@ export function countryReportFilename(country) {
   return `${slug}_OIC_DEI_Profile_${REFERENCE_YEAR}.pdf`;
 }
 
-/** Create a searchable, paginated PDF without screenshot canvases or a CDN. */
-export function createCountryReportPdf(country, options = {}) {
-  const report = buildCountryReport(country, options);
+function newReportDocument(title, generatedAt) {
   const doc = new jsPDF({ unit: "pt", format: "a4", compress: true, putOnlyUsedFonts: true });
-  doc.setProperties({
-    title: `${country.name} - OIC Digital Economy Index ${report.assessmentYear}`,
-    subject: "Country profile and pillar performance",
-    author: "INCEIF University",
-    creator: "OIC Digital Economy Index Dashboard",
-  });
-  doc.setCreationDate(new Date(report.generatedAt));
+  doc.setProperties({ title, subject: "Country profiles and pillar performance", author: "INCEIF University", creator: "OIC Digital Economy Index Dashboard" });
+  doc.setCreationDate(new Date(generatedAt));
+  return doc;
+}
+
+/** Render into the current page; the returned range is measured, never assumed. */
+function appendCountryReport(doc, country, options = {}) {
+  const report = buildCountryReport(country, options);
+  const firstPage = doc.getNumberOfPages();
   const margin = 42;
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -195,15 +196,33 @@ export function createCountryReportPdf(country, options = {}) {
     heading("Data Coverage and Source Notes");
     for (const note of report.coverageNotes) paragraph(note, { size: 9, color: MUTED, after: 10 });
   }
+  const lastPage = doc.getNumberOfPages();
+  return { firstPage, lastPage };
+}
+
+function pageFooters(doc, labels) {
   const pageCount = doc.getNumberOfPages();
+  const margin = 42;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
   for (let page = 1; page <= pageCount; page++) {
     doc.setPage(page);
     doc.setDrawColor(LINE);
     doc.line(margin, pageHeight - 39, pageWidth - margin, pageHeight - 39);
-    font(8, false, MUTED);
-    doc.text(printable(country.name), margin, pageHeight - 24);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(MUTED);
+    doc.text(printable(labels[page - 1]), margin, pageHeight - 24);
     doc.text(`${page} / ${pageCount}`, pageWidth - margin, pageHeight - 24, { align: "right" });
   }
+}
+
+/** Create a searchable, paginated PDF without screenshot canvases or a CDN. */
+export function createCountryReportPdf(country, options = {}) {
+  const report = buildCountryReport(country, options);
+  const doc = newReportDocument(`${country.name} - OIC Digital Economy Index ${report.assessmentYear}`, report.generatedAt);
+  appendCountryReport(doc, country, options);
+  pageFooters(doc, Array(doc.getNumberOfPages()).fill(country.name));
   return new Uint8Array(doc.output("arraybuffer"));
 }
 
@@ -215,15 +234,123 @@ function checkCancelled(signal) {
 }
 const yieldToInterface = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-/** One archive avoids the browser's multiple-download prompts. */
-export async function createAllCountryReports({ signal, onProgress = () => {}, generatedAt = new Date() } = {}) {
+/** Select names and/or entire regions, deduplicate, and keep published rank order. */
+export function selectReportCountries({ countryNames, regions } = {}) {
+  if (countryNames === undefined && regions === undefined) return [...COUNTRIES].sort((a, b) => a.rank - b.rank);
+  if (countryNames !== undefined && !Array.isArray(countryNames)) throw new Error("Select countries using a list of country names.");
+  if (regions !== undefined && !Array.isArray(regions)) throw new Error("Select regions using a list of region names.");
+  const knownNames = new Set(COUNTRIES.map(({ name }) => name));
+  const knownRegions = new Set(COUNTRIES.map(({ name }) => REGIONS[name] || "Other"));
+  for (const name of countryNames || []) if (!knownNames.has(name)) throw new Error(`Unknown report country: ${String(name)}.`);
+  for (const region of regions || []) if (!knownRegions.has(region)) throw new Error(`Unknown report region: ${String(region)}.`);
+  const names = new Set(countryNames || []);
+  const regionSet = new Set(regions || []);
+  const countries = COUNTRIES.filter((country) => names.has(country.name) || regionSet.has(REGIONS[country.name] || "Other"))
+    .sort((a, b) => a.rank - b.rank);
+  if (!countries.length) throw new Error("Select at least one country or region before downloading reports.");
+  return countries;
+}
+
+function renderContents(doc, entries, { generatedAt, contentsPages }) {
+  const margin = 42;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const width = pageWidth - margin * 2;
+  const rowsPerPage = CONTENTS_ROWS_PER_PAGE;
+  for (let page = 1; page <= contentsPages; page++) {
+    doc.setPage(page);
+    doc.setTextColor(BRAND);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.text("INCEIF UNIVERSITY", margin, 29);
+    doc.setTextColor(MUTED);
+    doc.setFont("helvetica", "normal");
+    doc.text(`OIC Digital Economy Index ${REFERENCE_YEAR}`, pageWidth - margin, 29, { align: "right" });
+    doc.setDrawColor(LINE);
+    doc.line(margin, 40, pageWidth - margin, 40);
+    doc.setTextColor(INK);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(26);
+    doc.text(page === 1 ? "Country Reports" : "Contents (continued)", margin, 82);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(MUTED);
+    doc.text(`${entries.length} selected ${entries.length === 1 ? "country" : "countries"} | ${REFERENCE_YEAR} assessment | ${dateLabel(generatedAt)}`, margin, 105);
+    doc.setFontSize(9);
+    doc.text("Select a country below to open its report. Reports follow OIC rank order.", margin, 124);
+    let y = 145;
+    doc.setFillColor(SURFACE);
+    doc.rect(margin, y, width, 25, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.text("OIC RANK", margin + 8, y + 16);
+    doc.text("COUNTRY", margin + 72, y + 16);
+    doc.text("SCORE", pageWidth - margin - 66, y + 16, { align: "right" });
+    doc.text("PAGE", pageWidth - margin - 8, y + 16, { align: "right" });
+    y += 25;
+    for (const entry of entries.slice((page - 1) * rowsPerPage, page * rowsPerPage)) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(MUTED);
+      doc.text(`#${entry.rank}`, margin + 8, y + 16);
+      doc.setTextColor(BRAND);
+      doc.text(printable(entry.name), margin + 72, y + 16);
+      doc.setTextColor(INK);
+      doc.text(number(entry.score), pageWidth - margin - 66, y + 16, { align: "right" });
+      doc.text(String(entry.firstPage), pageWidth - margin - 8, y + 16, { align: "right" });
+      doc.link(margin, y, width, 21, { pageNumber: entry.firstPage, top: 0 });
+      doc.setDrawColor(LINE);
+      doc.line(margin, y + 21, pageWidth - margin, y + 21);
+      y += 21;
+    }
+  }
+}
+
+async function combinedReports(countries, { signal, onProgress, generatedAt }) {
+  const contentsPages = Math.ceil(countries.length / CONTENTS_ROWS_PER_PAGE);
+  const doc = newReportDocument(`Selected Country Reports - OIC Digital Economy Index ${REFERENCE_YEAR}`, generatedAt);
+  for (let page = 1; page < contentsPages; page++) doc.addPage();
+  const contents = [];
+  const labels = Array(contentsPages).fill("Country reports - Contents");
+  for (const [index, country] of countries.entries()) {
+    checkCancelled(signal);
+    onProgress({ phase: "generating", completed: index, total: countries.length, country: country.name });
+    await yieldToInterface();
+    checkCancelled(signal);
+    doc.addPage();
+    const range = appendCountryReport(doc, country, { generatedAt });
+    contents.push({ name: country.name, rank: country.rank, score: country.adei, ...range });
+    labels.push(...Array(range.lastPage - range.firstPage + 1).fill(country.name));
+    onProgress({ phase: "generating", completed: index + 1, total: countries.length, country: country.name });
+  }
+  await yieldToInterface();
   checkCancelled(signal);
-  const countries = [...COUNTRIES].sort((a, b) => a.rank - b.rank);
-  const zip = new JSZip();
-  const filenames = new Set();
+  onProgress({ phase: "packaging", completed: countries.length, total: countries.length, percent: 0 });
+  checkCancelled(signal);
+  renderContents(doc, contents, { generatedAt, contentsPages });
+  pageFooters(doc, labels);
+  await yieldToInterface();
+  checkCancelled(signal);
+  const bytes = new Uint8Array(doc.output("arraybuffer"));
+  onProgress({ phase: "packaging", completed: countries.length, total: countries.length, percent: 100 });
+  checkCancelled(signal);
+  return { bytes, contents, contentsPages, pageCount: doc.getNumberOfPages() };
+}
+
+/** A chosen set can be downloaded as separate PDFs in a ZIP or one indexed PDF. */
+export async function createCountryReports({ countryNames, regions, format = "zip", signal, onProgress = () => {}, generatedAt = new Date() } = {}) {
+  checkCancelled(signal);
+  if (format !== "zip" && format !== "combined") throw new Error("Choose ZIP or combined PDF as the report format.");
+  const countries = selectReportCountries({ countryNames, regions });
   const total = countries.length;
   const date = new Date(generatedAt);
   if (!Number.isFinite(date.getTime())) throw new Error("Report export requires a valid generation date.");
+  const scope = total === COUNTRIES.length ? `All_${total}` : `Selected_${total}`;
+  if (format === "combined") {
+    const result = await combinedReports(countries, { signal, onProgress, generatedAt: date });
+    return { ...result, filename: `OIC_DEI_${REFERENCE_YEAR}_${scope}_Country_Reports.pdf`, count: total, mimeType: "application/pdf" };
+  }
+  const zip = new JSZip();
+  const filenames = new Set();
   for (const [index, country] of countries.entries()) {
     checkCancelled(signal);
     onProgress({ phase: "generating", completed: index, total, country: country.name });
@@ -250,5 +377,10 @@ export async function createAllCountryReports({ signal, onProgress = () => {}, g
     onProgress({ phase: "packaging", completed: total, total, percent });
   });
   checkCancelled(signal);
-  return { bytes, filename: `OIC_DEI_${REFERENCE_YEAR}_All_${total}_Country_Reports.zip`, count: total };
+  return { bytes, filename: `OIC_DEI_${REFERENCE_YEAR}_${scope}_Country_Reports.zip`, count: total, mimeType: "application/zip" };
+}
+
+/** Backwards-compatible one-click export for the country profile page. */
+export async function createAllCountryReports(options = {}) {
+  return createCountryReports({ ...options, countryNames: undefined, regions: undefined, format: "zip" });
 }

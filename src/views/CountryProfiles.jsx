@@ -334,6 +334,9 @@ function CountryProfiles() {
           >
             Download all {COUNTRIES.length} reports (ZIP)
           </Button>
+          <Button onClick={() => navigate({ tab: "reports" })} disabled={reportBusy}>
+            Choose countries, regions or combined PDF
+          </Button>
           {reportBusy && (
             <Button onClick={cancelReportDownload} disabled={reportJob.phase === "cancelling"}>
               Cancel download

@@ -25,6 +25,22 @@ The dashboard presents this through interactive tabs, including:
 
 The app has no backend. The index is generated from the master Excel workbook into a JSON dataset that is bundled at build time, so the app runs and deploys as static files.
 
+## Download country reports
+
+Open **Country Profiles**, then use **Download all 57 reports (ZIP)** in the
+**Download country reports** section. One ZIP contains a separate, searchable
+two-page PDF for each country, including its scores, rankings, pillar comparison,
+regional peers, recommendations, and relevant source coverage notes.
+
+The export shows progress and can be cancelled or retried. The existing
+**Download PDF** action exports just the selected country using the same report
+format. PDF and ZIP generation run in the browser; source workbooks stay local.
+The country count follows the dataset automatically.
+
+Run `npm run validate:reports` to check the real PDF/ZIP output, country coverage,
+progress, and cancellation. PDF and ZIP libraries load only when a report
+download is requested.
+
 ## How to run
 
 ### Prerequisites

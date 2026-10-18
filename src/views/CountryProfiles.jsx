@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -21,6 +21,7 @@ import { useChartTokens, pillarColor } from "../styles/tokens.js";
 import { clusterColor, toneFor } from "../lib/clusters.js";
 import { hashParam, navigate, onHashChange } from "../lib/routing.js";
 import * as fmt from "../lib/format.js";
+import { HEADLINE_RECOMMENDATIONS } from "../lib/country-report-data.js";
 import CustomTooltip from "../components/CustomTooltip.jsx";
 import CountryCombobox from "../components/CountryCombobox.jsx";
 import PageActions from "../components/PageActions.jsx";
@@ -36,14 +37,20 @@ import {
   StatTile,
 } from "../components/Primitives.jsx";
 
-const HEADLINE_REC = {
-  "Advanced Digital Economies":
-    "Transition from digital follower to global standard-setter. Lead OIC in AI governance, digital export frameworks, and Islamic Fintech international standards.",
-  "Emerging Digital Economies":
-    "Bridge the gap to Advanced Digital Economies status by targeting private-sector digital adoption, R&D investment, and advanced skills development.",
-  "Foundational Digital Economies":
-    "Establish core digital infrastructure and implement nationwide digital literacy programs as the immediate national priority.",
-};
+function saveReportDownload(bytes, filename, mimeType) {
+  const url = URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  try {
+    anchor.click();
+  } finally {
+    anchor.remove();
+    // Give the browser time to consume the file before releasing its URL.
+    window.setTimeout(() => URL.revokeObjectURL(url), 30_000);
+  }
+}
 
 function CountryProfiles() {
   const tokens = useChartTokens();
@@ -52,6 +59,19 @@ function CountryProfiles() {
     return c && COUNTRIES.find((x) => x.name === c) ? c : "United Arab Emirates";
   });
   const [copied, setCopied] = useState(false);
+  const [reportJob, setReportJob] = useState(null);
+  const reportBusyRef = useRef(false);
+  const reportAbortRef = useRef(null);
+  const mountedRef = useRef(true);
+  const reportBusy = reportJob?.status === "running";
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      reportAbortRef.current?.abort();
+    };
+  }, []);
 
   // The hash is the source of truth, so the map, the command palette and a
   // pasted deep link all land on the same profile.
@@ -158,214 +178,86 @@ function CountryProfiles() {
     a.click();
   };
 
-  const exportPDF = () => {
-    const script = document.createElement("script");
-    script.src =
-      "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
-    script.onload = () => {
-      const pillarGaps = PILLARS.map((p) => ({
-        pillar: p,
-        gap: country[p.key] - oicAvgByPillar[p.key],
-        score: country[p.key],
-      })).sort((a, b) => b.gap - a.gap);
-      const strongest = pillarGaps[0];
-      const weakest = pillarGaps[pillarGaps.length - 1];
+  const exportReports = async (kind, reportCountry = country) => {
+    // A ref closes the gap before React disables the buttons on the next render.
+    if (reportBusyRef.current) return;
+    reportBusyRef.current = true;
+    const controller = new AbortController();
+    reportAbortRef.current = controller;
+    const allCountries = kind === "all";
+    const total = allCountries ? COUNTRIES.length : 1;
+    setReportJob({
+      kind,
+      targetCountry: reportCountry,
+      status: "running",
+      phase: "preparing",
+      completed: 0,
+      total,
+      message: allCountries
+        ? `Preparing reports for all ${total} countries...`
+        : `Preparing ${reportCountry.name}'s PDF report...`,
+    });
 
-      const regionPeersPdf = [...COUNTRIES]
-        .filter((c) => REGIONS[c.name] === REGIONS[country.name])
-        .sort((a, b) => b.adei - a.adei);
-      const globalLeader = [...COUNTRIES].sort((a, b) => b.adei - a.adei)[0];
-      const gapToGlobalLeader = (globalLeader.adei - country.adei).toFixed(1);
-      const regionLeaderGap =
-        regionPeersPdf[0].name === country.name
-          ? 0
-          : (regionPeersPdf[0].adei - country.adei).toFixed(1);
-      const top3Regional = regionPeersPdf.slice(0, 3);
-
-      // The report is a document: it is rasterised and printed, so it pins the
-      // light token set rather than inheriting whatever theme the app is showing.
-      // Resolve those values here, off a throwaway probe, and declare them inline
-      // on the element - html2pdf clones the node into its own off-screen
-      // container, and inline custom properties are the only ones guaranteed to
-      // travel with it. The element itself must stay unpositioned: a fixed or
-      // absolutely positioned clone escapes that container and rasterises blank.
-      const gapMark = (gap) =>
-        `<span style="color:${gap >= 0 ? "var(--positive)" : "var(--negative)"};">${fmt.deltaArrow(gap)} ${fmt.delta(gap)}</span>`;
-
-      const probe = document.createElement("div");
-      probe.setAttribute("data-report", "light");
-      probe.style.cssText =
-        "position:absolute;left:-9999px;top:0;width:0;height:0;overflow:hidden;";
-      document.body.appendChild(probe);
-      const probed = getComputedStyle(probe);
-      const reportTokens = [
-        "surface",
-        "surface-2",
-        "text",
-        "text-muted",
-        "text-subtle",
-        "border",
-        "border-strong",
-        "positive",
-        "negative",
-        "interactive",
-        "font-ui",
-        "font-display",
-      ].map((name) => [name, probed.getPropertyValue(`--${name}`).trim()]);
-      probe.remove();
-
-      const element = document.createElement("div");
-      element.style.cssText =
-        "padding:32px;background:var(--surface);color:var(--text);font-family:var(--font-ui);font-size:13px;line-height:1.6;";
-      for (const [name, value] of reportTokens) {
-        element.style.setProperty(`--${name}`, value);
+    try {
+      const reports = await import("../lib/country-reports.js");
+      if (controller.signal.aborted) throw new DOMException("Cancelled", "AbortError");
+      let result;
+      if (allCountries) {
+        result = await reports.createAllCountryReports({
+          signal: controller.signal,
+          onProgress: (progress) => {
+            if (!mountedRef.current || controller.signal.aborted) return;
+            const message = progress.phase === "packaging"
+              ? `Packaging ${progress.total} reports into one ZIP${progress.percent == null ? "" : `: ${Math.round(progress.percent)}%`}...`
+              : `Preparing ${progress.country || "country reports"}: ${progress.completed} of ${progress.total} reports ready.`;
+            setReportJob((current) => ({ ...current, ...progress, message }));
+          },
+        });
+      } else {
+        result = {
+          bytes: reports.createCountryReportPdf(reportCountry),
+          filename: reports.countryReportFilename(reportCountry),
+          count: 1,
+        };
       }
+      if (controller.signal.aborted) throw new DOMException("Cancelled", "AbortError");
+      if (!mountedRef.current) return;
+      saveReportDownload(
+        result.bytes,
+        result.filename,
+        allCountries ? "application/zip" : "application/pdf",
+      );
+      setReportJob((current) => ({
+        ...current,
+        status: "success",
+        completed: result.count,
+        message: allCountries
+          ? `Your ZIP download has started with ${result.count} country PDF reports.`
+          : `${reportCountry.name}'s PDF download has started.`,
+      }));
+    } catch (error) {
+      if (!mountedRef.current) return;
+      const cancelled = controller.signal.aborted || error?.name === "AbortError";
+      setReportJob((current) => ({
+        ...current,
+        status: cancelled ? "cancelled" : "error",
+        message: cancelled
+          ? "Report download cancelled. You can start it again."
+          : "Unable to prepare the report download. Please try again.",
+      }));
+    } finally {
+      reportBusyRef.current = false;
+      if (reportAbortRef.current === controller) reportAbortRef.current = null;
+    }
+  };
 
-      const H2 = "font-family:var(--font-display);font-size:22px;font-weight:400;color:var(--text);border-bottom:1px solid var(--border-strong);padding-bottom:8px;margin:28px 0 12px;letter-spacing:-0.01em;";
-      const TILE = "border:1px solid var(--border);border-radius:10px;padding:14px;background:var(--surface);";
-      const LABEL = "font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin:0 0 6px 0;";
-      const VALUE = "font-size:24px;font-weight:600;margin:0;color:var(--text);font-variant-numeric:tabular-nums;";
-      const CELL = "padding:8px 10px;border-bottom:1px solid var(--border);";
-
-      element.innerHTML = `
-        <div style="border-bottom:1px solid var(--border-strong);padding-bottom:16px;margin-bottom:24px;">
-          <p style="${LABEL}">OIC Digital Economy Index · Country profile</p>
-          <h1 style="font-family:var(--font-display);font-size:38px;font-weight:400;letter-spacing:-0.02em;margin:4px 0 6px;color:var(--text);">${country.name}</h1>
-          <p style="margin:0;color:var(--text-muted);font-size:12px;">${fmt.SCORE_UNIT} · ${REFERENCE_YEAR} assessment · ${region}</p>
-          ${imputedFindexCodes.length ? `<p style="margin:12px 0 0;color:var(--text-muted);font-size:12px;"><strong>Financial inclusion coverage:</strong> ${imputedFindexCodes.map((code) => `${code} (${FINDEX.labels[code]})`).join("; ")} use the workbook's imputed floor in ${FINDEX.year}. These are not survey observations; pillar 8 and the overall score incorporate them.</p>` : ""}
-          ${findexSourceDifferences.map((difference) => `<p style="margin:12px 0 0;color:var(--text-muted);font-size:12px;"><strong>Financial inclusion source difference:</strong> ${difference.code} (${FINDEX.labels[difference.code]}) has a collected input of ${fmt.percent(difference.collectedPercent)} and a filled input of ${fmt.percent(difference.filledPercent)}. This is a difference between raw source inputs, not a missing observation. Validate the difference when interpreting pillar 8; the published scores are preserved.</p>`).join("")}
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:8px;">
-          <div style="${TILE}">
-            <p style="${LABEL}">DEI score</p>
-            <p style="${VALUE}">${fmt.score(country.adei)}</p>
-          </div>
-          <div style="${TILE}">
-            <p style="${LABEL}">Global rank</p>
-            <p style="${VALUE}">${fmt.rank(country.rank)}</p>
-          </div>
-          <div style="${TILE}">
-            <p style="${LABEL}">Rank in region</p>
-            <p style="${VALUE}">${fmt.rank(regionRank)}</p>
-          </div>
-          <div style="${TILE}">
-            <p style="${LABEL}">vs OIC average</p>
-            <p style="${VALUE};color:${country.adei >= OIC_AVERAGE ? "var(--positive)" : "var(--negative)"};">${fmt.delta(country.adei - OIC_AVERAGE)}</p>
-          </div>
-        </div>
-
-        <h2 style="${H2}">Digital Economy Classification</h2>
-        <div style="background:var(--surface-2);border-left:3px solid var(--interactive);border-radius:0 6px 6px 0;padding:14px 18px;">
-          <p style="${LABEL}">${cluster.label}</p>
-          <p style="color:var(--text);margin:0;max-width:72ch;">${HEADLINE_REC[cluster.label]}</p>
-        </div>
-
-        <h2 style="${H2}">Performance Highlights</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div style="${TILE}">
-            <p style="${LABEL}">Strongest pillar</p>
-            <p style="margin:0 0 4px;font-weight:600;font-size:14px;">${strongest.pillar.name}</p>
-            <p style="margin:0;color:var(--text-muted);font-size:12px;">Score <strong>${fmt.score(strongest.score)}</strong> · ${gapMark(strongest.gap)} vs OIC avg</p>
-          </div>
-          <div style="${TILE}">
-            <p style="${LABEL}">Area for improvement</p>
-            <p style="margin:0 0 4px;font-weight:600;font-size:14px;">${weakest.pillar.name}</p>
-            <p style="margin:0;color:var(--text-muted);font-size:12px;">Score <strong>${fmt.score(weakest.score)}</strong> · ${gapMark(weakest.gap)} vs OIC avg</p>
-          </div>
-        </div>
-
-        <h2 style="${H2}">Regional &amp; Global Context</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div style="${TILE}">
-            <p style="${LABEL}">Regional position</p>
-            <p style="margin:0 0 4px;font-size:13px;">Ranked <strong>${fmt.rank(regionRank)}</strong> in ${region}</p>
-            <p style="margin:0;font-size:13px;color:var(--text-muted);">Gap to regional leader: <strong>${regionLeaderGap === 0 ? "You are the leader!" : "+" + regionLeaderGap}</strong></p>
-          </div>
-          <div style="${TILE}">
-            <p style="${LABEL}">Global benchmark</p>
-            <p style="margin:0 0 4px;font-size:13px;">Global leader: <strong>${globalLeader.name}</strong></p>
-            <p style="margin:0;font-size:13px;color:var(--text-muted);">Gap to close: <strong>${gapToGlobalLeader} points</strong></p>
-          </div>
-        </div>
-
-        <h2 style="${H2}">Pillar Score Performance</h2>
-        <table style="width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums;">
-          <thead>
-            <tr>
-              <th style="${CELL}border-bottom:1px solid var(--border-strong);text-align:left;${LABEL}margin:0;">Pillar</th>
-              <th style="${CELL}border-bottom:1px solid var(--border-strong);text-align:right;${LABEL}margin:0;">Score</th>
-              <th style="${CELL}border-bottom:1px solid var(--border-strong);text-align:right;${LABEL}margin:0;">OIC avg</th>
-              <th style="${CELL}border-bottom:1px solid var(--border-strong);text-align:right;${LABEL}margin:0;">vs avg</th>
-              <th style="${CELL}border-bottom:1px solid var(--border-strong);text-align:left;${LABEL}margin:0;">Performance</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${PILLARS.map((p) => {
-              const gap = country[p.key] - oicAvgByPillar[p.key];
-              const barWidth = Math.max(0, (country[p.key] / 100) * 150);
-              return `
-              <tr>
-                <td style="${CELL}">${p.name}</td>
-                <td style="${CELL}text-align:right;font-weight:600;">${fmt.score(country[p.key])}</td>
-                <td style="${CELL}text-align:right;color:var(--text-muted);">${fmt.score(oicAvgByPillar[p.key])}</td>
-                <td style="${CELL}text-align:right;font-weight:600;">${gapMark(gap)}</td>
-                <td style="${CELL}">
-                  <span style="display:block;width:150px;height:6px;border-radius:999px;background:var(--surface-2);">
-                    <span style="display:block;width:${barWidth}px;height:6px;border-radius:999px;background:${p.color};"></span>
-                  </span>
-                </td>
-              </tr>
-            `;
-            }).join("")}
-          </tbody>
-        </table>
-
-        <h2 style="${H2}">Top Regional Performers</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-          ${top3Regional
-            .map(
-              (c, idx) => `
-            <div style="${TILE}">
-              <p style="${LABEL}">${fmt.rank(idx + 1)} in region</p>
-              <p style="margin:0 0 4px;font-weight:600;font-size:13px;">${c.name}</p>
-              <p style="margin:0;color:var(--text-muted);font-size:12px;">Score <strong>${fmt.score(c.adei)}</strong></p>
-            </div>
-          `,
-            )
-            .join("")}
-        </div>
-
-        <h2 style="${H2}">Strategic Recommendations</h2>
-        <div style="font-size:13px;color:var(--text);max-width:72ch;">
-          <p><strong>1. Strengthen Your Position</strong><br/>Focus on enhancing ${strongest.pillar.name} where you have competitive advantage. This pillar is your key differentiator.</p>
-          <p><strong>2. Bridge the Gap</strong><br/>Prioritize ${weakest.pillar.name} to reduce the ${Math.abs(weakest.gap).toFixed(1)} point gap from OIC average. This is critical for overall advancement.</p>
-          <p><strong>3. Benchmark Learning</strong><br/>Study successful implementations from ${top3Regional[0].name} and other regional leaders to accelerate progress toward advanced digital economy status.</p>
-          <p><strong>4. Close Global Gap</strong><br/>To reach ${globalLeader.name}'s level, focus investments on digital infrastructure, innovation, and workforce development aligned with your classification tier.</p>
-        </div>
-
-        <div style="page-break-inside:avoid;margin-top:28px;border-top:1px solid var(--border-strong);padding-top:14px;">
-          <p style="${LABEL}">Report summary</p>
-          <p style="color:var(--text-muted);font-size:12px;margin:0 0 4px;">
-            <strong>Generated:</strong> ${new Date().toLocaleDateString()} · <strong>Assessment:</strong> OIC Digital Economy Index ${REFERENCE_YEAR}
-          </p>
-          <p style="color:var(--text-subtle);font-size:11px;margin:0;max-width:72ch;">
-            This report provides a comprehensive analysis of ${country.name}'s digital readiness. For updates and interactive analysis, visit the OIC Digital Economy Index Dashboard. ${fmt.SOURCE_LINE}.
-          </p>
-        </div>
-      `;
-
-      const opt = {
-        margin: 10,
-        filename: `${country.name.replace(/[^a-z0-9]/gi, "_")}_OIC_DEI_Profile.pdf`,
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { orientation: "portrait", unit: "mm", format: "a4" },
-      };
-
-      window.html2pdf().set(opt).from(element).save();
-    };
-    document.head.appendChild(script);
+  const cancelReportDownload = () => {
+    reportAbortRef.current?.abort();
+    setReportJob((current) => ({
+      ...current,
+      phase: "cancelling",
+      message: "Cancelling report download...",
+    }));
   };
 
   const copyLink = () => {
@@ -399,7 +291,7 @@ function CountryProfiles() {
           <Button onClick={exportCSV}>
             <span aria-hidden="true">↓</span> Export CSV
           </Button>
-          <Button onClick={exportPDF}>
+          <Button onClick={() => exportReports("single")} disabled={reportBusy}>
             <span aria-hidden="true">▤</span> Download PDF
           </Button>
           <Button onClick={copyLink} aria-live="polite">
@@ -411,6 +303,61 @@ function CountryProfiles() {
           </Button>
         </div>
       </div>
+
+      <Card
+        title="Download country reports"
+        subtitle={`${COUNTRIES.length} countries · ${REFERENCE_YEAR} assessment`}
+        className="no-print"
+        headingId="country-report-downloads"
+      >
+        <p id="country-report-download-help" className="t-caption prose muted" style={{ marginTop: 0 }}>
+          Download one ZIP containing a separate PDF profile for every country in the dashboard.
+          Each report includes scores, rankings, regional comparisons, recommendations, and data coverage notes.
+        </p>
+        <div className="row" style={{ gap: "var(--s-8)" }}>
+          <Button
+            variant="primary"
+            onClick={() => exportReports("all")}
+            disabled={reportBusy}
+            aria-describedby="country-report-download-help"
+          >
+            Download all {COUNTRIES.length} reports (ZIP)
+          </Button>
+          {reportBusy && (
+            <Button onClick={cancelReportDownload} disabled={reportJob.phase === "cancelling"}>
+              Cancel download
+            </Button>
+          )}
+          {reportJob?.status === "error" && (
+            <Button onClick={() => exportReports(reportJob.kind, reportJob.targetCountry)}>
+              Retry download
+            </Button>
+          )}
+        </div>
+        <div
+          id="country-report-download-status"
+          role={reportJob?.status === "error" ? "alert" : "status"}
+          aria-live={reportJob?.status === "error" ? "assertive" : "polite"}
+          aria-atomic="true"
+        >
+          {reportJob && (
+            <p className="t-caption" style={{ marginBottom: 0 }}>
+              {reportJob.message}
+            </p>
+          )}
+        </div>
+        {reportBusy && (
+          <progress
+            aria-label="Country report download progress"
+            aria-describedby="country-report-download-status"
+            max={reportJob.phase === "packaging" ? 100 : reportJob.total}
+            value={reportJob.phase === "preparing" || reportJob.phase === "cancelling"
+              ? undefined
+              : reportJob.phase === "packaging" ? reportJob.percent : reportJob.completed}
+            style={{ width: "100%", marginTop: "var(--s-12)", accentColor: "var(--interactive)" }}
+          />
+        )}
+      </Card>
 
       {(imputedFindexCodes.length > 0 || findexSourceDifferences.length > 0) && (
         <Card title="Financial inclusion data coverage">
@@ -573,7 +520,7 @@ function CountryProfiles() {
         </Card>
 
         <InsightBlock title="Headline recommendation">
-          {HEADLINE_REC[cluster.label]}
+          {HEADLINE_RECOMMENDATIONS[cluster.label]}
         </InsightBlock>
       </div>
 

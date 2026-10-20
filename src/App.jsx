@@ -5,12 +5,10 @@ import "./styles/global.css";
 import "./styles/components.css";
 
 import { META, OIC_AVERAGE, REFERENCE_YEAR } from "./data/index.js";
-import { DEFAULT_VIEW, GROUPS, VIEWS, isValidView, viewById } from "./lib/nav.js";
+import { DEFAULT_VIEW, VIEWS, isValidView, viewById } from "./lib/nav.js";
 import { hashParam, navigate, onHashChange, openCountry } from "./lib/routing.js";
 import * as fmt from "./lib/format.js";
-import { Button, useMediaQuery } from "./components/Primitives.jsx";
 import CommandPalette from "./components/CommandPalette.jsx";
-import { PageActionsProvider } from "./components/PageActions.jsx";
 
 import GlobalOverview from "./views/GlobalOverview.jsx";
 import CountryProfiles from "./views/CountryProfiles.jsx";
@@ -30,11 +28,6 @@ import WhatIfCalculator from "./views/WhatIfCalculator.jsx";
 import DataQualityExplorer from "./views/DataQualityExplorer.jsx";
 import UpdateHistory from "./views/UpdateHistory.jsx";
 
-/**
- * The live views. `IslamicDigitalSpecial`, `PriorityMatrix` and
- * `ProgressTracker` were commented out of the original TABS array and remain
- * unrouted; their code is still in src/views/ untouched.
- */
 const COMPONENTS = {
   overview: GlobalOverview,
   profiles: CountryProfiles,
@@ -55,157 +48,98 @@ const COMPONENTS = {
   history: UpdateHistory,
 };
 
-const THEME_KEY = "oic-dei-theme";
-const SIDEBAR_KEY = "oic-dei-sidebar";
-const THEME_ORDER = ["system", "light", "dark"];
-const THEME_LABEL = { system: "System", light: "Light", dark: "Dark" };
-const THEME_ICON = { system: "◐", light: "☀", dark: "☾" };
-
-const readStored = (key, fallback) => {
-  if (typeof window === "undefined") return fallback;
-  try {
-    return window.localStorage.getItem(key) ?? fallback;
-  } catch {
-    return fallback;
-  }
-};
-
-const store = (key, value) => {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(key, value);
-  } catch {
-    /* Private browsing or blocked storage: the preference just does not persist. */
-  }
-};
-
-/* ── Theme ───────────────────────────────────────────────────────────────── */
-
-function useTheme() {
-  const [theme, setTheme] = useState(() => {
-    const stored = readStored(THEME_KEY, "system");
-    return THEME_ORDER.includes(stored) ? stored : "system";
-  });
+function DashboardNavigation({ activeView, onNavigate }) {
+  const navRef = useRef(null);
+  const [overflow, setOverflow] = useState({ left: false, right: false });
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "system") root.removeAttribute("data-theme");
-    else root.setAttribute("data-theme", theme);
-    store(THEME_KEY, theme);
-  }, [theme]);
+    const nav = navRef.current;
+    const measure = () => setOverflow({
+      left: nav.scrollLeft > 2,
+      right: nav.scrollWidth - nav.clientWidth - nav.scrollLeft > 2,
+    });
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    nav.addEventListener("scroll", measure, { passive: true });
+    measure();
+    return () => {
+      observer.disconnect();
+      nav.removeEventListener("scroll", measure);
+    };
+  }, []);
 
-  const cycle = useCallback(
-    () => setTheme((t) => THEME_ORDER[(THEME_ORDER.indexOf(t) + 1) % THEME_ORDER.length]),
-    [],
-  );
+  useEffect(() => {
+    const nav = navRef.current;
+    const active = nav.querySelector('[aria-current="page"]');
+    if (!active) return;
+    // Buttons are positioned relative to the scroll container. Leave room for
+    // the overlaid scroll arrows when bringing a deep-linked tab into view.
+    const left = active.offsetLeft;
+    if (left < nav.scrollLeft + 28) nav.scrollLeft = Math.max(0, left - 28);
+    else if (left + active.offsetWidth > nav.scrollLeft + nav.clientWidth - 28) {
+      nav.scrollLeft = left + active.offsetWidth - nav.clientWidth + 28;
+    }
+  }, [activeView]);
 
-  return { theme, cycle };
-}
-
-/* ── Sidebar ─────────────────────────────────────────────────────────────── */
-
-function Sidebar({ activeView, onNavigate, collapsed, onToggleCollapse, onCloseDrawer }) {
-  const navRef = useRef(null);
-
-  // Up/down move between destinations; Enter and Space activate, as buttons do.
   const onKeyDown = (event) => {
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
-    const items = Array.from(navRef.current?.querySelectorAll(".nav-item") || []);
+    const step = { ArrowRight: 1, ArrowLeft: -1 }[event.key];
+    if (!step && event.key !== "Home" && event.key !== "End") return;
+    const items = [...navRef.current.querySelectorAll(".dashboard-tab")];
     const index = items.indexOf(document.activeElement);
-    if (index === -1) return;
+    if (index < 0) return;
     event.preventDefault();
-    const next = event.key === "ArrowDown" ? index + 1 : index - 1;
-    items[(next + items.length) % items.length]?.focus();
+    const next = event.key === "Home" ? 0 : event.key === "End" ? items.length - 1 :
+      (index + step + items.length) % items.length;
+    items[next].focus();
   };
 
   return (
-    <aside className="app-sidebar no-print">
-      <div className="sidebar-brand">
-        <span className="sidebar-mark" aria-hidden="true">
-          IU
-        </span>
-        <span className="sidebar-wordmark">
-          <strong>INCEIF University</strong>
-          <span>Digital Economy Index</span>
-        </span>
-      </div>
-
-      <nav className="sidebar-nav" aria-label="Views" ref={navRef} onKeyDown={onKeyDown}>
-        {GROUPS.map((group) => (
-          <div className="nav-group" key={group.id}>
-            <div className="nav-group-label t-overline">{group.label}</div>
-            {VIEWS.filter((v) => v.group === group.id).map((view) => (
-              <button
-                type="button"
-                key={view.id}
-                className="nav-item"
-                data-label={view.label}
-                title={view.label}
-                aria-current={activeView === view.id ? "page" : undefined}
-                onClick={() => {
-                  onNavigate(view.id);
-                  onCloseDrawer();
-                }}
-              >
-                <span className="nav-icon" aria-hidden="true">
-                  {view.icon}
-                </span>
-                <span className="nav-label">{view.label}</span>
-              </button>
-            ))}
-          </div>
+    <div className="dashboard-navigation no-print">
+      {overflow.left && (
+        <button className="tab-scroll tab-scroll-prev" aria-label="Show previous dashboard tabs"
+          onClick={() => navRef.current.scrollBy({ left: -navRef.current.clientWidth * 0.7 })}>
+          ‹
+        </button>
+      )}
+      <nav className="dashboard-tabs" aria-label="Dashboard views" ref={navRef} onKeyDown={onKeyDown}>
+        {VIEWS.map((view) => (
+          <button type="button" key={view.id} className="dashboard-tab"
+            aria-current={activeView === view.id ? "page" : undefined}
+            onClick={() => onNavigate(view.id)}>
+            {view.label}
+          </button>
         ))}
       </nav>
-
-      <div className="sidebar-foot t-caption">
-        <Button
-          size="sm"
-          onClick={onToggleCollapse}
-          aria-pressed={collapsed}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          style={{ width: "100%" }}
-        >
-          <span aria-hidden="true">{collapsed ? "»" : "«"}</span>
-          <span className="nav-label">Collapse</span>
-        </Button>
-        <span>© 2026 INCEIF University</span>
-      </div>
-    </aside>
+      {overflow.right && (
+        <button className="tab-scroll tab-scroll-next" aria-label="Show more dashboard tabs"
+          onClick={() => navRef.current.scrollBy({ left: navRef.current.clientWidth * 0.7 })}>
+          ›
+        </button>
+      )}
+    </div>
   );
 }
-
-/* ── App ─────────────────────────────────────────────────────────────────── */
 
 export default function App() {
   const [activeView, setActiveView] = useState(() => {
     const tab = hashParam("tab");
     return isValidView(tab) ? tab : DEFAULT_VIEW;
   });
-  const [collapsed, setCollapsed] = useState(() => readStored(SIDEBAR_KEY, "0") === "1");
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [actionsNode, setActionsNode] = useState(null);
-  const { theme, cycle } = useTheme();
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-
-  // The hash is the source of truth, so a deep link, the map, the palette and
-  // the back button all move the app the same way.
-  useEffect(
-    () =>
-      onHashChange(() => {
-        const tab = hashParam("tab");
-        setActiveView(isValidView(tab) ? tab : DEFAULT_VIEW);
-      }),
-    [],
-  );
-
-  useEffect(() => store(SIDEBAR_KEY, collapsed ? "1" : "0"), [collapsed]);
 
   useEffect(() => {
-    const onKey = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
-        e.preventDefault();
-        setPaletteOpen((v) => !v);
+    document.documentElement.setAttribute("data-theme", "light");
+    return onHashChange(() => {
+      const tab = hashParam("tab");
+      setActiveView(isValidView(tab) ? tab : DEFAULT_VIEW);
+    });
+  }, []);
+
+  useEffect(() => {
+    const onKey = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -216,106 +150,50 @@ export default function App() {
     navigate({ tab: id });
     setActiveView(id);
   }, []);
-
   const view = viewById(activeView) || viewById(DEFAULT_VIEW);
   const Component = COMPONENTS[view.id];
 
   return (
-    <div
-      className="app-shell"
-      data-sidebar={collapsed ? "collapsed" : "expanded"}
-      data-drawer={drawerOpen ? "open" : "closed"}
-    >
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
-
-      <Sidebar
-        activeView={view.id}
-        onNavigate={go}
-        collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed((c) => !c)}
-        onCloseDrawer={() => setDrawerOpen(false)}
-      />
-      <div
-        className="app-scrim"
-        onClick={() => setDrawerOpen(false)}
-        aria-hidden="true"
-      />
-
-      <div className="app-main">
-        <header className="page-header">
-          {!isDesktop && (
-            <Button
-              className="btn-icon no-print"
-              aria-label="Open navigation"
-              aria-expanded={drawerOpen}
-              onClick={() => setDrawerOpen(true)}
-            >
-              <span aria-hidden="true">☰</span>
-            </Button>
-          )}
-
-          <h1 className="t-h3">{view.label}</h1>
-
-          <div
-            className="page-header-spacer page-header-tools"
-            ref={setActionsNode}
-          />
-
-          <div className="page-header-tools no-print">
-            <span className="stat-chip t-caption">
-              <span className="t-overline" style={{ color: "var(--text-muted)" }}>
-                OIC avg
-              </span>
-              <b>{fmt.score(OIC_AVERAGE)}</b>
-            </span>
-
-            <Button onClick={() => setPaletteOpen(true)} aria-label="Search countries and views">
-              <span aria-hidden="true">⌕</span>
-              <span className="t-caption">Search</span>
-              <span className="kbd" aria-hidden="true">
-                ⌘K
-              </span>
-            </Button>
-
-            <Button
-              className="btn-icon"
-              onClick={cycle}
-              aria-label={`Theme: ${THEME_LABEL[theme]}. Change theme.`}
-              title={`Theme: ${THEME_LABEL[theme]}`}
-            >
-              <span aria-hidden="true">{THEME_ICON[theme]}</span>
-            </Button>
+    <div className="app-shell">
+      <a className="skip-link" href="#main">Skip to content</a>
+      <header className="dashboard-header">
+        <div className="dashboard-masthead">
+          <div className="dashboard-brand">
+            <h1>OIC Digital Economy Index</h1>
+            <p>OIC DEI · {META.countryCount} Member States · {REFERENCE_YEAR} Assessment</p>
           </div>
-        </header>
+          <div className="dashboard-average" aria-label={`Global average ${fmt.score(OIC_AVERAGE)} out of 100`}>
+            <span>GLOBAL AVERAGE</span>
+            <strong>{fmt.score(OIC_AVERAGE)}</strong>
+            <small>out of 100</small>
+          </div>
+        </div>
+        <DashboardNavigation activeView={view.id} onNavigate={go} />
+      </header>
 
-        <main className="content" id="main" tabIndex={-1}>
-          <PageActionsProvider value={actionsNode}>
-            <Component />
-          </PageActionsProvider>
-        </main>
+      <main className="content app-main" id="main" tabIndex={-1} aria-label={view.label}>
+        <Component />
+      </main>
 
-        <footer className="content" style={{ paddingTop: 0 }}>
-          <hr className="hairline" />
-          <p className="t-caption subtle prose">
-            Salim, K., Abdul Hamid, B., Disli, M., Lutfi, K. I., &amp; Cahyono, K. N.
-            (2026). Digital Economy Index: OIC Countries 2025 — Policy Report. INCEIF
-            University.
-          </p>
-          <p className="t-caption subtle">
-            © 2026 INCEIF University — The Global University of Islamic Finance ·{" "}
-            {META.countryCount} member states · {REFERENCE_YEAR} assessment
+      <footer className="dashboard-footer">
+        <p className="dashboard-citation">
+          Salim, K., Abdul Hamid, B., Disli, M., Lutfi, K. I., &amp; Cahyono, K. N.
+          (2026). Digital Economy Index: OIC Countries 2025 — Policy Report. INCEIF University.
+        </p>
+        <p>© 2026 INCEIF University — The Global University of Islamic Finance</p>
+        <div className="dashboard-footer-tools">
+          <span>{META.countryCount} member states · {REFERENCE_YEAR} assessment
             {META.sourceUpdated && <> · Data updated {new Intl.DateTimeFormat("en-GB", {
               day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
             }).format(new Date(`${META.sourceUpdated}T00:00:00Z`))}</>}
-          </p>
-        </footer>
-      </div>
+          </span>
+          <button className="footer-search no-print" onClick={() => setPaletteOpen(true)}>
+            Search countries and views <span aria-hidden="true">⌕</span>
+          </button>
+        </div>
+      </footer>
 
-      <CommandPalette
-        open={paletteOpen}
-        onClose={() => setPaletteOpen(false)}
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)}
         onSelectView={go}
         onSelectCountry={(name) => {
           openCountry(name);

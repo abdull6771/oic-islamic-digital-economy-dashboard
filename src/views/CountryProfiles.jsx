@@ -9,7 +9,6 @@ import {
   PolarRadiusAxis,
   Radar,
   RadarChart,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -17,24 +16,21 @@ import {
 } from "recharts";
 
 import { COUNTRIES, FINDEX, OIC_AVERAGE, PILLARS, REFERENCE_YEAR, REGIONS, getCluster } from "../data/index.js";
-import { useChartTokens, pillarColor } from "../styles/tokens.js";
-import { clusterColor, toneFor } from "../lib/clusters.js";
+import { useChartTokens } from "../styles/tokens.js";
+import { toneFor } from "../lib/clusters.js";
+import "../styles/country-profiles.css";
 import { hashParam, navigate, onHashChange } from "../lib/routing.js";
 import * as fmt from "../lib/format.js";
 import { HEADLINE_RECOMMENDATIONS } from "../lib/country-report-data.js";
 import CustomTooltip from "../components/CustomTooltip.jsx";
 import CountryCombobox from "../components/CountryCombobox.jsx";
-import PageActions from "../components/PageActions.jsx";
 import PillarIndicatorDetails from "../components/PillarIndicatorDetails.jsx";
-import ChartFrame, { animation, axis, grid, referenceLineProps, SCORE_DOMAIN } from "../components/ChartFrame.jsx";
+import ChartFrame, { animation, axis, SCORE_DOMAIN } from "../components/ChartFrame.jsx";
 import {
   Badge,
   Button,
   Card,
-  ClusterBadge,
-  Delta,
   InsightBlock,
-  StatTile,
 } from "../components/Primitives.jsx";
 
 function saveReportDownload(bytes, filename, mimeType) {
@@ -62,10 +58,20 @@ function CountryProfiles() {
   const [expandedPillarId, setExpandedPillarId] = useState(null);
   const indicatorPanelRef = useRef(null);
   const [reportJob, setReportJob] = useState(null);
+  const reportStatusRef = useRef(null);
   const reportBusyRef = useRef(false);
   const reportAbortRef = useRef(null);
   const mountedRef = useRef(true);
   const reportBusy = reportJob?.status === "running";
+
+  useEffect(() => {
+    if (!reportBusy) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    reportStatusRef.current?.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "nearest",
+    });
+  }, [reportBusy]);
 
   useEffect(() => {
     if (expandedPillarId === null || typeof window === "undefined") return;
@@ -280,85 +286,58 @@ function CountryProfiles() {
     });
   };
 
-  const clusterMark = clusterColor(tokens, cluster.label);
   const tone = toneFor(cluster.label);
+  const clusterMark = `var(--cluster-${tone})`;
   const bestGap = country[bestVsAvg.key] - oicAvgByPillar[bestVsAvg.key];
   const worstGap = country[worstVsAvg.key] - oicAvgByPillar[worstVsAvg.key];
 
   return (
-    <div className="stack">
-      {/* Contextual controls belong in the page header, next to the view title. */}
-      <PageActions>
+    <div className="country-profile">
+      <div className="profile-toolbar no-print">
         <CountryCombobox value={selected} onChange={choose} hideLabel />
-        <ClusterBadge cluster={cluster.label} short />
-      </PageActions>
-
-      <div className="row no-print">
-        <span className="t-caption muted">
-          Region: <strong style={{ color: "var(--text)" }}>{region}</strong>
+        <Badge tone={tone}>{cluster.label}</Badge>
+        <span className="profile-region">
+          Region: {region}
         </span>
-        <ClusterBadge cluster={cluster.label} />
-        <div className="row push" style={{ gap: "var(--s-8)" }}>
-          <Button onClick={exportCSV}>
-            <span aria-hidden="true">↓</span> Export CSV
+        <div className="profile-actions">
+          <Button className="profile-export-csv" onClick={exportCSV}>
+            <span aria-hidden="true">⬇</span> Export CSV
           </Button>
-          <Button onClick={() => exportReports("single")} disabled={reportBusy}>
-            <span aria-hidden="true">▤</span> Download PDF
+          <Button className="profile-export-pdf" onClick={() => exportReports("single")} disabled={reportBusy}>
+            <span aria-hidden="true">📄</span> Download PDF
           </Button>
-          <Button onClick={copyLink} aria-live="polite">
-            <span aria-hidden="true">{copied ? "✓" : "⧉"}</span>
-            {copied ? "Copied" : "Copy link"}
-          </Button>
-          <Button onClick={() => window.print()}>
-            <span aria-hidden="true">⎙</span> Print
-          </Button>
-        </div>
-      </div>
-
-      <Card
-        title="Download country reports"
-        subtitle={`${COUNTRIES.length} countries · ${REFERENCE_YEAR} assessment`}
-        className="no-print"
-        headingId="country-report-downloads"
-      >
-        <p id="country-report-download-help" className="t-caption prose muted" style={{ marginTop: 0 }}>
-          Download one ZIP containing a separate PDF profile for every country in the dashboard.
-          Each report includes scores, rankings, regional comparisons, recommendations, and data coverage notes.
-        </p>
-        <div className="row" style={{ gap: "var(--s-8)" }}>
           <Button
             variant="primary"
+            className="profile-export-all"
             onClick={() => exportReports("all")}
             disabled={reportBusy}
             aria-describedby="country-report-download-help"
           >
-            Download all {COUNTRIES.length} reports (ZIP)
+            <span aria-hidden="true">⇩</span> Download all {COUNTRIES.length} reports (ZIP)
           </Button>
-          <Button onClick={() => navigate({ tab: "reports" })} disabled={reportBusy}>
-            Choose countries, regions or combined PDF
+          <Button className="profile-copy-link" onClick={copyLink} aria-live="polite">
+            <span aria-hidden="true">{copied ? "✓" : "🔗"}</span>
+            {copied ? "Copied!" : "Copy Link"}
           </Button>
-          {reportBusy && (
-            <Button onClick={cancelReportDownload} disabled={reportJob.phase === "cancelling"}>
-              Cancel download
-            </Button>
-          )}
-          {reportJob?.status === "error" && (
-            <Button onClick={() => exportReports(reportJob.kind, reportJob.targetCountry)}>
-              Retry download
-            </Button>
-          )}
+          <Button className="profile-print" onClick={() => window.print()}>
+            <span aria-hidden="true">🖨</span> Print
+          </Button>
         </div>
+      </div>
+
+      <section
+        ref={reportStatusRef}
+        className="profile-report-feedback no-print"
+        aria-label="Country report download"
+        hidden={!reportJob}
+      >
         <div
           id="country-report-download-status"
           role={reportJob?.status === "error" ? "alert" : "status"}
           aria-live={reportJob?.status === "error" ? "assertive" : "polite"}
           aria-atomic="true"
         >
-          {reportJob && (
-            <p className="t-caption" style={{ marginBottom: 0 }}>
-              {reportJob.message}
-            </p>
-          )}
+          {reportJob && <p className="t-caption">{reportJob.message}</p>}
         </div>
         {reportBusy && (
           <progress
@@ -368,84 +347,51 @@ function CountryProfiles() {
             value={reportJob.phase === "preparing" || reportJob.phase === "cancelling"
               ? undefined
               : reportJob.phase === "packaging" ? reportJob.percent : reportJob.completed}
-            style={{ width: "100%", marginTop: "var(--s-12)", accentColor: "var(--interactive)" }}
           />
         )}
-      </Card>
-
-      {(imputedFindexCodes.length > 0 || findexSourceDifferences.length > 0) && (
-        <Card title="Financial inclusion data coverage">
-          {imputedFindexCodes.length > 0 && (
-            <p className="t-caption prose muted">
-              In {FINDEX.year}, {country.name} uses the workbook's imputed floor for{" "}
-              {imputedFindexCodes.map((code) => `${code} (${FINDEX.labels[code]})`).join("; ")}.
-              These values are not survey observations. Financial Market Development
-              (pillar 8) and the overall score incorporate these floor values.
-            </p>
+        <div className="row">
+          {reportBusy && (
+            <Button size="sm" onClick={cancelReportDownload} disabled={reportJob.phase === "cancelling"}>
+              Cancel download
+            </Button>
           )}
-          {findexSourceDifferences.map((difference) => (
-            <p key={difference.code} className="t-caption prose muted">
-              <strong>Source difference:</strong> {difference.code} ({FINDEX.labels[difference.code]})
-              {" "}has a collected input of {fmt.percent(difference.collectedPercent)} and
-              a filled input of {fmt.percent(difference.filledPercent)}. This is a
-              difference between raw source inputs, not a missing observation.
-              Validate the difference when interpreting pillar 8; the published
-              pillar and overall scores are preserved.
-            </p>
-          ))}
-        </Card>
-      )}
+          {reportJob?.status === "error" && (
+            <Button size="sm" onClick={() => exportReports(reportJob.kind, reportJob.targetCountry)}>
+              Retry download
+            </Button>
+          )}
+        </div>
+      </section>
 
-      <div className="cols-4">
-        <StatTile
-          label="OIC DEI score"
-          value={fmt.score(country.adei)}
-          support={`${cluster.label}`}
-        />
-        <StatTile
-          label="Global rank"
-          value={fmt.rank(country.rank)}
-          support={`of ${COUNTRIES.length} member states`}
-        />
-        <StatTile
-          label="Regional rank"
-          value={fmt.rank(regionRank)}
-          support={`of ${regionPeers.length} in ${region}`}
-        />
-        <StatTile
-          label="vs OIC average"
-          value={fmt.delta(country.adei - OIC_AVERAGE)}
-          delta={country.adei - OIC_AVERAGE}
-          support={`OIC average ${fmt.score(OIC_AVERAGE)}`}
-        />
+      <div className="profile-kpis">
+        {[
+          { label: "OIC DEI Score", value: fmt.score(country.adei), color: clusterMark },
+          { label: "Global Rank", value: `${fmt.rank(country.rank)} of ${COUNTRIES.length}` },
+          { label: "Regional Rank", value: `${fmt.rank(regionRank)} in ${region}`, color: "var(--profile-positive)" },
+          { label: "Best Pillar", value: strengths[0].short, color: "var(--profile-positive)" },
+          { label: "vs OIC Average", value: `${fmt.delta(country.adei - OIC_AVERAGE)} pts`, color: country.adei >= OIC_AVERAGE ? "var(--profile-positive)" : "var(--profile-negative)" },
+        ].map((kpi) => (
+          <div className="profile-kpi" key={kpi.label}>
+            <div className="profile-kpi-value" style={{ color: kpi.color }}>{kpi.value}</div>
+            <div className="profile-kpi-label">{kpi.label}</div>
+          </div>
+        ))}
       </div>
 
-      <div className="cols-2">
+      <div className="profile-charts">
         <ChartFrame
-          title="Pillar radar profile"
-          subtitle={`${country.name} against the OIC average · ${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
+          className="profile-radar"
+          title={<><span aria-hidden="true">📡</span> Pillar Radar Profile</>}
+          source={null}
           summary={`Radar of ${country.name}'s nine pillar scores against the OIC average. It is above average in ${pillarsAboveAvg} of ${PILLARS.length} pillars.`}
-          legend={
-            <>
-              <span className="legend-item t-overline">
-                <span className="legend-swatch" style={{ background: clusterMark }} aria-hidden="true" />
-                {country.name}
-              </span>
-              <span className="legend-item t-overline">
-                <span className="legend-swatch" style={{ background: tokens["text-subtle"] }} aria-hidden="true" />
-                OIC average
-              </span>
-            </>
-          }
         >
-          <ResponsiveContainer width="100%" height={300}>
-            <RadarChart data={pillarData} outerRadius="72%">
+          <ResponsiveContainer width="100%" height={280}>
+            <RadarChart data={pillarData} outerRadius="70%">
               <PolarGrid stroke={tokens.border} />
               <PolarAngleAxis dataKey="subject" tick={{ fill: tokens["text-muted"], fontSize: 11 }} />
               <PolarRadiusAxis
                 domain={SCORE_DOMAIN}
-                tick={{ fill: tokens["text-subtle"], fontSize: 11 }}
-                axisLine={false}
+                tick={{ fill: tokens["text-subtle"], fontSize: 9 }}
               />
               <Radar
                 name="OIC Average"
@@ -462,63 +408,55 @@ function CountryProfiles() {
                 dataKey="A"
                 stroke={clusterMark}
                 fill={clusterMark}
-                fillOpacity={0.22}
-                strokeWidth={2}
+                fillOpacity={0.25}
+                strokeWidth={2.5}
                 {...animation()}
               />
               <Tooltip content={<CustomTooltip />} />
             </RadarChart>
           </ResponsiveContainer>
 
-          <div style={{ marginTop: "var(--s-16)" }}>
+          <div className="profile-chart-insight">
             <InsightBlock title="Key insight">
               {country.name} outperforms the OIC average in{" "}
               <strong>
                 {pillarsAboveAvg} of {PILLARS.length} pillars
               </strong>
-              . Strongest advantage in <strong>{bestVsAvg.name}</strong> (
+              . Strongest advantage in <strong style={{ color: bestVsAvg.color }}>{bestVsAvg.name}</strong> (
               <strong>{fmt.delta(bestGap)} pts</strong> vs OIC avg); largest gap in{" "}
-              <strong>{worstVsAvg.name}</strong> (
+              <strong style={{ color: worstVsAvg.color }}>{worstVsAvg.name}</strong> (
               <strong>{fmt.delta(worstGap)} pts</strong> vs OIC avg).
             </InsightBlock>
           </div>
         </ChartFrame>
 
         <Card
-          title="Pillar score breakdown"
-          subtitle={`${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
-          footer={fmt.SOURCE_LINE}
+          className="profile-pillars"
+          title="Pillar Score Breakdown"
         >
-          <div className="stack-sm">
+          <div className="profile-pillar-list">
             {PILLARS.map((p) => (
               <button
                 key={p.id}
                 type="button"
-                className="pillar-disclosure"
+                className="pillar-disclosure profile-pillar"
+                style={{ "--profile-pillar-color": p.color }}
+                aria-label={`${p.name}: ${fmt.score(country[p.key])} out of 100. ${expandedPillarId === p.id ? "Hide" : "View"} indicators`}
                 aria-expanded={expandedPillarId === p.id}
                 aria-controls={expandedPillarId === p.id ? `pillar-indicators-${p.id}` : undefined}
                 onClick={() => setExpandedPillarId((current) => current === p.id ? null : p.id)}
               >
-                <span className="pillar-disclosure-label">
-                  <span className="swatch-dot" style={{ background: p.color }} aria-hidden="true" />
-                  <span className="pillar-disclosure-name t-caption">
-                    {p.name}
-                  </span>
-                  <span className="t-caption subtle tnum">{fmt.weight(p.weight)}</span>
+                <span className="profile-pillar-label">
+                  <span>{p.name}</span>
+                  <strong>{fmt.score(country[p.key])}</strong>
                 </span>
-                <span className="score-bar">
-                  <span className="score-bar-track" aria-hidden="true">
-                    <span className="score-bar-fill" style={{ width: `${Math.max(0, Math.min(100, country[p.key] ?? 0))}%`, background: p.color }} />
-                  </span>
-                  <span className="score-bar-value t-caption">{fmt.score(country[p.key])}</span>
-                </span>
-                <span className="pillar-disclosure-action t-caption">
-                  {expandedPillarId === p.id ? "Hide indicators" : "View indicators"}
-                  <span aria-hidden="true">{expandedPillarId === p.id ? "−" : "+"}</span>
+                <span className="profile-pillar-track" aria-hidden="true">
+                  <span className="profile-pillar-fill" style={{ width: `${Math.max(0, Math.min(100, country[p.key] ?? 0))}%` }} />
                 </span>
               </button>
             ))}
           </div>
+          <p className="profile-pillar-help no-print">Select a pillar to explore its indicators.</p>
         </Card>
       </div>
 
@@ -531,38 +469,42 @@ function CountryProfiles() {
         </div>
       )}
 
-      <div className="cols-3">
-        <Card title="Key strengths" subtitle="Highest three pillar scores">
-          <ul className="stack-sm" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+      <div className="profile-highlights">
+        <Card className="profile-strengths" title={<><span aria-hidden="true">✅</span> Key Strengths</>}>
+          <ul className="profile-highlight-list">
             {strengths.map((p) => (
-              <li className="row t-sm" key={p.key} style={{ gap: "var(--s-8)", flexWrap: "nowrap" }}>
-                <span className="swatch-dot" style={{ background: p.color }} aria-hidden="true" />
-                <span style={{ flex: 1, minWidth: 0 }}>{p.name}</span>
+              <li key={p.key}>
+                <span className="profile-bullet" style={{ color: p.color }} aria-hidden="true">▪</span>{" "}
+                {p.name}{" "}
                 <strong className="tnum">{fmt.scoreCompact(country[p.key])}</strong>
               </li>
             ))}
           </ul>
         </Card>
 
-        <Card title="Areas for growth" subtitle="Lowest three pillar scores">
-          <ul className="stack-sm" style={{ listStyle: "none", margin: 0, padding: 0 }}>
+        <Card className="profile-growth" title={<><span aria-hidden="true">⚠</span> Areas for Growth</>}>
+          <ul className="profile-highlight-list">
             {gaps.map((p) => (
-              <li className="row t-sm" key={p.key} style={{ gap: "var(--s-8)", flexWrap: "nowrap" }}>
-                <span className="swatch-dot" style={{ background: p.color }} aria-hidden="true" />
-                <span style={{ flex: 1, minWidth: 0 }}>{p.name}</span>
+              <li key={p.key}>
+                <span className="profile-bullet" style={{ color: p.color }} aria-hidden="true">▪</span>{" "}
+                {p.name}{" "}
                 <strong className="tnum">{fmt.scoreCompact(country[p.key])}</strong>
               </li>
             ))}
           </ul>
         </Card>
 
-        <InsightBlock title="Headline recommendation">
-          {HEADLINE_RECOMMENDATIONS[cluster.label]}
-        </InsightBlock>
+        <Card className="profile-recommendation">
+          <div className="profile-recommendation-heading">
+            <h2 className="t-h3">Headline Recommendation</h2>
+            <span className="profile-provenance">AI-assisted insight</span>
+          </div>
+          <p>{HEADLINE_RECOMMENDATIONS[cluster.label]}</p>
+        </Card>
       </div>
 
-      <Card title="Narrative assessment" footer={fmt.SOURCE_LINE}>
-        <p className="t-body-lg prose">
+      <Card className="profile-narrative" title={<><span aria-hidden="true">📝</span> Narrative Assessment</>}>
+        <p>
           {country.name} scores <strong>{fmt.score(country.adei)}</strong> on the{" "}
           {REFERENCE_YEAR} OIC Digital Economy Index, placing it{" "}
           <strong>{fmt.rank(country.rank)}</strong> globally and{" "}
@@ -582,26 +524,26 @@ function CountryProfiles() {
       </Card>
 
       <ChartFrame
-        title={`Regional peer comparison — ${region}`}
-        subtitle={`${country.name} and up to five regional peers · ${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
+        className="profile-peers"
+        title={`Regional Peer Comparison — ${region}`}
+        source={null}
         summary={`${country.name} scores ${fmt.score(country.adei)} against regional peers, ranking ${fmt.rank(regionRank)} of ${regionPeers.length} in ${region}.`}
       >
-        <ResponsiveContainer width="100%" height={220}>
+        <ResponsiveContainer width="100%" height={200}>
           <BarChart data={peerCompData} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
-            <CartesianGrid {...grid(tokens)} />
-            <XAxis dataKey="name" {...axis(tokens)} />
-            <YAxis domain={SCORE_DOMAIN} {...axis(tokens)} width={36} />
+            <CartesianGrid stroke={tokens.border} strokeDasharray="3 3" />
+            <XAxis dataKey="name" {...axis(tokens)} axisLine tick={{ fill: tokens["text-muted"], fontSize: 11 }} />
+            <YAxis domain={SCORE_DOMAIN} {...axis(tokens)} axisLine width={36} tick={{ fill: tokens["text-muted"], fontSize: 11 }} />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: tokens["surface-2"] }} />
-            <Bar dataKey="Score" maxBarSize={48} {...animation()}>
+            <Bar dataKey="Score" maxBarSize={40} {...animation()}>
               {peerCompData.map((d, i) => (
-                <Cell key={d.name} fill={i === 0 ? clusterMark : tokens["border-strong"]} />
+                <Cell key={d.name} fill={i === 0 ? "var(--profile-gold)" : "var(--profile-peer)"} />
               ))}
             </Bar>
-            <ReferenceLine y={OIC_AVERAGE} {...referenceLineProps(tokens)} />
           </BarChart>
         </ResponsiveContainer>
 
-        <div style={{ marginTop: "var(--s-16)" }}>
+        <div className="profile-chart-insight">
           <InsightBlock title="Key insight">
             {isRegionLeader ? (
               secondPlace ? (
@@ -637,6 +579,56 @@ function CountryProfiles() {
           </InsightBlock>
         </div>
       </ChartFrame>
+
+      <Card
+        title="Download country reports"
+        subtitle={`${COUNTRIES.length} countries · ${REFERENCE_YEAR} assessment`}
+        className="no-print"
+        headingId="country-report-downloads"
+      >
+        <p id="country-report-download-help" className="t-caption prose muted" style={{ marginTop: 0 }}>
+          Download one ZIP containing a separate PDF profile for every country in the dashboard.
+          Each report includes scores, rankings, regional comparisons, recommendations, and data coverage notes.
+        </p>
+        <div className="row" style={{ gap: "var(--s-8)" }}>
+          <Button
+            variant="primary"
+            onClick={() => exportReports("all")}
+            disabled={reportBusy}
+            aria-describedby="country-report-download-help"
+          >
+            Download all {COUNTRIES.length} reports (ZIP)
+          </Button>
+          <Button onClick={() => navigate({ tab: "reports" })} disabled={reportBusy}>
+            Choose countries, regions or combined PDF
+          </Button>
+        </div>
+      </Card>
+
+      {(imputedFindexCodes.length > 0 || findexSourceDifferences.length > 0) && (
+        <Card title="Financial inclusion data coverage">
+          {imputedFindexCodes.length > 0 && (
+            <p className="t-caption prose muted">
+              In {FINDEX.year}, {country.name} uses the workbook's imputed floor for{" "}
+              {imputedFindexCodes.map((code) => `${code} (${FINDEX.labels[code]})`).join("; ")}.
+              These values are not survey observations. Financial Market Development
+              (pillar 8) and the overall score incorporate these floor values.
+            </p>
+          )}
+          {findexSourceDifferences.map((difference) => (
+            <p key={difference.code} className="t-caption prose muted">
+              <strong>Source difference:</strong> {difference.code} ({FINDEX.labels[difference.code]})
+              {" "}has a collected input of {fmt.percent(difference.collectedPercent)} and
+              a filled input of {fmt.percent(difference.filledPercent)}. This is a
+              difference between raw source inputs, not a missing observation.
+              Validate the difference when interpreting pillar 8; the published
+              pillar and overall scores are preserved.
+            </p>
+          ))}
+        </Card>
+      )}
+
+      <p className="profile-source">{fmt.SOURCE_LINE} · {fmt.SCORE_UNIT} · {REFERENCE_YEAR} assessment</p>
     </div>
   );
 }

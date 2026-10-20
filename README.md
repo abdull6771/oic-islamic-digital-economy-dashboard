@@ -49,14 +49,20 @@ benchmarks, and coverage notes against all five years of the generated dataset.
 ## Download country reports
 
 Open **Country Profiles**, then use **Download all 57 reports (ZIP)** in the
-**Download country reports** section. One ZIP contains a separate, searchable
+profile toolbar. One ZIP contains a separate, searchable
 two-page PDF for each country, including its scores, rankings, pillar comparison,
 regional peers, recommendations, and relevant source coverage notes.
 
 The export shows progress and can be cancelled or retried. The existing
 **Download PDF** action exports just the selected country using the same report
 format. PDF and ZIP generation run in the browser; source workbooks stay local.
-The country count follows the dataset automatically.
+The country count follows the dataset automatically; the current dataset
+contains 57 countries.
+
+**Report Downloads** also starts with direct **Download all 57 reports (ZIP)**
+and **Download all 57 reports (combined PDF)** actions. Both include every country
+regardless of any search or custom selection, and show progress, cancel, and
+retry controls beside the action.
 
 Run `npm run validate:reports` to check the real PDF/ZIP output, country coverage,
 progress, and cancellation. PDF and ZIP libraries load only when a report

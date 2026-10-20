@@ -43,6 +43,22 @@ function saveDownload(result) {
   }
 }
 
+function DownloadStatus({ job, id, onCancel, onRetry }) {
+  const busy = job?.status === "running";
+  return (
+    <div className="report-download-status">
+      <div id={id} role={job?.status === "error" ? "alert" : "status"} aria-live={job?.status === "error" ? "assertive" : "polite"} aria-atomic="true">
+        {job && <p className="t-caption">{job.message}</p>}
+      </div>
+      {busy && <progress className="report-download-progress" aria-label="Country report download progress" aria-describedby={id} max={job.phase === "packaging" ? 100 : job.total} value={job.phase === "preparing" || job.phase === "cancelling" ? undefined : job.phase === "packaging" ? job.percent : job.completed} />}
+      {(busy || job?.status === "error") && <div className="report-download-status-actions">
+        {busy && <Button disabled={job.phase === "cancelling"} onClick={onCancel}>Cancel download</Button>}
+        {job?.status === "error" && <Button onClick={onRetry}>Retry previous download</Button>}
+      </div>}
+    </div>
+  );
+}
+
 export default function ReportDownloads() {
   const [selected, setSelected] = useState(() => new Set(COUNTRIES.map(({ name }) => name)));
   const [query, setQuery] = useState("");
@@ -72,12 +88,12 @@ export default function ReportDownloads() {
     return next;
   });
 
-  const download = async (request = { countryNames: [...selected], format }) => {
+  const download = async (request = { countryNames: [...selected], format }, location = "selection") => {
     if (busyRef.current || !request.countryNames.length) return;
     busyRef.current = true;
     const controller = new AbortController();
     controllerRef.current = controller;
-    setJob({ request, status: "running", phase: "preparing", completed: 0, total: request.countryNames.length, message: "Preparing your selected country reports..." });
+    setJob({ request, location, status: "running", phase: "preparing", completed: 0, total: request.countryNames.length, message: `Preparing ${request.countryNames.length} country reports...` });
     try {
       const { createCountryReports } = await import("../lib/country-reports.js");
       if (controller.signal.aborted) throw new DOMException("Cancelled", "AbortError");
@@ -117,6 +133,23 @@ export default function ReportDownloads() {
         Build a report collection for any countries or entire regions. Every profile includes
         scores, rankings, pillar comparisons, recommendations, and data coverage notes for the {REFERENCE_YEAR} assessment.
       </p>
+      <Card title={`Download all ${COUNTRIES.length} country reports`} subtitle="The complete collection in one download" className="report-quick-download">
+        <p className="t-body report-quick-description">
+          Get every country profile as separate PDFs in one ZIP, or as a single combined PDF with a clickable contents page.
+        </p>
+        <div className="report-quick-actions">
+          <Button variant="primary" disabled={busy} onClick={() => download({ countryNames: COUNTRIES.map(({ name }) => name), format: "zip" }, "all")} aria-describedby="report-all-export-help">
+            Download all {COUNTRIES.length} reports (ZIP)
+          </Button>
+          <Button disabled={busy} onClick={() => download({ countryNames: COUNTRIES.map(({ name }) => name), format: "combined" }, "all")} aria-describedby="report-all-export-help">
+            Download all {COUNTRIES.length} reports (combined PDF)
+          </Button>
+        </div>
+        <p id="report-all-export-help" className="t-caption muted">
+          Includes all {COUNTRIES.length} countries in the current dataset, regardless of the selection below. Preparing the collection may take a moment.
+        </p>
+        <DownloadStatus job={job?.location === "all" ? job : null} id="report-all-export-status" onCancel={cancel} onRetry={() => download(job.request, job.location)} />
+      </Card>
       <Card title="1. Select countries and regions" subtitle={`${COUNTRIES.length} countries available`} headingId="report-country-selection">
         <fieldset className="report-fieldset" disabled={busy} aria-labelledby="report-country-selection">
           <div className="report-selection-toolbar">
@@ -168,14 +201,9 @@ export default function ReportDownloads() {
           <Button variant="primary" disabled={busy || !selected.size} onClick={() => download()} aria-describedby="report-export-help">
             Download {selected.size || "selected"} {selected.size === 1 ? "country" : "countries"} ({format === "zip" ? "ZIP" : "combined PDF"})
           </Button>
-          {busy && <Button disabled={job.phase === "cancelling"} onClick={cancel}>Cancel download</Button>}
-          {job?.status === "error" && <Button onClick={() => download(job.request)}>Retry previous download</Button>}
         </div>
         <p id="report-export-help" className="t-caption muted">{selected.size ? "Reports follow the published OIC ranking. Large collections may take a moment to prepare." : "Select at least one country or region to prepare a download."}</p>
-        <div id="report-export-status" role={job?.status === "error" ? "alert" : "status"} aria-live={job?.status === "error" ? "assertive" : "polite"} aria-atomic="true">
-          {job && <p className="t-caption">{job.message}</p>}
-        </div>
-        {busy && <progress className="report-download-progress" aria-label="Selected country report download progress" aria-describedby="report-export-status" max={job.phase === "packaging" ? 100 : job.total} value={job.phase === "preparing" || job.phase === "cancelling" ? undefined : job.phase === "packaging" ? job.percent : job.completed} />}
+        <DownloadStatus job={job?.location === "selection" ? job : null} id="report-export-status" onCancel={cancel} onRetry={() => download(job.request, job.location)} />
       </Card>
     </div>
   );

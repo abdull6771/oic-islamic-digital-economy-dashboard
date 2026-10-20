@@ -1,8 +1,7 @@
 /*
  * Reset, base typography, focus, motion and print.
  *
- * Every value here reads a token from tokens.css. Nothing in this file - or in
- * any component - carries a literal colour.
+ * Screen styles use the original dashboard's shared light-theme tokens.
  */
 
 *,
@@ -59,7 +58,7 @@ textarea {
 }
 
 /* ── Type scale ─────────────────────────────────────────────────────────── */
-/* Sizes are rem against a 16px root. Weight 900 is not available anywhere. */
+/* Sizes are rem against a 16px root. Georgia supplies the original serif face. */
 
 .t-display {
   font-family: var(--font-display);
@@ -72,22 +71,22 @@ textarea {
 .t-h1 {
   font-size: 2rem;
   line-height: 2.375rem;
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .t-h2 {
   font-size: 1.5rem;
   line-height: 1.875rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .t-h3 {
   font-size: 1.125rem;
   line-height: 1.625rem;
-  font-weight: 600;
-  letter-spacing: -0.005em;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .t-body-lg {
@@ -140,7 +139,7 @@ textarea {
   font-feature-settings: "tnum" 1;
 }
 
-/* Display face is reserved for 24px and up. */
+/* Headings and body copy share the original serif family. */
 .t-display,
 .t-serif {
   font-family: var(--font-display);
@@ -261,17 +260,16 @@ table,
 /* ── Print ──────────────────────────────────────────────────────────────── */
 
 @media print {
-  /* Force the light token set: dark backgrounds waste ink and read badly. */
-  :root,
-  :root[data-theme="dark"] {
+  /* White paper surfaces preserve readable exported and printed reports. */
+  :root {
     --bg: #ffffff;
     --surface: #ffffff;
-    --surface-2: #f4f4f2;
-    --border: #d4d1cb;
-    --border-strong: #b6b2aa;
-    --text: #16181a;
-    --text-muted: #4a515b;
-    --text-subtle: #6b7280;
+    --surface-2: #f1f5f9;
+    --border: #cbd5e1;
+    --border-strong: #94a3b8;
+    --text: #1e293b;
+    --text-muted: #475569;
+    --text-subtle: #64748b;
   }
 
   body {
@@ -297,7 +295,7 @@ table,
 
   .page-header {
     position: static !important;
-    border-bottom: 1px solid #d4d1cb;
+    border-bottom: 1px solid var(--border);
   }
 
   .card,

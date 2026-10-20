@@ -46,7 +46,7 @@ function Acknowledgement() {
 
   return (
     <div className="view-prose">
-      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+      <div>
         {/* Hero Banner */}
         <div
           style={{

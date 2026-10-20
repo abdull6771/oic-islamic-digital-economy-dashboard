@@ -1,10 +1,8 @@
 /**
  * Navigation model.
  *
- * The 13 views were a horizontally-scrolling tab strip with no overflow
- * affordance, so anything past the viewport edge was invisible. They are now
- * grouped into four sections in a persistent sidebar. The `id` of every view is
- * unchanged, so existing `#tab=<id>` links still resolve.
+ * Views appear in the original horizontal tab strip. Groups also organize the
+ * search palette. Stable IDs keep existing #tab=<id> links working.
  */
 
 export const GROUPS = [

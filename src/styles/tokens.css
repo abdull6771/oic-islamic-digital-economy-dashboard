@@ -87,19 +87,19 @@
   --info-line: #abddec;
   --info-ink: #006d93;
 
-  /* Original cluster fills with readable badge text */
-  --cluster-advanced: #1b4332;
-  --cluster-advanced-bg: #d8f3dc;
-  --cluster-advanced-line: #95d5b2;
-  --cluster-advanced-ink: #1b4332;
-  --cluster-emerging: #52b788;
-  --cluster-emerging-bg: #e8f5e9;
-  --cluster-emerging-line: #95d5b2;
-  --cluster-emerging-ink: #2d6a4f;
-  --cluster-foundational: #95d5b2;
-  --cluster-foundational-bg: #f1f8f6;
-  --cluster-foundational-line: #b7dfce;
-  --cluster-foundational-ink: #386c59;
+  /* Country classifications: green, amber and red, with readable badge text. */
+  --cluster-advanced: #249b63;
+  --cluster-advanced-bg: #e8f5ee;
+  --cluster-advanced-line: #94d3ae;
+  --cluster-advanced-ink: #176540;
+  --cluster-emerging: #d89017;
+  --cluster-emerging-bg: #fff3d8;
+  --cluster-emerging-line: #edc778;
+  --cluster-emerging-ink: #805000;
+  --cluster-foundational: #c83f36;
+  --cluster-foundational-bg: #fff0ee;
+  --cluster-foundational-line: #e8aba5;
+  --cluster-foundational-ink: #9d2b25;
 
   /* Space */
   --s-4: 4px;

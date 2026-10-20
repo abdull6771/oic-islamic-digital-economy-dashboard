@@ -1,10 +1,8 @@
 /**
  * One cluster encoding for the whole product.
  *
- * The old build encoded the three clusters twice - traffic-light green/amber/red
- * on the map legend and a green ramp on the cluster cards, one screen apart.
- * Everything now resolves through here, so the map, the cards, the tables and
- * the chips cannot disagree.
+ * Advanced is green, Emerging is amber, and Foundational is red. The map,
+ * cluster cards, tables and badges resolve those colours through shared tokens.
  */
 
 export const CLUSTER_TONE = {

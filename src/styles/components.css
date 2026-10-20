@@ -1060,60 +1060,24 @@ th[aria-sort="descending"] .sort-ind {
 
 .map-legend {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: var(--s-24);
   flex-wrap: wrap;
   margin-top: var(--s-16);
 }
 
-.ramp {
-  flex: 1 1 280px;
-  min-width: 220px;
-}
-
-.ramp-bar {
-  display: flex;
-  height: 10px;
-  border-radius: var(--r-full);
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-
-.ramp-bar span {
-  flex: 1;
-}
-
-.ramp-scale {
-  position: relative;
-  height: 20px;
-  margin-top: var(--s-4);
-}
-
-.ramp-tick {
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%);
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.ramp-tick::before {
-  content: "";
+.map-legend-range {
   display: block;
-  width: 1px;
-  height: 4px;
-  margin: 0 auto 2px;
-  background: var(--border-strong);
+  margin-top: var(--s-4);
+  font-size: 0.6875rem;
 }
 
-.ramp-tick[data-threshold="true"] {
+.map-cluster-keys strong {
   color: var(--text);
-  font-weight: 600;
 }
 
-.ramp-tick[data-threshold="true"]::before {
-  height: 7px;
-  background: var(--text-muted);
+.map-cluster-keys {
+  flex: 1 1 auto;
 }
 
 .legend-keys {

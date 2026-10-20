@@ -15,9 +15,6 @@
   --p7: #2d6a4f;
   --p8: #388e7f;
   --p9: #1f4e38;
-  --cluster-advanced: #1b4332;
-  --cluster-emerging: #52b788;
-  --cluster-foundational: #95d5b2;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -58,18 +55,18 @@
 }
 
 .profile-toolbar .badge[data-tone="advanced"] {
-  color: #1b4332;
-  background: #d8f3dc;
+  color: var(--cluster-advanced-ink);
+  background: var(--cluster-advanced-bg);
 }
 
 .profile-toolbar .badge[data-tone="emerging"] {
-  color: #2d6a4f;
-  background: #e8f5e9;
+  color: var(--cluster-emerging-ink);
+  background: var(--cluster-emerging-bg);
 }
 
 .profile-toolbar .badge[data-tone="foundational"] {
-  color: #40916c;
-  background: #f1f8f6;
+  color: var(--cluster-foundational-ink);
+  background: var(--cluster-foundational-bg);
 }
 
 .profile-region {

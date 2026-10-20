@@ -1,27 +1,25 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
 import { COUNTRIES, META, REFERENCE_YEAR, findCountryByGeoName, getCluster } from "../data/index.js";
-import { useChartTokens, seqColor } from "../styles/tokens.js";
-import { CLUSTER_SHORT, toneFor } from "../lib/clusters.js";
+import { useChartTokens } from "../styles/tokens.js";
+import { CLUSTER_SHORT, clusterColor, toneFor } from "../lib/clusters.js";
 import { openCountry } from "../lib/routing.js";
 import * as fmt from "../lib/format.js";
 import { Button, ErrorState, LoadingState } from "./Primitives.jsx";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json";
 
-/** Where the cluster thresholds fall on a 0-100 ramp. */
-const THRESHOLDS = [40, 60];
+const CLUSTER_LEGEND = [
+  { tone: "advanced", range: "60–100" },
+  { tone: "emerging", range: "40 to below 60" },
+  { tone: "foundational", range: "Below 40" },
+];
 const INITIAL_VIEW = { coordinates: [12, 14], zoom: 1 };
 
 /**
- * The flagship view: a full-width choropleth on the sequential DEI ramp.
- *
- * The old map was a fixed 800px SVG with an 80px legend rail glued to its right
- * edge carrying 8px text, bucketed into three traffic-light colours that
- * contradicted the cluster cards one screen away, and it rendered silently
- * empty when the CDN fetch failed. This one is aspect-ratio driven, reads the
- * continuous ramp with the cluster thresholds ticked on a legend beneath it,
- * and says so when the atlas will not load.
+ * Country classifications use the shared green / amber / red cluster colours.
+ * The legend states each category, score range and current country count.
+ * Missing scores remain distinct from non-OIC countries.
  */
 export default function WorldMap() {
   const tokens = useChartTokens();
@@ -55,9 +53,16 @@ export default function WorldMap() {
   useEffect(() => load(), [load]);
 
   const covered = useMemo(
-    () => COUNTRIES.filter((c) => typeof c.adei === "number").length,
+    () => COUNTRIES.filter((c) => Number.isFinite(c.adei)).length,
     [],
   );
+  const clusterCounts = useMemo(() => {
+    const counts = { advanced: 0, emerging: 0, foundational: 0 };
+    for (const country of COUNTRIES) {
+      if (Number.isFinite(country.adei)) counts[toneFor(getCluster(country.adei).label)]++;
+    }
+    return counts;
+  }, []);
 
   const handleMove = (event) => {
     const box = wrapRef.current?.getBoundingClientRect();
@@ -66,8 +71,6 @@ export default function WorldMap() {
       prev ? { ...prev, x: event.clientX - box.left, y: event.clientY - box.top } : prev,
     );
   };
-
-  const rampStops = tokens.seq;
 
   return (
     <section className="card" aria-labelledby="world-map-title">
@@ -128,10 +131,10 @@ export default function WorldMap() {
               height={450}
               style={{ width: "100%", height: "100%" }}
               role="img"
-              aria-label={`World map of the ${META.countryCount} OIC member states shaded by Digital Economy Index score for ${REFERENCE_YEAR}. Darker shading is a higher score.`}
+              aria-label={`World map of the ${META.countryCount} OIC member states by Digital Economy Index classification for ${REFERENCE_YEAR}. Green: Advanced, 60–100. Amber: Emerging, 40 to below 60. Red: Foundational, below 40. Light gray: non-OIC. Hatched: no data.`}
             >
               <title>
-                OIC member states shaded by Digital Economy Index score, {REFERENCE_YEAR}
+                OIC member states by Digital Economy Index classification, {REFERENCE_YEAR}
               </title>
               <defs>
                 <pattern
@@ -156,11 +159,11 @@ export default function WorldMap() {
                     geographies.map((geo) => {
                       const geoName = geo.properties.name;
                       const country = findCountryByGeoName(geoName);
-                      const hasScore = country && typeof country.adei === "number";
+                      const hasScore = Number.isFinite(country?.adei);
                       const fill = !country
                         ? tokens["map-nodata"]
                         : hasScore
-                          ? seqColor(tokens, country.adei)
+                          ? clusterColor(tokens, getCluster(country.adei).label)
                           : "url(#no-data-hatch)";
 
                       return (
@@ -216,7 +219,9 @@ export default function WorldMap() {
                   <div className="tooltip-row">
                     <span className="tooltip-label">Cluster</span>
                     <span className="tooltip-value">
-                      {CLUSTER_SHORT[toneFor(getCluster(hovered.country.adei).label)]}
+                      {Number.isFinite(hovered.country.adei)
+                        ? CLUSTER_SHORT[toneFor(getCluster(hovered.country.adei).label)]
+                        : "No data"}
                     </span>
                   </div>
                 </div>
@@ -224,45 +229,29 @@ export default function WorldMap() {
             )}
           </div>
 
-          {/* Legend: horizontal, beneath the map, at a readable size, with the
-              cluster thresholds ticked on the scale rather than baked into the fill. */}
+          {/* Labels and score ranges keep the categories readable without colour. */}
           <div className="map-legend">
-            <div className="ramp">
-              <div className="t-overline" style={{ color: "var(--text-muted)", marginBottom: "var(--s-4)" }}>
-                DEI score
-              </div>
-              <div className="ramp-bar" aria-hidden="true">
-                {rampStops.map((stop, i) => (
-                  <span key={i} style={{ background: stop }} />
-                ))}
-              </div>
-              <div className="ramp-scale t-caption">
-                {[0, 100].map((v) => (
-                  <span key={v} className="ramp-tick" style={{ left: `${v}%` }}>
-                    {v}
+            <div className="legend-keys map-cluster-keys t-caption" aria-label="Country classification legend">
+              {CLUSTER_LEGEND.map(({ tone, range }) => (
+                <span className="legend-key" key={tone}>
+                  <span className="swatch" style={{ background: `var(--cluster-${tone})` }} aria-hidden="true" />
+                  <span>
+                    <strong>{CLUSTER_SHORT[tone]} ({clusterCounts[tone]})</strong>
+                    <span className="map-legend-range">{range}</span>
                   </span>
-                ))}
-                {THRESHOLDS.map((v) => (
-                  <span
-                    key={v}
-                    className="ramp-tick"
-                    data-threshold="true"
-                    style={{ left: `${v}%` }}
-                  >
-                    {v}
-                  </span>
-                ))}
-              </div>
+                </span>
+              ))}
             </div>
 
             <div className="legend-keys t-caption">
               <span className="legend-key">
-                <span className="swatch" style={{ background: "var(--map-nodata)" }} />
+                <span className="swatch" style={{ background: "var(--map-nodata)" }} aria-hidden="true" />
                 Non-OIC
               </span>
               <span className="legend-key">
                 <span
                   className="swatch"
+                  aria-hidden="true"
                   style={{
                     backgroundImage:
                       "repeating-linear-gradient(45deg, var(--border-strong) 0 2px, var(--surface-2) 2px 5px)",
@@ -274,7 +263,7 @@ export default function WorldMap() {
           </div>
 
           <div className="chart-source t-caption">
-            Thresholds mark the cluster boundaries: Foundational below 40, Emerging 40–59,
+            Countries are grouped by score: Foundational below 40, Emerging 40 to below 60,
             Advanced 60 and above. {covered} of {META.countryCount} member states carry a{" "}
             {REFERENCE_YEAR} score. Select a country to open its profile. {fmt.SOURCE_LINE}
           </div>

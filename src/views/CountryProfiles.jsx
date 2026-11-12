@@ -508,7 +508,7 @@ function CountryProfiles() {
           {country.name} scores <strong>{fmt.score(country.adei)}</strong> on the{" "}
           {REFERENCE_YEAR} OIC Digital Economy Index, placing it{" "}
           <strong>{fmt.rank(country.rank)}</strong> globally and{" "}
-          <strong>{fmt.rank(regionRank)}</strong> within {region}. As a{" "}
+          <strong>{fmt.rank(regionRank)}</strong> within {region}. Classified among{" "}
           <strong>{cluster.label}</strong>, the country demonstrates notable capability in{" "}
           <strong>{strengths[0].name}</strong> ({fmt.scoreCompact(country[strengths[0].key])}),{" "}
           <strong>{strengths[1].name}</strong> ({fmt.scoreCompact(country[strengths[1].key])}), and{" "}

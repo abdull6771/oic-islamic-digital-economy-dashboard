@@ -187,9 +187,10 @@ function CompareCountries() {
                   <div className="t-metric-sm" style={{ marginTop: "var(--s-8)" }}>
                     {(() => {
                       const clusters = groupCluster();
-                      if (clusters.Advanced > 0) return "Advanced Focus";
-                      if (clusters.Emerging > 0) return "Mixed Growth";
-                      return "Foundational";
+                      return Object.entries(clusters)
+                        .filter(([, count]) => count > 0)
+                        .map(([label, count]) => `${count} ${label}`)
+                        .join(" · ");
                     })()}
                   </div>
                 </div>

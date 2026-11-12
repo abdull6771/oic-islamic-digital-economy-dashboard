@@ -23,15 +23,19 @@ import { Card, InsightBlock, StatTile } from "../components/Primitives.jsx";
 // copy cannot go stale when the workbook is refreshed.
 const INSIGHTS = {
   p1: "Institutions form the governance bedrock of digital transformation, combining political stability, regulatory quality and technology governance.",
-  p2: "Infrastructure underpins all digital activity. Many African member states score below 20, marking foundational connectivity investment as the clearest opportunity.",
-  p3: "Workforce capability remains a major area of focus, and conflict-affected states in particular show substantial room for capacity building.",
-  p4: "E-Government is the OIC's standout strength: state-led digitisation has produced high service-delivery scores across very diverse economies.",
-  p5: "Innovation is the OIC's key area for growth. Even the strongest performers sit well below the global frontier, reflecting limited private-sector R&D intensity relative to digital infrastructure.",
-  p6: "Technological readiness varies more widely than any other pillar. GCC states score highest on the strength of AI strategies and emerging-technology adoption.",
-  p7: "Market development is strongest across Southeast Asia and the Levant, where startup ecosystems and access to finance are deepest.",
+  p2: "Infrastructure combines access to ICT, use of ICT, technological inclusion and logistical performance.",
+  p3: "Workforce combines education expenditure, knowledge-intensive employment and ICT skills in the education system.",
+  p4: "E-Government combines online government services, telecommunication infrastructure and human capital.",
+  p5: "Innovation combines business-financed R&D, university–industry collaboration, knowledge impact and knowledge absorption.",
+  p6: "Future Technologies combines the adoption of emerging technologies, investment in emerging technologies and AI strategy.",
+  p7: "Market Development & Sophistication combines start-up financing, domestic credit to the private sector and diversification of local industry.",
   p8: "Financial Market Development combines stock-market capitalisation with Global Findex financial-inclusion data. Where Findex inputs are unavailable, the workbook uses an imputed floor value. That value contributes to the pillar score but is not an observation of the country's financial inclusion; consider source coverage when comparing countries.",
-  p9: "SDG impact scores track progress on access and inclusion, particularly health-system integration and connectivity.",
+  p9: "This pillar combines scores for seven Sustainable Development Goals covering poverty, hunger, health, education, work, industry and partnerships.",
 };
+
+const countryGroup = (countries) => countries.length <= 3
+  ? new Intl.ListFormat("en", { type: "conjunction" }).format(countries.map((country) => country.name))
+  : `${countries.length} countries`;
 
 function PillarAnalysis() {
   const tokens = useChartTokens();
@@ -42,9 +46,18 @@ function PillarAnalysis() {
   const sorted = [...COUNTRIES].sort((a, b) => b[pillar.key] - a[pillar.key]);
   const avg = COUNTRIES.reduce((s, c) => s + c[pillar.key], 0) / COUNTRIES.length;
   const leaders = sorted.slice(0, 3);
-  const scoreOf = (c) => c[pillar.key].toFixed(2);
   const atOrAbove = COUNTRIES.filter((c) => c[pillar.key] >= avg).length;
   const lowest = sorted[sorted.length - 1];
+  const highestScore = sorted[0][pillar.key];
+  const lowestScore = lowest[pillar.key];
+  const highestCountries = sorted.filter((country) => country[pillar.key] === highestScore);
+  const lowestCountries = sorted.filter((country) => country[pillar.key] === lowestScore);
+  const highestDescription = highestCountries.length === 1
+    ? `${highestCountries[0].name} leads in ${pillar.name} with a score of`
+    : `${countryGroup(highestCountries)} share the highest ${pillar.name} score of`;
+  const lowestDescription = lowestCountries.length === 1
+    ? `${lowestCountries[0].name} scores lowest at`
+    : `${countryGroup(lowestCountries)} share the lowest score of`;
 
   return (
     <div className="stack">
@@ -90,9 +103,9 @@ function PillarAnalysis() {
       </div>
 
       <InsightBlock title="Key insight">
-        {INSIGHTS[pillar.key]} <strong>{leaders[0].name}</strong> leads on {pillar.name} (
-        {scoreOf(leaders[0])}), ahead of {leaders[1].name} ({scoreOf(leaders[1])}) and{" "}
-        {leaders[2].name} ({scoreOf(leaders[2])}), against an OIC average of {avg.toFixed(2)}.
+        {INSIGHTS[pillar.key]} High-scoring countries include{" "}
+        {leaders.map((country) => `${country.name} (${fmt.score(country[pillar.key])})`).join(", ")},
+        against an OIC average of <strong>{fmt.score(avg)}</strong>.
       </InsightBlock>
 
       {PILLAR_INDICATORS[pillar.key] && (
@@ -140,7 +153,7 @@ function PillarAnalysis() {
       <ChartFrame
         title={`All countries — ${pillar.name}`}
         subtitle={`Ranked by ${pillar.name} score · ${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
-        summary={`All ${COUNTRIES.length} member states ranked by ${pillar.name}. ${leaders[0].name} leads at ${fmt.score(leaders[0][pillar.key])}; ${lowest.name} is lowest at ${fmt.score(lowest[pillar.key])}. The pillar average is ${fmt.score(avg)}.`}
+        summary={`All ${COUNTRIES.length} member states ranked by ${pillar.name}. ${highestDescription} ${fmt.score(highestScore)}; ${lowestDescription} ${fmt.score(lowestScore)}. The pillar average is ${fmt.score(avg)}.`}
       >
         <ResponsiveContainer width="100%" height={420}>
           <BarChart
@@ -179,15 +192,15 @@ function PillarAnalysis() {
 
         <div style={{ marginTop: "var(--s-16)" }}>
           <InsightBlock title="Key insight">
-            <strong>{sorted[0].name}</strong> leads in {pillar.name} with a score of{" "}
-            <strong>{fmt.score(sorted[0][pillar.key])}</strong>, while{" "}
-            <strong>{lowest.name}</strong> scores lowest at{" "}
-            <strong>{fmt.score(lowest[pillar.key])}</strong> — a{" "}
+            {highestDescription}{" "}
+            <strong>{fmt.score(highestScore)}</strong>, while{" "}
+            {lowestDescription}{" "}
+            <strong>{fmt.score(lowestScore)}</strong> — a{" "}
             <strong>
-              {(sorted[0][pillar.key] - lowest[pillar.key]).toFixed(0)}
+              {(highestScore - lowestScore).toFixed(0)}
               -point divide
             </strong>
-            . <strong>{atOrAbove} of 57</strong> countries score at or above the OIC average
+            . <strong>{atOrAbove} of {COUNTRIES.length}</strong> countries score at or above the OIC average
             of {fmt.score(avg)}.
           </InsightBlock>
         </div>

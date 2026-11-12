@@ -55,7 +55,7 @@ function verifyReconstruction(archive, dataset) {
 }
 check("fingerprints, revision order and current dataset agree", () => {
   assert.equal(history.schemaVersion, 1);
-  assert.ok(history.revisions.length >= 3);
+  assert.ok(history.revisions.length >= 4);
   assert.equal(new Set(history.revisions.map((revision) => revision.id)).size, history.revisions.length);
   assert.equal(history.revisions.at(-1).id, data.meta.sourceSha256);
   history.revisions.forEach((revision, index) => {
@@ -87,11 +87,28 @@ check("18 October revision preserves historical nulls, zeros and rank-only chang
   assert.equal(filterRevisionChanges(revision, { year: 2025 }).length, 0);
 });
 check("history filters combine country/code, year and change type", () => {
-  const revision = history.revisions.at(-1);
+  const revision = history.revisions.find((entry) => entry.sourceUpdated === "2026-10-18");
   assert.equal(filterRevisionChanges(revision, { search: "MALAYSIA", year: "2021", type: "adei" }).length, 1);
   assert.equal(filterRevisionChanges(revision, { search: "8.2", type: "indicator" }).length, 1);
   assert.equal(filterRevisionChanges(revision, { search: "United Arab Emirates", type: "pillar" }).length, 0);
   assert.equal(filterRevisionChanges(history.revisions[0]).length, 0);
+});
+check("30 October source refresh retains unchanged scores and the prior revision", () => {
+  const index = history.revisions.findIndex((entry) => entry.sourceUpdated === "2026-10-30");
+  const revision = history.revisions[index];
+  const prior = history.revisions[index - 1];
+  assert.ok(index > 0);
+  assert.equal(revision.source, "30 Oct_New findex_Master_Data collection copy.xlsx");
+  assert.equal(prior.sourceUpdated, "2026-10-18");
+  assert.notEqual(revision.id, prior.id);
+  assert.equal(revision.previousId, prior.id);
+  assert.deepEqual(revision.summary, { changedCountryYears: 0, adeiChanges: 0, rankChanges: 0, pillarChanges: 0, indicatorChanges: 0, addedObservations: 0, removedObservations: 0 });
+  assert.deepEqual(revision.changes, []);
+  assert.deepEqual(revision.years, prior.years);
+  assert.deepEqual([...revision.scoreCodes].sort(), [...prior.scoreCodes].sort());
+  assert.equal(revision.countryCount, prior.countryCount);
+  assert.equal(revision.observationCount, prior.observationCount);
+  assert.equal(filterRevisionChanges(revision).length, 0);
 });
 check("new imports append once; unchanged reimports retain history", () => {
   assert.equal(appendDatasetRevision(history, data, data), history);

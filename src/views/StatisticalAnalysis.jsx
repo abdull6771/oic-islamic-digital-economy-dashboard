@@ -26,7 +26,7 @@ function StatisticalAnalysis() {
       xs.reduce((s, x) => s + (x - mx) ** 2, 0) *
         ys.reduce((s, y) => s + (y - my) ** 2, 0),
     );
-    return den === 0 ? 0 : parseFloat((num / den).toFixed(2));
+    return den === 0 ? 0 : num / den;
   };
 
   const corrMatrix = PILLARS.map((p1) => ({
@@ -83,13 +83,13 @@ function StatisticalAnalysis() {
 
       <Card
         title={`Descriptive statistics — all ${PILLARS.length} pillars`}
-        subtitle={`n = ${META.countryCount} countries · ${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
+        subtitle={`Population SD · n = ${META.countryCount} countries · ${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
         footer={fmt.SOURCE_LINE}
       >
         <TableScroll>
           <table className="data-table zebra">
             <caption className="visually-hidden">
-              Mean, median, standard deviation, quartiles, minimum, maximum and range for
+              Mean, median, population standard deviation, quartiles, minimum, maximum and range for
               each of the nine pillars.
             </caption>
             <thead>
@@ -97,7 +97,7 @@ function StatisticalAnalysis() {
                 <th scope="col">Pillar</th>
                 <th scope="col" data-numeric="true">Mean</th>
                 <th scope="col" data-numeric="true">Median</th>
-                <th scope="col" data-numeric="true">SD</th>
+                <th scope="col" data-numeric="true">Population SD</th>
                 <th scope="col" data-numeric="true">Q1</th>
                 <th scope="col" data-numeric="true">Q3</th>
                 <th scope="col" data-numeric="true">Min</th>
@@ -211,7 +211,7 @@ function StatisticalAnalysis() {
                       <strong>{s.p1}</strong> ↔ <strong>{s.p2}</strong>
                     </span>
                     <span className="t-body tnum" style={{ fontWeight: 600 }}>
-                      r = {s.corr}
+                      r = {s.corr.toFixed(2)}
                     </span>
                   </li>
                 ))}

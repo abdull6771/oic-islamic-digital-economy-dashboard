@@ -16,7 +16,7 @@ import { dirname, resolve } from "node:path";
 import * as data from "../src/data/index.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const DEFAULT_WORKBOOK = "18 Oct_New findex_Master_Data collection.xlsx";
+const DEFAULT_WORKBOOK = "30 Oct_New findex_Master_Data collection copy.xlsx";
 const RANKED = "2025 ranked";
 const PANEL = "OIC_2024 norm";
 const CLEAR = "OIC_2024 clear";

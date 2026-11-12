@@ -7,8 +7,8 @@ import { fileURLToPath } from "node:url";
 import { revisionEntry, snapshotFromDataset } from "../src/lib/revision-history.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const defaults = ["check_updated yemen palestine_225 Jun_Master_Data collection.xlsx", "New findex_Master_Data collection.xlsx", "18 Oct_New findex_Master_Data collection.xlsx"];
-const dates = { [defaults[2]]: "2026-10-18" };
+const defaults = ["check_updated yemen palestine_225 Jun_Master_Data collection.xlsx", "New findex_Master_Data collection.xlsx", "18 Oct_New findex_Master_Data collection.xlsx", "30 Oct_New findex_Master_Data collection copy.xlsx"];
+const dates = { [defaults[2]]: "2026-10-18", [defaults[3]]: "2026-10-30" };
 const files = process.argv.length > 2 ? process.argv.slice(2) : defaults;
 const finite = (cell) => cell?.t === "n" && Number.isFinite(cell.v) ? Number(cell.v.toFixed(6)) : null;
 

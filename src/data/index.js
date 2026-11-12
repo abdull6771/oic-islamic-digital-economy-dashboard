@@ -58,7 +58,7 @@ const INDICATOR_LABELS = {
   "1.2.3": "Control of Corruption",
   "1.3": "Technology Governance",
   "1.3.1": "Secure Internet Servers",
-  "1.3.2": "E-Security",
+  "1.3.2": "Cybersecurity",
   "1.3.3": "Online Shopping",
   "1.3.4": "ICT Regulatory Environment",
   "1.3.5": "Regulation of Emerging Technologies",

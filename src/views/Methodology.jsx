@@ -402,8 +402,11 @@ function Methodology() {
               <p
                 style={{ color: "var(--text-muted)", fontSize: "12px", lineHeight: 1.6 }}
               >
-                This conservative approach ensures data integrity while
-                preventing underestimation of emerging markets.
+                The workbook uses this floor for missing inputs. Imputed values
+                contribute to the published scores and can produce tied minima;
+                they are not observed outcomes. A tied pillar minimum alone does
+                not establish which inputs were imputed. Unavailable scores stay
+                unavailable where the workbook leaves them blank.
               </p>
             </div>
             <div>
@@ -450,6 +453,16 @@ function Methodology() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div style={styles.card}>
+          <h2 className="t-h3" style={{ marginBottom: "var(--s-16)" }}>Descriptive Statistics</h2>
+          <p className="t-body prose">
+            Standard deviation uses the population formula: the square root of
+            the mean squared distance from the OIC mean, dividing by n = {META.countryCount} member states.
+            Correlations use Pearson r. Strong relationships are selected using
+            the unrounded threshold |r| ≥ 0.70 and displayed to two decimal places.
+          </p>
         </div>
 
         <div style={styles.card}>

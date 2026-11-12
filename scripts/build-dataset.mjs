@@ -35,8 +35,11 @@ import { basename, dirname, resolve } from "node:path";
 import { appendDatasetRevision } from "../src/lib/revision-history.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const DEFAULT_WORKBOOK = "18 Oct_New findex_Master_Data collection.xlsx";
-const SOURCE_DATES = { [DEFAULT_WORKBOOK]: "2026-10-18" };
+const DEFAULT_WORKBOOK = "30 Oct_New findex_Master_Data collection copy.xlsx";
+const SOURCE_DATES = {
+  "18 Oct_New findex_Master_Data collection.xlsx": "2026-10-18",
+  [DEFAULT_WORKBOOK]: "2026-10-30",
+};
 const OUT = resolve(ROOT, "src/data/adei-dataset.json");
 const HISTORY = resolve(ROOT, "src/data/revision-history.json");
 

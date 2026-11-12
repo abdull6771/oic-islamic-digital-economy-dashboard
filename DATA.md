@@ -1,12 +1,12 @@
 # Data pipeline and source review
 
-The current source is **18 Oct_New findex_Master_Data collection.xlsx**, supplied
-on 18 October 2026. This is a source revision of the **2025 assessment**, not a new
-2026 assessment. The dashboard covers 57 countries in 2021–2025: 285 country-year
+The current source is **30 Oct_New findex_Master_Data collection copy.xlsx**, the
+30 October 2026 source revision. The assessment remains **2025**. The dashboard
+covers 57 countries in 2021–2025: 285 country-year
 observations, with 9 pillars, 32 indicators, and 21 sub-indicators (62 score fields).
 
 ```text
-18 Oct_New findex_Master_Data collection.xlsx
+30 Oct_New findex_Master_Data collection copy.xlsx
   -> npm run build:data
   -> src/data/adei-dataset.json
   -> src/data/index.js
@@ -23,7 +23,28 @@ Source workbooks are kept locally and excluded from Git. The committed generated
 dataset is sufficient to run or build the dashboard; rebuilding or validating
 the dataset requires a local copy of the source workbook.
 
-## What the 18 October revision changes
+## What the 30 October revision changes
+
+A comparison of all 31 sheets found changes only in the auxiliary `OIC` chart
+sheet: 21 cached values, 90 formulas (79 formula-only changes), and 10 cell types.
+The other 30 sheets are unchanged, with no sheets added or removed.
+
+The authoritative `OIC_2024 norm`, `2025 ranked`, `OIC_2024 origin`,
+`OIC_2024 clear`, and `ref` sheets have identical cell values, types, and formulas
+to the 18 October workbook. All 285 country-year observations and 17,670 score
+fields are unchanged. The auxiliary `OIC` chart sheet changes and is not a
+dashboard input. The import records the new filename, SHA-256 fingerprint, and
+source revision date, and appends a fourth history entry with zero published
+score or rank changes. The assessment remains 2025.
+The source revision date is supported by the workbook's core modified timestamp,
+`2026-10-30T15:15:46Z`.
+
+The 2025 leading countries remain the UAE (75.233937), Malaysia (71.566676), and
+Saudi Arabia (69.201872). The OIC mean remains 34.707373, with 6 Advanced,
+15 Emerging, and 36 Foundational economies. Existing missing-value, imputation,
+historical-rank, and source-discrepancy notes remain applicable.
+
+## Changes retained from the 18 October revision
 
 A value-and-formula comparison of all 30 shared sheets with the preceding
 `New findex_Master_Data collection.xlsx` found **13 changed cached cell values**,
@@ -149,9 +170,11 @@ coverage so missing lookups fail visibly.
 ### Revision archive
 
 `src/data/revision-history.json` stores derived score and rank changes for the
-three local workbooks, in the verified order: the earlier master workbook,
-the preceding Findex workbook, then the 18 October workbook. Only the last has
-an independently established refresh date; the other dates are left unknown.
+four local workbooks, in the verified order: the earlier master workbook,
+the preceding Findex workbook, the 18 October workbook, then the 30 October
+workbook. The two October revisions have independently established refresh
+dates; the earlier dates are left unknown. The 30 October revision has its own
+source fingerprint and retains every prior published score and rank.
 The baseline has no comparison, rather than an invented earlier history.
 
 `npm run build:history` reconstructs this initial archive from those local
@@ -189,7 +212,7 @@ npm run validate:data
 npm run build
 ```
 
-`build:data` defaults to the 18 October workbook. An explicit workbook path can
+`build:data` defaults to the 30 October workbook. An explicit workbook path can
 be supplied to `node scripts/build-dataset.mjs`. If a build detects an ingestion
 error, it exits unsuccessfully without replacing the previous dataset.
 

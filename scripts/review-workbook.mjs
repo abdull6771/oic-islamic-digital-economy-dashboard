@@ -13,7 +13,7 @@ const ROOT=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const args=process.argv.slice(2);
 const panelOnly=args.includes('--panel-only');
 const paths=args.filter(a=>!a.startsWith('--'));
-const files=[paths[1]||'New findex_Master_Data collection.xlsx',paths[0]||'18 Oct_New findex_Master_Data collection.xlsx'].map(f=>resolve(ROOT,f));
+const files=[paths[1]||'18 Oct_New findex_Master_Data collection.xlsx',paths[0]||'30 Oct_New findex_Master_Data collection copy.xlsx'].map(f=>resolve(ROOT,f));
 const books=files.map(f=>XLSX.readFile(f,{cellFormula:true,...(panelOnly?{sheets:['OIC_2024 origin','OIC_2024 clear','OIC_2024 norm','Malaysia','2025 ranked','ref','GII 2020']}: {})}));
 const [oldWb,newWb]=books;
 const simple=c=>c?{type:c.t,value:c.v??null,...(c.t==='e'?{error:c.w||`Excel error ${c.v}`} :{}),...(c.f?{formula:c.f}:{})}:null;

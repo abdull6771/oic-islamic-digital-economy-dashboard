@@ -162,8 +162,8 @@ export default function App() {
             <h1>OIC Digital Economy Index</h1>
             <p>OIC DEI · {META.countryCount} Member States · {REFERENCE_YEAR} Assessment</p>
           </div>
-          <div className="dashboard-average" aria-label={`Global average ${fmt.score(OIC_AVERAGE)} out of 100`}>
-            <span>GLOBAL AVERAGE</span>
+          <div className="dashboard-average" aria-label={`OIC average ${fmt.score(OIC_AVERAGE)} out of 100`}>
+            <span>OIC AVERAGE</span>
             <strong>{fmt.score(OIC_AVERAGE)}</strong>
             <small>out of 100</small>
           </div>

@@ -273,7 +273,7 @@ function PeerLearning() {
                   <strong>{topPeer.name}</strong> achieves <strong>{gap} points higher</strong>{" "}
                   performance in <strong>{focusPillar.name}</strong> despite having comparable
                   overall OIC DEI scores. This suggests targeted policy intervention in this
-                  specific pillar可 yield significant competitive gains for {country.name}.
+                  specific pillar can yield significant competitive gains for {country.name}.
                   Target learning areas include regulatory frameworks, infrastructure
                   investments, and institutional capacity building.
                 </InsightBlock>

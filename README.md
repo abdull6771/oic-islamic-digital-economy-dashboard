@@ -89,7 +89,7 @@ leaves distinguish observed inputs, imputed inputs and a source discrepancy.
 Other numeric scores are **Not classified** where provenance has not established
 observation or imputation. Unavailable scores stay distinct from numeric zero.
 
-**Update History** compares the three available local workbook revisions, with
+**Update History** compares the four available local workbook revisions, with
 country-year score and rank differences, detailed pillar/indicator changes,
 filters and CSV export. Dates are shown only where established. The first
 workbook is the baseline; earlier unarchived revisions are not reconstructed.
@@ -136,7 +136,7 @@ npm run preview
 ```
 .
 ├── index.html                        # HTML entry point
-├── 18 Oct_New findex_Master_Data collection.xlsx # local source; not committed
+├── 30 Oct_New findex_Master_Data collection copy.xlsx # local source; not committed
 ├── scripts/
 │   ├── build-dataset.mjs             # workbook → src/data/adei-dataset.json
 │   ├── validate-dataset.mjs          # checks every country-year against the workbook
@@ -177,7 +177,7 @@ node scripts/build-dataset.mjs "some other workbook.xlsx"
 
 Both scripts print their findings and exit non-zero on an ingestion or validation
 failure. The build preserves the previous dataset if its checks fail. See
-**[DATA.md](DATA.md)** for the 18 October revision, authoritative sheets, missing
+**[DATA.md](DATA.md)** for the 30 October revision, authoritative sheets, missing
 historical Workforce values, and Global Findex source limitations.
 
 To compare the current workbook with the preceding revision, including source
@@ -191,10 +191,12 @@ This optional comparison also needs the preceding workbook available locally.
 To use different files, pass the updated workbook path followed by the previous
 workbook path. The previous workbook is not included in the repository.
 
-The 18 October revision changes Malaysia's 2021 results and the corresponding
-historical comparison. The 2022–2025 scores, including the current 2025 rankings,
-are unchanged. The assessment year remains 2025; the source refresh date is
-18 October 2026.
+The 30 October source revision retains every published 2021–2025 score from
+18 October. Its auxiliary OIC chart sheet changes, while the authoritative
+panel, ranked results, source inputs, and weights remain identical. The latest
+source filename, fingerprint, refresh date, and revision history identify the
+new workbook. The assessment year remains 2025; the source refresh date is
+30 October 2026. Existing source limitations remain documented in DATA.md.
 
 ---
 

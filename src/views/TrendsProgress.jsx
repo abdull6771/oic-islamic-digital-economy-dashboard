@@ -145,8 +145,11 @@ function TrendsProgress() {
       {incompleteHistory.length > 0 && (
         <InsightBlock title="Historical data coverage">
           {incompleteHistory.map((row) => `${row.country} ${row.year}`).join(", ")}
-          {" "}has an unavailable pillar score in the source workbook. Its published ADEI is retained in
-          the country trajectory and OIC average. Interpret comparisons involving that year with this gap in mind.
+          {" "}has an unavailable pillar score in the source workbook. Its published ADEI is retained.
+          {selectedCountries.includes(OIC_AVERAGE_LABEL) && (
+            <> The selected OIC average includes that published score, so this coverage note also applies to the average.</>
+          )}
+          {" "}Interpret comparisons involving that year with this gap in mind.
         </InsightBlock>
       )}
 
@@ -234,7 +237,7 @@ function TrendsProgress() {
       <div className="cols-3">
         <StatTile label="Mean" value={fmt.score(OIC_AVERAGE)} support="Across all member states" />
         <StatTile label="Median" value={fmt.score(median)} support={`Middle score across ${COUNTRIES.length} member states`} />
-        <StatTile label="Standard deviation" value={fmt.score(stdDev)} support="Score variability" />
+        <StatTile label="Population SD" value={fmt.score(stdDev)} support={`n = ${COUNTRIES.length} member states`} />
       </div>
 
       <div className="cols-2">

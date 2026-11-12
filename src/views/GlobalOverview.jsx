@@ -41,11 +41,13 @@ function GlobalOverview() {
   const pillarAvgs = PILLARS.map((p) => ({
     id: p.id,
     name: p.short,
-    avg: Math.round(COUNTRIES.reduce((s, c) => s + c[p.key], 0) / COUNTRIES.length),
+    fullName: p.name,
+    avg: COUNTRIES.reduce((s, c) => s + c[p.key], 0) / COUNTRIES.length,
   }));
 
   const bestPillar = pillarAvgs.reduce((b, p) => (p.avg > b.avg ? p : b), pillarAvgs[0]);
   const weakestPillar = pillarAvgs.reduce((w, p) => (p.avg < w.avg ? p : w), pillarAvgs[0]);
+  const strongestPillars = [...pillarAvgs].sort((a, b) => b.avg - a.avg).slice(0, 2);
 
   const clusterData = [
     {
@@ -101,9 +103,9 @@ function GlobalOverview() {
           support={lowest.name}
         />
         <StatTile
-          label="Standard deviation"
+          label="Population SD"
           value={fmt.score(stdDev)}
-          support="Score variability"
+          support={`n = ${COUNTRIES.length} member states`}
         />
       </div>
 
@@ -153,9 +155,10 @@ function GlobalOverview() {
             -point digital divide
           </strong>{" "}
           between {highest.name} ({highest.adei.toFixed(0)}) and {lowest.name} (
-          {lowest.adei.toFixed(0)}). <strong>E-Government outpaces Innovation:</strong>{" "}
-          state-led digitization is the OIC&rsquo;s greatest strength, while private-sector
-          R&amp;D is the critical bottleneck. With <strong>{leaders.length} advanced</strong>,{" "}
+          {lowest.adei.toFixed(0)}). <strong>{strongestPillars[0].fullName} and {strongestPillars[1].fullName}</strong>{" "}
+          have the two highest OIC pillar averages ({fmt.score(strongestPillars[0].avg)} and{" "}
+          {fmt.score(strongestPillars[1].avg)}); {weakestPillar.fullName} has the lowest average ({fmt.score(weakestPillar.avg)}).
+          With <strong>{leaders.length} advanced</strong>,{" "}
           <strong>{adopters.length} emerging</strong>, and{" "}
           <strong>{emerging.length} foundational</strong> economies, tailored strategies
           aligned to digital maturity are essential — a one-size-fits-all digital policy is
@@ -180,7 +183,7 @@ function GlobalOverview() {
       <ChartFrame
         title="Pillar performance across the OIC"
         subtitle={`Mean score per pillar · ${fmt.SCORE_UNIT} · ${REFERENCE_YEAR}`}
-        summary={`Mean pillar scores across all ${META.countryCount} OIC member states. ${bestPillar.name} is strongest at ${bestPillar.avg} and ${weakestPillar.name} weakest at ${weakestPillar.avg}, against an OIC average of ${fmt.score(OIC_AVERAGE)}.`}
+        summary={`Mean pillar scores across all ${META.countryCount} OIC member states. ${bestPillar.name} is strongest at ${fmt.score(bestPillar.avg)} and ${weakestPillar.name} weakest at ${fmt.score(weakestPillar.avg)}, against an OIC average of ${fmt.score(OIC_AVERAGE)}.`}
       >
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={pillarAvgs} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
@@ -201,13 +204,13 @@ function GlobalOverview() {
           <div className="panel">
             <div className="t-overline muted">Strongest pillar</div>
             <div className="t-body" style={{ marginTop: "var(--s-4)", fontWeight: 600 }}>
-              {bestPillar.name}: {bestPillar.avg}/100
+              {bestPillar.name}: {fmt.score(bestPillar.avg)}/100
             </div>
           </div>
           <div className="panel">
             <div className="t-overline muted">Greatest opportunity</div>
             <div className="t-body" style={{ marginTop: "var(--s-4)", fontWeight: 600 }}>
-              {weakestPillar.name}: {weakestPillar.avg}/100
+              {weakestPillar.name}: {fmt.score(weakestPillar.avg)}/100
             </div>
           </div>
         </div>

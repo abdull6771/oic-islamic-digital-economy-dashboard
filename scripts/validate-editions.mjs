@@ -193,6 +193,12 @@ try {
     const links = routeLinks(render(edition.LandingPage, { edition: "full", onNavigate() {} }));
     for (const id of [...EXPLORE, ...RESTRICTED]) assert.ok(links.includes(id), id);
   });
+  await check("sign-out is available only on the internal landing page", () => {
+    const full = render(editions.full.LandingPage, { edition: "full", onNavigate() {} });
+    const publicPage = render(editions.public.LandingPage, { edition: "public", onNavigate() {} });
+    assert.match(full, /action="\/auth\/logout" method="post"/);
+    assert.ok(!publicPage.includes("/auth/logout"));
+  });
   await check("the public command palette cannot surface restricted tools", () => {
     const markup = render(editions.public.CommandPalette, { open: true, onClose() {}, onSelectView() {}, onSelectCountry() {} });
     for (const id of EXPLORE) assert.ok(markup.includes(`view:${id}`), id);

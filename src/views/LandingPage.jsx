@@ -1,6 +1,7 @@
 import { COUNTRIES, INDICATOR_COUNTS, META, PILLARS, REFERENCE_YEAR, YEARS } from "../data/index.js";
 import { TOOL_CATALOG, TOOL_GROUPS } from "../lib/tool-catalog.js";
 import ToolIcon from "../components/ToolIcon.jsx";
+import SignOutButton from "../components/SignOutButton.jsx";
 import "../styles/landing-page.css";
 
 const toolsFor = (group) => TOOL_CATALOG.filter((tool) => tool.group === group);
@@ -111,6 +112,7 @@ export default function LandingPage({ edition = "public", onNavigate, contactEma
           <a href="#explore">Explore</a>
           {isPublic ? <a href="#coming" className="landing-coming-nav">Coming soon <span>NEW</span></a> : <><a href="#simulate">Simulate</a><a href="#learn">Learn &amp; act</a><a href="#data">Data &amp; methods</a></>}
           <ToolLink id="overview" onNavigate={onNavigate} className="landing-button landing-button--small">Open Dashboard</ToolLink>
+          {!isPublic && <SignOutButton />}
         </nav>
       </div>
     </header>

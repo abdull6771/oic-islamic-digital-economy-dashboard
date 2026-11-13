@@ -10,6 +10,7 @@ import { EDITION, IS_PUBLIC, CONTACT_EMAIL, canAccessView, resolveView } from ".
 import { hashParam, navigate, onHashChange, openCountry } from "./lib/routing.js";
 import * as fmt from "./lib/format.js";
 import CommandPalette from "./components/CommandPalette.jsx";
+import SignOutButton from "./components/SignOutButton.jsx";
 
 import LandingPage from "./views/LandingPage.jsx";
 import COMPONENTS from "#edition-views";
@@ -150,7 +151,7 @@ export default function App() {
           <div className="dashboard-brand">
             <h1><a className="dashboard-home-link" href="#tab=home" onClick={(event) => { event.preventDefault(); go("home"); }}>OIC Digital Economy Index</a></h1>
             <p>OIC DEI · {META.countryCount} Member States · {REFERENCE_YEAR} Assessment</p>
-            {!IS_PUBLIC && <span className="edition-label">Internal version</span>}
+            {!IS_PUBLIC && <div className="internal-account"><span className="edition-label">Internal version</span><SignOutButton /></div>}
           </div>
           <div className="dashboard-average" aria-label={`OIC average ${fmt.score(OIC_AVERAGE)} out of 100`}>
             <span>OIC AVERAGE</span>

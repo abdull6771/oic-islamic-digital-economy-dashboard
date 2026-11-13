@@ -8,7 +8,9 @@
 !/middleware.js
 !/vercel.json
 !/.vercelignore
-!/src/
-!/server/
+!/src
+!/src/**
+!/server
+!/server/**
 **/.env*
 **/.DS_Store

@@ -8,7 +8,34 @@ new editions are reviewed.
 The preview implementation is on branch `feature/public-internal-landing` in
 the sibling `oic-dei-landing-preview` checkout. The original
 `oic-islamic-digital-economy-dashboard` checkout and its branch remain available.
-Nothing in this preview task is deployed or pushed automatically.
+The two editions were deployed as separate production projects on 13 November
+2026. The original production project remains unchanged.
+
+| Edition | Production URL | Access |
+| --- | --- | --- |
+| Public | https://oic-dei-public.vercel.app | Anonymous; seven Explore tools |
+| Full internal | https://oic-dei-internal.vercel.app | Custom sign-in; all sixteen tools |
+
+Both deployments were built from commit
+`dc64781162dc32654793669e4a2fbcff1e0ede3c` on
+`feature/public-internal-landing`. The deployed dataset SHA-256 is
+`3e1a8e5c81ba532fd8b7254253a2798464b7c73d414f6ce1442ba08cf4c3fb16`.
+Live verification passed nineteen checks covering anonymous public access,
+internal login, secure cookies, protected assets, logout and matching data.
+The deployed public JavaScript also matches the locally validated artifact.
+
+The internal production username is `internal`. Its unique production password
+and session key are stored in Vercel's secret environment variables, with a
+local recovery copy in the ignored `.env.deployed-full.local` file. This file
+must not be committed or uploaded. Production credentials differ from the
+local preview credentials.
+
+These first releases were deployed through the authenticated Vercel CLI from
+isolated source directories. For future changes, publish both projects from
+this same branch and dataset, keeping each project's existing production
+environment variables. Updating one project does not automatically deploy the
+other. Do not deploy from the original checkout or replace the original
+production project when updating these two editions.
 
 ## Run and build each edition
 

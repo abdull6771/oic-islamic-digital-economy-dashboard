@@ -1,42 +1,13 @@
-/**
- * Navigation model.
- *
- * Views appear in the original horizontal tab strip. Groups also organize the
- * search palette. Stable IDs keep existing #tab=<id> links working.
- */
+﻿import { TOOL_CATALOG, TOOL_GROUPS } from "./tool-catalog.js";
+import { canAccessView } from "./site-edition.js";
 
-export const GROUPS = [
-  { id: "overview", label: "Overview" },
-  { id: "analysis", label: "Analysis" },
-  { id: "tools", label: "Tools" },
-  { id: "about", label: "About" },
-];
-
+export const GROUPS = [{ id: "home", label: "Home" }, ...TOOL_GROUPS, { id: "about", label: "About" }];
+const icons = { overview: "▦", profiles: "⚑", compare: "⇄", pillar: "▥", geo: "⊕", trends: "↗", divide: "⇕", whatif: "±", builder: "⚙", peers: "⇉", policy: "☆", quality: "▤", stats: "∑", methodology: "§", reports: "⇩", history: "↺" };
 export const VIEWS = [
-  { id: "overview", label: "Global Overview", group: "overview", icon: "◎" },
-  { id: "profiles", label: "Country Profiles", group: "overview", icon: "▣" },
-  { id: "compare", label: "Compare Countries", group: "overview", icon: "⇄" },
-
-  { id: "pillar", label: "Pillar Analysis", group: "analysis", icon: "▥" },
-  { id: "geo", label: "Geographic Analysis", group: "analysis", icon: "⊕" },
-  { id: "trends", label: "Trends & Progress", group: "analysis", icon: "↗" },
-  { id: "divide", label: "Digital Divide", group: "analysis", icon: "⇕" },
-  { id: "stats", label: "Statistical Analysis", group: "analysis", icon: "∑" },
-  { id: "quality", label: "Data-quality Explorer", group: "analysis", icon: "▦" },
-
-  { id: "builder", label: "Custom Index Builder", group: "tools", icon: "⚙" },
-  { id: "reports", label: "Report Downloads", group: "tools", icon: "⇩" },
-  { id: "whatif", label: "What-if Calculator", group: "tools", icon: "±" },
-  { id: "peers", label: "Peer Learning", group: "tools", icon: "⇉" },
-  { id: "policy", label: "Strategic Recommendations", group: "tools", icon: "★" },
-
-  { id: "methodology", label: "Methodology", group: "about", icon: "§" },
-  { id: "history", label: "Update History", group: "about", icon: "↺" },
+  { id: "home", label: "Home", group: "home", icon: "⌂" },
+  ...TOOL_CATALOG.map((tool) => ({ ...tool, icon: icons[tool.id] })),
   { id: "acknowledgement", label: "Acknowledgements", group: "about", icon: "¶" },
-];
-
-export const DEFAULT_VIEW = "overview";
-
-export const viewById = (id) => VIEWS.find((v) => v.id === id);
-
+].filter((view) => canAccessView(view.id));
+export const DEFAULT_VIEW = "home";
+export const viewById = (id) => VIEWS.find((view) => view.id === id);
 export const isValidView = (id) => Boolean(viewById(id));

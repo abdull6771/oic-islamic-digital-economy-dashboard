@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { IS_PUBLIC } from "../lib/site-edition.js";
 import {
   Bar,
   BarChart,
@@ -196,6 +197,7 @@ function CountryProfiles() {
   };
 
   const exportReports = async (kind, reportCountry = country) => {
+    if (IS_PUBLIC) return;
     // A ref closes the gap before React disables the buttons on the next render.
     if (reportBusyRef.current) return;
     reportBusyRef.current = true;
@@ -303,7 +305,7 @@ function CountryProfiles() {
           <Button className="profile-export-csv" onClick={exportCSV}>
             <span aria-hidden="true">⬇</span> Export CSV
           </Button>
-          <Button className="profile-export-pdf" onClick={() => exportReports("single")} disabled={reportBusy}>
+          {!IS_PUBLIC && <><Button className="profile-export-pdf" onClick={() => exportReports("single")} disabled={reportBusy}>
             <span aria-hidden="true">📄</span> Download PDF
           </Button>
           <Button
@@ -315,6 +317,7 @@ function CountryProfiles() {
           >
             <span aria-hidden="true">⇩</span> Download all {COUNTRIES.length} reports (ZIP)
           </Button>
+          </>}
           <Button className="profile-copy-link" onClick={copyLink} aria-live="polite">
             <span aria-hidden="true">{copied ? "✓" : "🔗"}</span>
             {copied ? "Copied!" : "Copy Link"}
@@ -325,7 +328,7 @@ function CountryProfiles() {
         </div>
       </div>
 
-      <section
+      {!IS_PUBLIC && <section
         ref={reportStatusRef}
         className="profile-report-feedback no-print"
         aria-label="Country report download"
@@ -361,7 +364,7 @@ function CountryProfiles() {
             </Button>
           )}
         </div>
-      </section>
+      </section>}
 
       <div className="profile-kpis">
         {[
@@ -580,7 +583,7 @@ function CountryProfiles() {
         </div>
       </ChartFrame>
 
-      <Card
+      {!IS_PUBLIC && <Card
         title="Download country reports"
         subtitle={`${COUNTRIES.length} countries · ${REFERENCE_YEAR} assessment`}
         className="no-print"
@@ -603,7 +606,7 @@ function CountryProfiles() {
             Choose countries, regions or combined PDF
           </Button>
         </div>
-      </Card>
+      </Card>}
 
       {(imputedFindexCodes.length > 0 || findexSourceDifferences.length > 0) && (
         <Card title="Financial inclusion data coverage">

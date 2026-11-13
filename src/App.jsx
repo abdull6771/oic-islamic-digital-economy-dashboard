@@ -5,48 +5,14 @@ import "./styles/global.css";
 import "./styles/components.css";
 
 import { META, OIC_AVERAGE, REFERENCE_YEAR } from "./data/index.js";
-import { DEFAULT_VIEW, VIEWS, isValidView, viewById } from "./lib/nav.js";
+import { DEFAULT_VIEW, VIEWS, viewById } from "./lib/nav.js";
+import { EDITION, IS_PUBLIC, CONTACT_EMAIL, canAccessView, resolveView } from "./lib/site-edition.js";
 import { hashParam, navigate, onHashChange, openCountry } from "./lib/routing.js";
 import * as fmt from "./lib/format.js";
 import CommandPalette from "./components/CommandPalette.jsx";
 
-import GlobalOverview from "./views/GlobalOverview.jsx";
-import CountryProfiles from "./views/CountryProfiles.jsx";
-import CompareCountries from "./views/CompareCountries.jsx";
-import PillarAnalysis from "./views/PillarAnalysis.jsx";
-import GeographicAnalysis from "./views/GeographicAnalysis.jsx";
-import TrendsProgress from "./views/TrendsProgress.jsx";
-import PolicyRecommendations from "./views/PolicyRecommendations.jsx";
-import DigitalDivide from "./views/DigitalDivide.jsx";
-import CustomIndexBuilder from "./views/CustomIndexBuilder.jsx";
-import PeerLearning from "./views/PeerLearning.jsx";
-import StatisticalAnalysis from "./views/StatisticalAnalysis.jsx";
-import Methodology from "./views/Methodology.jsx";
-import Acknowledgement from "./views/Acknowledgement.jsx";
-import ReportDownloads from "./views/ReportDownloads.jsx";
-import WhatIfCalculator from "./views/WhatIfCalculator.jsx";
-import DataQualityExplorer from "./views/DataQualityExplorer.jsx";
-import UpdateHistory from "./views/UpdateHistory.jsx";
-
-const COMPONENTS = {
-  overview: GlobalOverview,
-  profiles: CountryProfiles,
-  compare: CompareCountries,
-  pillar: PillarAnalysis,
-  geo: GeographicAnalysis,
-  trends: TrendsProgress,
-  divide: DigitalDivide,
-  policy: PolicyRecommendations,
-  builder: CustomIndexBuilder,
-  peers: PeerLearning,
-  stats: StatisticalAnalysis,
-  methodology: Methodology,
-  acknowledgement: Acknowledgement,
-  reports: ReportDownloads,
-  whatif: WhatIfCalculator,
-  quality: DataQualityExplorer,
-  history: UpdateHistory,
-};
+import LandingPage from "./views/LandingPage.jsx";
+import COMPONENTS from "#edition-views";
 
 function DashboardNavigation({ activeView, onNavigate }) {
   const navRef = useRef(null);
@@ -121,18 +87,21 @@ function DashboardNavigation({ activeView, onNavigate }) {
 }
 
 export default function App() {
-  const [activeView, setActiveView] = useState(() => {
-    const tab = hashParam("tab");
-    return isValidView(tab) ? tab : DEFAULT_VIEW;
-  });
+  const [activeView, setActiveView] = useState(() => resolveView(hashParam("tab")));
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", "light");
-    return onHashChange(() => {
+    const syncRoute = () => {
       const tab = hashParam("tab");
-      setActiveView(isValidView(tab) ? tab : DEFAULT_VIEW);
-    });
+      const allowed = resolveView(tab);
+      if (tab && !canAccessView(tab)) {
+        window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}#tab=home`);
+      }
+      setActiveView(allowed);
+    };
+    syncRoute();
+    return onHashChange(syncRoute);
   }, []);
 
   useEffect(() => {
@@ -147,20 +116,41 @@ export default function App() {
   }, []);
 
   const go = useCallback((id) => {
-    navigate({ tab: id });
-    setActiveView(id);
+    const allowed = resolveView(id);
+    navigate({ tab: allowed });
+    setActiveView(allowed);
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, []);
   const view = viewById(activeView) || viewById(DEFAULT_VIEW);
+  useEffect(() => {
+    document.title = `${view.id === "home" ? "Home" : view.label} | OIC Digital Economy Policy Toolkit`;
+  }, [view.id, view.label]);
   const Component = COMPONENTS[view.id];
+  const search = <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)}
+    onSelectView={go}
+    onSelectCountry={(name) => {
+      openCountry(name);
+      setActiveView("profiles");
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }}
+  />;
+
+  if (view.id === "home") {
+    return <>
+      <LandingPage edition={EDITION} onNavigate={go} contactEmail={CONTACT_EMAIL} />
+      {search}
+    </>;
+  }
 
   return (
     <div className="app-shell">
-      <a className="skip-link" href="#main">Skip to content</a>
+      <a className="skip-link" href="#main" onClick={(event) => { event.preventDefault(); document.getElementById("main")?.focus(); }}>Skip to content</a>
       <header className="dashboard-header">
         <div className="dashboard-masthead">
           <div className="dashboard-brand">
-            <h1>OIC Digital Economy Index</h1>
+            <h1><a className="dashboard-home-link" href="#tab=home" onClick={(event) => { event.preventDefault(); go("home"); }}>OIC Digital Economy Index</a></h1>
             <p>OIC DEI · {META.countryCount} Member States · {REFERENCE_YEAR} Assessment</p>
+            {!IS_PUBLIC && <span className="edition-label">Internal version</span>}
           </div>
           <div className="dashboard-average" aria-label={`OIC average ${fmt.score(OIC_AVERAGE)} out of 100`}>
             <span>OIC AVERAGE</span>
@@ -193,13 +183,7 @@ export default function App() {
         </div>
       </footer>
 
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)}
-        onSelectView={go}
-        onSelectCountry={(name) => {
-          openCountry(name);
-          setActiveView("profiles");
-        }}
-      />
+      {search}
     </div>
   );
 }

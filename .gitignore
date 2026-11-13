@@ -2,3 +2,11 @@
 *.xlsx
 *.xls
 *.xlsm
+
+# Local passwords and preview/test outputs.
+.env
+.env.*
+!.env.example
+dist-public/
+dist-full/
+tmp/

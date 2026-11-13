@@ -1525,3 +1525,7 @@ th[aria-sort="descending"] .sort-ind {
   .pillar-disclosure-action,
   .indicator-table-hint { display: none; }
 }
+/* Return to the toolkit from any dashboard view. */
+.dashboard-home-link { color: inherit; text-decoration: none; }
+.dashboard-home-link:hover { color: #7dd3fc; }
+.edition-label { display: inline-block; margin-top: 8px; padding: 2px 9px; border: 1px solid #47647a; border-radius: 999px; color: #bae6fd; font-size: 11px; }

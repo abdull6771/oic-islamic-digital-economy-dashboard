@@ -1,5 +1,25 @@
 # OIC Digital Economy Index (DEI) Dashboard
 
+This experimental branch adds a toolkit Home page and two editions using the
+same source code and generated dataset. The previous Global Overview is now
+called **Dashboard** and keeps its existing `#tab=overview` link.
+
+Run `npm run dev:public` for the public preview on port 5181, or
+`npm run dev:full` for the internal preview on port 5182. The internal preview
+requires the server password in an ignored `.env.full.local` file. Public has
+seven live Explore tools; the other nine are described as coming soon and
+excluded from public routes, search and production bundles. Full retains all
+sixteen tools. Both editions retain Acknowledgements as an informational page.
+
+`npm run build:public` and `npm run build:full` create separate `dist-public/`
+and `dist-full/` previews. For Vercel, use separate projects from this same branch,
+set `SITE_EDITION=public` or `SITE_EDITION=full`, and run the normal
+`npm run build` command with output `dist/`. The internal project must also set
+the server password so its middleware protects every request.
+
+See [the edition and access instructions](docs/EDITIONS.md). Run
+`npm run validate:editions` and `npm run validate:auth` to verify the boundaries.
+
 An interactive dashboard presenting the **OIC Digital Economy Index (ADEI)** — a composite index that scores the **57 member states of the Organisation of Islamic Cooperation (OIC)** on their digital-economy readiness (2025 assessment).
 
 It is an academic and policy project from **INCEIF University**, based on the *Digital Economy Index: OIC Countries 2025 — Policy Report* (Salim, Abdul Hamid, Disli, Lutfi & Cahyono, 2026).

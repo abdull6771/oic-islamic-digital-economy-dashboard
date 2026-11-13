@@ -1,3 +1,5 @@
+import { canAccessView } from "./site-edition.js";
+
 /**
  * Hash routing. The contract is unchanged from the original build - `#tab=<id>`
  * with the same tab ids, plus `#country=<name>` for a deep-linked profile - so
@@ -14,6 +16,10 @@ export const hashParam = (key) => parseHash().get(key);
 
 /** Merge parameters into the hash; a null value removes the key. */
 export function navigate(patch) {
+  if (patch.tab && !canAccessView(patch.tab)) {
+    window.location.hash = "tab=home";
+    return;
+  }
   const params = parseHash();
   for (const [key, value] of Object.entries(patch)) {
     if (value === null || value === undefined) params.delete(key);

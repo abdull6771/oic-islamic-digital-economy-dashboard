@@ -1,0 +1,14 @@
+# Upload the application and its server guard, with no local credentials/builds.
+/*
+!/package.json
+!/package-lock.json
+!/index.html
+!/vite.config.js
+!/oic_dashboard.jsx
+!/middleware.js
+!/vercel.json
+!/.vercelignore
+!/src/
+!/server/
+**/.env*
+**/.DS_Store

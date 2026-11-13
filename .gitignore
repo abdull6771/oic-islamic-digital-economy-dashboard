@@ -10,3 +10,4 @@
 dist-public/
 dist-full/
 tmp/
+.vercel/

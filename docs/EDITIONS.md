@@ -24,11 +24,13 @@ Live verification passed nineteen checks covering anonymous public access,
 internal login, secure cookies, protected assets, logout and matching data.
 The deployed public JavaScript also matches the locally validated artifact.
 
-The internal production username is `internal`. Its unique production password
-and session key are stored in Vercel's secret environment variables, with a
-local recovery copy in the ignored `.env.deployed-full.local` file. This file
-must not be committed or uploaded. Production credentials differ from the
-local preview credentials.
+The internal production username is `inceif`. Its owner-chosen password and
+independent session signing key are stored in Vercel's secret environment
+variables, with a local recovery copy in the ignored `.env.deployed-full.local`
+file. This file must not be committed or uploaded. The local full preview uses
+the same login details in `.env.full.local`, with its own session signing key.
+The login details were updated on 13 November 2026 without changing the
+application code or dataset.
 
 These first releases were deployed through the authenticated Vercel CLI from
 isolated source directories. For future changes, publish both projects from

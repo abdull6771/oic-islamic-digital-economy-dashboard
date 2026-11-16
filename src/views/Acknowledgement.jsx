@@ -297,45 +297,6 @@ function Acknowledgement() {
               </strong>{" "}
               · Developed by INCEIF University
             </div>
-            <div
-              style={{
-                display: "flex",
-                gap: "20px",
-                fontSize: "12px",
-                color: "var(--text)",
-              }}
-            >
-              <a
-                href="#"
-                style={{
-                  color: "var(--interactive)",
-                  textDecoration: "none",
-                  transition: "color 0.2s",
-                }}
-              >
-                Methodology
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: "var(--interactive)",
-                  textDecoration: "none",
-                  transition: "color 0.2s",
-                }}
-              >
-                Data Sources
-              </a>
-              <a
-                href="#"
-                style={{
-                  color: "var(--interactive)",
-                  textDecoration: "none",
-                  transition: "color 0.2s",
-                }}
-              >
-                Contact
-              </a>
-            </div>
           </div>
           <div
             style={{

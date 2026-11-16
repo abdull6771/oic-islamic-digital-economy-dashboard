@@ -24,7 +24,7 @@ export function renderLoginPage({ csrfToken, returnTo = "/", error = "", usernam
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow, noarchive">
   <meta name="color-scheme" content="light">
-  <title>Sign in | OIC Digital Economy Policy Toolkit</title>
+  <title>Sign in | Digital Economy Index: OIC Countries 2025</title>
   <style${nonceAttribute}>
     :root{font-family:Georgia,"Times New Roman",serif;color:#1e293b;background:#f1f5f9;font-synthesis:none;color-scheme:light}
     *,*::before,*::after{box-sizing:border-box}
@@ -85,7 +85,7 @@ export function renderLoginPage({ csrfToken, returnTo = "/", error = "", usernam
   <main class="login-page">
     <div class="login-shell">
       <section class="login-story" aria-labelledby="workspace-title">
-        <div class="login-brand"><span class="brand-icon">${toolkitIcon}</span><div class="brand-name">Digital Economy Policy Toolkit<small>OIC Digital Economy Index · INCEIF University</small></div></div>
+        <div class="login-brand"><span class="brand-icon">${toolkitIcon}</span><div class="brand-name">Digital Economy Index: OIC Countries 2025</div></div>
         <div class="story-body">
           <span class="workspace-label">${lockIcon} Internal workspace</span>
           <h2 id="workspace-title">The full policy toolkit,<br>in one workspace.</h2>

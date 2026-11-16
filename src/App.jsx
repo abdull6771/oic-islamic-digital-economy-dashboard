@@ -124,7 +124,7 @@ export default function App() {
   }, []);
   const view = viewById(activeView) || viewById(DEFAULT_VIEW);
   useEffect(() => {
-    document.title = `${view.id === "home" ? "Home" : view.label} | OIC Digital Economy Policy Toolkit`;
+    document.title = `${view.id === "home" ? "Home" : view.label} | Digital Economy Index: OIC Countries 2025`;
   }, [view.id, view.label]);
   const Component = COMPONENTS[view.id];
   const search = <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)}

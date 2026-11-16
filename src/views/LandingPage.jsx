@@ -107,7 +107,7 @@ export default function LandingPage({ edition = "public", onNavigate, contactEma
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="landing-header">
       <div className="landing-container landing-header-inner">
-        <ToolLink id="home" onNavigate={onNavigate} className="landing-brand"><span className="landing-brand-icon"><ToolIcon name="toolkit" /></span><span><strong>Digital Economy Policy Toolkit</strong><small>OIC Digital Economy Index {REFERENCE_YEAR} · INCEIF University</small></span></ToolLink>
+        <ToolLink id="home" onNavigate={onNavigate} className="landing-brand"><span className="landing-brand-icon"><ToolIcon name="toolkit" /></span><span><strong>Digital Economy Index: OIC Countries {REFERENCE_YEAR}</strong></span></ToolLink>
         <nav className="landing-nav" aria-label="Main">
           <a href="#explore">Explore</a>
           {isPublic ? <a href="#coming" className="landing-coming-nav">Coming soon <span>NEW</span></a> : <><a href="#simulate">Simulate</a><a href="#learn">Learn &amp; act</a><a href="#data">Data &amp; methods</a></>}
@@ -151,7 +151,7 @@ export default function LandingPage({ edition = "public", onNavigate, contactEma
     </main>
 
     <footer className="landing-footer"><div className="landing-container landing-footer-inner">
-      <div className="landing-footer-copy"><strong>Digital Economy Policy Toolkit</strong><p>Developed by INCEIF University under the Islamic Digital Economy Project, supported by the Islamic Economics Research &amp; Innovation Fund (IERIF).</p><p className="landing-citation">Salim, K., Abdul Hamid, B., Disli, M., Lutfi, K. I., &amp; Cahyono, K. N. (2026). Digital Economy Index: OIC Countries 2025 — Policy Report. INCEIF University.</p><p className="landing-source-date">{META.countryCount} member states · {REFERENCE_YEAR} assessment{META.sourceUpdated && ` · Data updated ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${META.sourceUpdated}T00:00:00Z`))}`}</p></div>
+      <div className="landing-footer-copy"><strong>Digital Economy Index: OIC Countries {REFERENCE_YEAR}</strong><p>Developed by INCEIF University under the Islamic Digital Economy Project, supported by the Islamic Economics Research &amp; Innovation Fund (IERIF).</p><p className="landing-citation">Salim, K., Abdul Hamid, B., Disli, M., Lutfi, K. I., &amp; Cahyono, K. N. (2026). Digital Economy Index: OIC Countries 2025 — Policy Report. INCEIF University.</p><p className="landing-source-date">{META.countryCount} member states · {REFERENCE_YEAR} assessment{META.sourceUpdated && ` · Data updated ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${META.sourceUpdated}T00:00:00Z`))}`}</p></div>
       <nav aria-label="Footer">{isPublic ? <><a href="#explore">Explore ({publicToolCount} tools)</a><a href="#coming">Coming soon</a></> : <><ToolLink id="reports" onNavigate={onNavigate}>Download country reports</ToolLink><ToolLink id="methodology" onNavigate={onNavigate}>Methodology</ToolLink><ToolLink id="history" onNavigate={onNavigate}>Update history</ToolLink></>}<ToolLink id="acknowledgement" onNavigate={onNavigate}>Acknowledgements</ToolLink></nav>
     </div></footer>
   </div>;

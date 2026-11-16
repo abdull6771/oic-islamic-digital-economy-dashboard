@@ -87,7 +87,7 @@ await check("unauthenticated documents lead to login while internal assets and A
 await check("the branded login page is independent of protected application assets", async () => {
   const state = await loginForm();
   assert.match(state.response.headers.get("content-type"), /text\/html/);
-  assert.match(state.html, /Digital Economy Policy Toolkit/);
+  assert.match(state.html, /Digital Economy Index: OIC Countries 2025/);
   assert.match(state.html, /name="username"/);
   assert.match(state.html, /name="password"/);
   assert.match(state.html, /action="\/auth\/login"/);

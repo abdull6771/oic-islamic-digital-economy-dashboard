@@ -1,0 +1,19 @@
+# Non-secret Auth settings only. Target hosted projects explicitly with --remote.
+# CLI reference: https://supabase.com/docs/guides/local-development/cli/config
+project_id = "oic-dei-accounts"
+
+[auth]
+site_url = "https://oic-dei-internal.vercel.app"
+additional_redirect_urls = ["https://oic-dei-internal.vercel.app/auth/confirm"]
+enable_signup = false
+
+[auth.email]
+enable_confirmations = true
+
+[auth.email.template.invite]
+subject = "You are invited to the Digital Economy Policy Toolkit"
+content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.recovery]
+subject = "Reset your Digital Economy Policy Toolkit password"
+content_path = "./supabase/templates/recovery.html"

@@ -142,6 +142,22 @@ when its database or configuration is unavailable.
    Remove the former `INTERNAL_SITE_USER` and `INTERNAL_SITE_PASSWORD` values
    after successful cutover; no shared-login fallback is needed in account mode.
 
+The narrow, non-secret `supabase/config.toml` and the two HTML files in
+`supabase/templates/` version the Auth settings and invitation/reset links above.
+They declare no SMTP or unrelated service settings. After authenticating the CLI,
+run these commands from this branch's checkout root to review and apply only the
+declared settings to the existing `oic-dei-accounts` project:
+
+```sh
+supabase config diff --remote=nodyweltrmxatgiivfrl
+supabase config push --remote=nodyweltrmxatgiivfrl --yes
+```
+
+The local `project_id` is a name, not the hosted target; keep the explicit remote
+reference. Production SMTP still requires separate configuration. Template keys
+and variables follow the official [CLI config reference](https://supabase.com/docs/guides/local-development/cli/config)
+and [email template guide](https://supabase.com/docs/guides/local-development/customizing-email-templates).
+
 | Server environment variable | Account-mode value |
 | --- | --- |
 | `SITE_EDITION` | `full` |

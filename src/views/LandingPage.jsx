@@ -107,7 +107,7 @@ export default function LandingPage({ edition = "public", onNavigate, contactEma
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="landing-header">
       <div className="landing-container landing-header-inner">
-        <ToolLink id="home" onNavigate={onNavigate} className="landing-brand"><span className="landing-brand-icon"><ToolIcon name="toolkit" /></span><span><strong>Digital Economy Index: OIC Countries {REFERENCE_YEAR}</strong></span></ToolLink>
+        <ToolLink id="home" onNavigate={onNavigate} className="landing-brand"><span className="landing-brand-icon"><ToolIcon name="toolkit" /></span><span><strong>Digital Economy Index: OIC Countries {REFERENCE_YEAR}</strong><small>Digital Economy Policy Toolkit</small></span></ToolLink>
         <nav className="landing-nav" aria-label="Main">
           <a href="#explore">Explore</a>
           {isPublic ? <a href="#coming" className="landing-coming-nav">Coming soon <span>NEW</span></a> : <><a href="#simulate">Simulate</a><a href="#learn">Learn &amp; act</a><a href="#data">Data &amp; methods</a></>}

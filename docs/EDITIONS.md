@@ -17,15 +17,18 @@ The two editions were deployed as separate production projects on 13 November
 | Full internal | https://oic-dei-internal.vercel.app | Custom sign-in; all sixteen tools |
 
 Both deployments were updated on 16 November 2026 from commit
-`c2d03569d44632e4e23c1a5074e433cd8aac602f` on
+`6c82d9e0d1f236fdaeeb9c4733a1bbb4ba49fbea` on
 `feature/public-internal-landing`. The deployed dataset SHA-256 is
 `3e1a8e5c81ba532fd8b7254253a2798464b7c73d414f6ce1442ba08cf4c3fb16`.
 Their shared landing header reads **Digital Economy Index: OIC Countries 2025**.
 The report citation has been removed from both landing and dashboard footers.
 The Acknowledgements footer omits the Methodology, Data Sources and Contact links.
+Its project description and disclaimer use the supplied MOF/IERIF/IsDB wording;
+Research Team includes IsDB Technical Contributor Mr Syed Faiq Najeeb, and the
+separate Authors section is removed. About INCEIF University is unchanged.
 Live verification passed nineteen checks covering anonymous public access,
 internal login, secure cookies, protected assets, logout and matching data.
-The deployed public JavaScript also matches the locally validated artifact.
+Both production module graphs passed the edition checks.
 
 The internal production username is `inceif`. Its owner-chosen password and
 independent session signing key are stored in Vercel's secret environment

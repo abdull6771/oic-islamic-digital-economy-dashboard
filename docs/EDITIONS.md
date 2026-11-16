@@ -17,13 +17,15 @@ The two editions were deployed as separate production projects on 13 November
 | Full internal | https://oic-dei-internal.vercel.app | Custom sign-in; all sixteen tools |
 
 Both deployments were updated on 16 November 2026 from commit
-`96f8dfb00913f8993a816982b30c01cf358f5e7f` on
+`05d4f233306f873d5f135ce951c41e8631eabdc0` on
 `feature/public-internal-landing`. The deployed dataset SHA-256 is
 `3e1a8e5c81ba532fd8b7254253a2798464b7c73d414f6ce1442ba08cf4c3fb16`.
 Their shared landing header reads **Digital Economy Index: OIC Countries 2025**,
 with **Digital Economy Policy Toolkit** directly underneath.
 The public "Register your interest" button opens an email to
 `kinan@inceif.edu.my`, configured through the `CONTACT_EMAIL` build setting.
+The login page's "Contact the toolkit administrator" link also opens
+`mailto:kinan@inceif.edu.my`.
 The report citation has been removed from both landing and dashboard footers.
 The Acknowledgements footer omits the Methodology, Data Sources and Contact links.
 Its project description and disclaimer use the supplied MOF/IERIF/IsDB wording;

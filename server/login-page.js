@@ -12,7 +12,7 @@ const checkIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" s
  * works without JavaScript; the small enhancement adds password visibility and
  * submit feedback. Supply `nonce` when using a nonce-based content security policy.
  */
-export function renderLoginPage({ csrfToken, returnTo = "/", error = "", username = "", sessionHours = 8, nonce = "" } = {}) {
+export function renderLoginPage({ csrfToken, returnTo = "/", error = "", username = "", sessionHours = 8, nonce = "", accountMode = false } = {}) {
   const safeHours = Number.isFinite(sessionHours) && sessionHours > 0 && sessionHours <= 24 ? sessionHours : 8;
   const nonceAttribute = nonce ? ` nonce="${escapeHtml(nonce)}"` : "";
   const safeUsername = escapeHtml(username);
@@ -97,17 +97,17 @@ export function renderLoginPage({ csrfToken, returnTo = "/", error = "", usernam
       <section class="login-panel" aria-labelledby="login-title">
         <p class="form-eyebrow">${lockIcon} Full version access</p>
         <h1 id="login-title">Welcome back</h1>
-        <p class="form-description">Sign in with your internal credentials.</p>
+        <p class="form-description">${accountMode ? "Sign in with your individual internal account." : "Sign in with your internal credentials."}</p>
         <form class="login-form" id="login-form" method="post" action="/auth/login"${error ? ' aria-describedby="login-error"' : ""}>
           ${errorMarkup}
           <input type="hidden" name="csrfToken" value="${escapeHtml(csrfToken)}">
           <input type="hidden" name="returnTo" id="return-to" value="${escapeHtml(returnTo)}">
-          <div class="login-field"><label for="username">Username</label><input id="username" name="username" type="text" value="${safeUsername}" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="256" required${username ? "" : " autofocus"}></div>
+          <div class="login-field"><label for="username">${accountMode ? "Email address" : "Username"}</label><input id="username" name="username" type="${accountMode ? "email" : "text"}" value="${safeUsername}" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="256" required${username ? "" : " autofocus"}></div>
           <div class="login-field"><label for="password">Password</label><div class="password-control"><input id="password" name="password" type="password" autocomplete="current-password" maxlength="2048" required${username ? " autofocus" : ""}><button class="password-toggle" id="password-toggle" type="button" aria-label="Show password" aria-controls="password" aria-pressed="false" hidden>Show</button></div></div>
           <button class="sign-in" id="sign-in" type="submit"><span id="sign-in-label">Sign in</span>${arrowIcon}</button>
           <p class="session-note">Signed-in sessions expire after ${safeHours} ${safeHours === 1 ? "hour" : "hours"}.</p>
         </form>
-        <p class="support-note">Need access or help signing in?<br><a href="mailto:devbabura@gmail.com">Contact the toolkit administrator</a></p>
+        <p class="support-note">Need access or help signing in?<br><a href="mailto:${accountMode ? "kinan@inceif.edu.my" : "devbabura@gmail.com"}">Contact the toolkit administrator</a></p>
       </section>
     </div>
   </main>

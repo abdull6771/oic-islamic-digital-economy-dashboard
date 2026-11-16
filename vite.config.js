@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
-import { createInternalAuthMiddleware } from "./server/auth.js";
+import { createInternalAuthMiddleware } from "./server/request-handler.js";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 const internalViews = ["WhatIfCalculator", "CustomIndexBuilder", "PeerLearning", "PolicyRecommendations", "DataQualityExplorer", "StatisticalAnalysis", "Methodology", "ReportDownloads", "UpdateHistory"];

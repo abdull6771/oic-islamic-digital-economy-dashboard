@@ -217,7 +217,7 @@ async function incomingForm(request) {
 }
 
 /** Connect-compatible guard, installed before Vite's HTML and asset handlers. */
-export function createInternalAuthMiddleware({ edition, env = process.env } = {}) {
+export function createInternalAuthMiddleware({ edition, env = process.env, requestHandler = handleInternalRequest } = {}) {
   return async function internalAuthMiddleware(request, response, next) {
     if (edition === "full") protectNodeResponse(response);
     try {
@@ -230,7 +230,7 @@ export function createInternalAuthMiddleware({ edition, env = process.env } = {}
         else if (value !== undefined) headers.set(name, value);
       }
       let body;
-      if (edition === "full" && method === "POST" && ["/auth/login", "/auth/logout"].includes(url.pathname)) {
+      if (edition === "full" && method === "POST" && (/^\/(?:auth|admin|account)(?:\/|$)/.test(url.pathname))) {
         if (Number(request.headers["content-length"]) > MAX_FORM_BYTES) {
           request.resume();
           response.writeHead(413);
@@ -240,10 +240,11 @@ export function createInternalAuthMiddleware({ edition, env = process.env } = {}
         body = await incomingForm(request);
         if (body === null) { response.writeHead(413); response.end("The sign-in request is too large."); return; }
       }
-      const decision = await handleInternalRequest(new Request(url, { method, headers, ...(body ? { body } : {}) }), {
+      const decision = await requestHandler(new Request(url, { method, headers, ...(body ? { body } : {}) }), {
         buildEdition: edition, siteEdition: env.SITE_EDITION ?? edition,
         username: env.INTERNAL_SITE_USER ?? "internal", password: env.INTERNAL_SITE_PASSWORD,
         sessionSecret: env.INTERNAL_SESSION_SECRET,
+        clientAddress: request.socket.remoteAddress || "unknown",
       });
       if (!decision) return next();
       if (edition !== "full") protectNodeResponse(response);

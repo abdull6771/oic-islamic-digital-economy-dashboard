@@ -1528,3 +1528,8 @@ th[aria-sort="descending"] .sort-ind {
 .internal-signout { margin: 0; }
 .internal-signout button { border: 1px solid #47647a; border-radius: 8px; padding: 8px 12px; background: transparent; color: #cbd5e1; font: inherit; font-size: 13px; cursor: pointer; }
 .internal-signout button:hover { border-color: #7dd3fc; color: #fff; }
+.internal-account { flex-wrap: wrap; }
+.internal-account-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.internal-account-links { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
+.internal-account-links a, .landing-page .internal-account-links a { padding: 7px 0; color: #bae6fd; font-size: 13px; line-height: 1.5; text-decoration: none; }
+.internal-account-links a:hover, .landing-page .internal-account-links a:hover { color: #fff; text-decoration: underline; }

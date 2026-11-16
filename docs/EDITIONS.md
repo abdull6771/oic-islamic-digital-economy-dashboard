@@ -75,6 +75,94 @@ whose marker disagrees with the selected edition.
 
 ## Internal access
 
+### Individual accounts and Kinan's admin dashboard
+
+The account-management implementation is prepared on
+`feature/kinan-user-admin`. It has not been activated on either live project.
+The current live full site still uses the shared login described below until
+the separate Supabase project and production email delivery are connected.
+
+With `INTERNAL_AUTH_MODE=supabase`, Kinan signs in with
+`kinan@inceif.edu.my` and a password he sets himself. **Manage users** opens
+`/admin/users`, where he can create member accounts, resend invitations, send
+password resets, disable access and reactivate accounts. Members have their
+own logins and cannot access admin pages or mutations. There is no public
+self-registration or administrator role selector in the member-creation form.
+
+Invited users follow an email link and set their own password; Kinan never
+sees their stored password. Existing members can change their own password
+after verifying their current password. Disabling or resetting an account
+revokes its stored sessions, and re-enabling access does not restore old
+cookies. Logout revokes the individual session in the database. Sessions last
+eight hours; limited password-setup sessions last ten minutes. Account status,
+current role and session validity are checked on every protected request.
+
+The public edition returns 404 for admin, account, identity and email-confirmation
+routes. The full edition's account mode has no fallback to the shared password
+when its database or configuration is unavailable.
+
+#### One-time Supabase setup
+
+1. Create the separate, organization-owned Supabase project approved for these
+   dashboard accounts. Apply
+   `supabase/migrations/202611160001_toolkit_accounts.sql` to that new project.
+   This transaction creates only the `toolkit_*` accounts, sessions, rate limits,
+   audit tables and server-only functions. Browser roles have no direct access.
+2. Disable public signups in Supabase Auth. Set its Site URL to
+   `https://oic-dei-internal.vercel.app` and allow the exact redirect
+   `https://oic-dei-internal.vercel.app/auth/confirm`.
+3. Configure production SMTP and an approved sender. Supabase's built-in email
+   service is for testing and restricts recipients; it is not sufficient for
+   sending invitations to ordinary dashboard users. See the official
+   [SMTP setup](https://supabase.com/docs/guides/auth/auth-smtp).
+4. Set the **Invite user** email link to
+   `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite` and the
+   **Reset password** link to
+   `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery`.
+   The confirmation page requires a deliberate POST before consuming the
+   one-time token, so an email scanner opening the link does not use it up.
+   Use these templates rather than the default fragment-token callback; see
+   [email templates](https://supabase.com/docs/guides/auth/auth-email-templates).
+5. Create Kinan's Auth identity at exactly `kinan@inceif.edu.my`, with no reuse
+   of the old shared password. Record its immutable Auth UUID. With
+   `SUPABASE_URL` and the server-only `SUPABASE_SECRET_KEY` in the process
+   environment, run `npm run accounts:bootstrap -- --user-id <UUID>` to verify
+   the target, then append `--apply` to create his pending administrator
+   profile. This command sends no email and does not create or print a password.
+   The pending profile can exist before email verification, but it cannot get
+   toolkit access until Kinan proves email possession and sets his password.
+6. On the internal Vercel project only, configure the following values and
+   deploy the reviewed account-management branch. Activate this mode only
+   after the migration, email templates, SMTP and pending Kinan profile exist.
+   Arrange Kinan's initial invitation explicitly, then verify that he can
+   complete setup, sign in, manage a test member and revoke that member's access.
+   Remove the former `INTERNAL_SITE_USER` and `INTERNAL_SITE_PASSWORD` values
+   after successful cutover; no shared-login fallback is needed in account mode.
+
+| Server environment variable | Account-mode value |
+| --- | --- |
+| `SITE_EDITION` | `full` |
+| `INTERNAL_AUTH_MODE` | `supabase` |
+| `SUPABASE_URL` | The new project's HTTPS origin |
+| `SUPABASE_SECRET_KEY` | Supabase server secret key, or legacy `service_role` key |
+| `INTERNAL_SESSION_SECRET` | Independent random secret of at least 32 characters |
+
+Keep every privileged key server-side. Never use a publishable/anon key for
+admin work or prefix these variables with `VITE_`. The app stores opaque cookie
+hashes instead of raw session tokens. Its hash is bound to
+`INTERNAL_SESSION_SECRET`, so rotating that secret invalidates account cookies.
+Roles come from protected database records bound to Auth user IDs, never from
+editable user metadata. Account changes are recorded in the audit table; no
+passwords, email tokens or raw session cookies are recorded there.
+
+Run `npm run validate:accounts` for HTTP, role, revocation, CSRF, invitation and
+REST-adapter checks with synthetic accounts and fake delivery. These tests do
+not contact Supabase or send messages. The migration has also been exercised
+in isolated PostgreSQL-compatible engines. Production credentials, SMTP and
+Kinan's actual onboarding must still be verified after connection.
+
+### Existing shared login
+
 The full edition has a branded sign-in screen at `/auth/login`. The server
 checks the configured username and password before issuing an eight-hour
 session cookie. The guard checks every path, including JavaScript assets and

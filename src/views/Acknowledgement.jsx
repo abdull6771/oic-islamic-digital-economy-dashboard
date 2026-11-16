@@ -34,16 +34,6 @@ function Acknowledgement() {
     color: "var(--text)",
     fontWeight: 500,
   };
-  const authorEntry = {
-    fontSize: "14px",
-    color: "var(--text)",
-    padding: "10px 0",
-    borderBottom: "1px solid var(--border)",
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-  };
-
   return (
     <div className="view-prose">
       <div>
@@ -105,7 +95,8 @@ function Acknowledgement() {
             <span style={{ fontSize: "20px" }}>📋</span> About the Project
           </div>
           <p style={bodyStyle}>
-            This report was prepared as part of the{" "}
+            This digital economy index and policy toolkit were prepared as part
+            of the{" "}
             <strong style={{ color: "var(--text)" }}>
               Islamic Digital Economy Project
             </strong>
@@ -113,10 +104,23 @@ function Acknowledgement() {
             <strong style={{ color: "var(--text)" }}>
               Islamic Economics Research &amp; Innovation Fund (IERIF)
             </strong>
-            . The project aims to advance research and policy dialogue on the
-            development of the Islamic digital economy and to provide
-            data-driven insights for policymakers, researchers, and industry
-            stakeholders.
+            {" "}under the Ministry of Finance Malaysia (MOF), and undertaken in
+            strategic partnership with the Islamic Development Bank (IsDB). The
+            project aims to advance research and policy dialogue on the
+            development of the Islamic digital economy and provide data-driven
+            insights for policymakers, researchers, and industry stakeholders.
+          </p>
+          <p style={bodyStyle}>
+            We gratefully acknowledge the IsDB Center of Excellence Kuala Lumpur
+            and the IsDB Global Practices and Partnerships (GPP) Directorate for
+            their valuable contributions and support throughout the project.
+          </p>
+          <p style={bodyStyle}>
+            We extend our appreciation to the research assistants, Afief El
+            Ashfahany, Nimotallahi Durojaiye, Dr Faaza Fakhrunnas, Dr Annisa
+            Fithria, and Hassan Olakunle, for their dedicated support. Special
+            thanks to Amnan Hanani for her professionalism and dedication in
+            managing the project.
           </p>
         </div>
 
@@ -164,45 +168,9 @@ function Acknowledgement() {
               </span>
             ))}
           </div>
-        </div>
-
-        {/* Authors */}
-        <div style={cardStyle}>
-          <div style={headingStyle}>
-            <span style={{ fontSize: "20px" }}>✍️</span> Authors
-          </div>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {[
-              "Assoc. Prof. Dr. Kinan Salim",
-              "Prof. Dr. Baharom Abdul Hamid",
-              "Assoc. Prof. Dr. Mustafa Disli",
-              "Khairunnisa Ismah Lutfi",
-              "Kurniagung Nur Cahyono",
-            ].map((name, i) => (
-              <div key={name} style={authorEntry}>
-                <span
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    borderRadius: "50%",
-                    background: "var(--accent)",
-                    color: "var(--on-brand)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "12px",
-                    fontWeight: 700,
-                    flexShrink: 0,
-                  }}
-                >
-                  {i + 1}
-                </span>
-                <span style={{ fontWeight: 500, color: "var(--text)" }}>
-                  {name}
-                </span>
-              </div>
-            ))}
-          </div>
+          <p style={{ ...bodyStyle, marginTop: "20px" }}>
+            <strong>IsDB Technical Contributor:</strong> Mr Syed Faiq Najeeb
+          </p>
         </div>
 
         {/* Dashboard Development Team */}
@@ -257,10 +225,26 @@ function Acknowledgement() {
             <span style={{ fontSize: "20px" }}>⚖️</span> Disclaimer
           </div>
           <p style={{ ...bodyStyle, color: "var(--text)", fontSize: "13px" }}>
-            The views expressed in this report are those of the authors and do
-            not necessarily reflect the official positions of INCEIF University,
-            IERIF, or any affiliated organisations. The data presented is
-            intended for research and informational purposes only.
+            The findings, interpretations, and conclusions expressed in these
+            policy toolkit and dashboard are solely those of the authors and do
+            not necessarily reflect the views of INCEIF University or the
+            official policies, position, or views of the IsDB Group, its
+            Management, Board of Executive Directors, or member state
+            shareholders.
+          </p>
+          <p style={{ ...bodyStyle, color: "var(--text)", fontSize: "13px" }}>
+            While reasonable efforts have been made to ensure the accuracy of
+            the information presented, INCEIF University does not accept
+            responsibility for the completeness of the content and shall not be
+            liable for any loss arising from its use. The designations employed
+            and the presentation of material in this publication do not imply
+            the expression of any opinion concerning the legal status or
+            boundaries.
+          </p>
+          <p style={{ ...bodyStyle, color: "var(--text)", fontSize: "13px" }}>
+            Nothing herein shall constitute or be considered a limitation or
+            waiver of the privileges and immunities of INCEIF University, all of
+            which are expressly reserved.
           </p>
         </div>
 

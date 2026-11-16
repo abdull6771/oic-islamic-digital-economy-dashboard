@@ -107,7 +107,7 @@ export function renderLoginPage({ csrfToken, returnTo = "/", error = "", usernam
           <button class="sign-in" id="sign-in" type="submit"><span id="sign-in-label">Sign in</span>${arrowIcon}</button>
           <p class="session-note">Signed-in sessions expire after ${safeHours} ${safeHours === 1 ? "hour" : "hours"}.</p>
         </form>
-        <p class="support-note">Need access or help signing in?<br><a href="mailto:${accountMode ? "kinan@inceif.edu.my" : "devbabura@gmail.com"}">Contact the toolkit administrator</a></p>
+        <p class="support-note">Need access or help signing in?<br><a href="mailto:kinan@inceif.edu.my">Contact the toolkit administrator</a></p>
       </section>
     </div>
   </main>

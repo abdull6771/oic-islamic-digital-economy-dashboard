@@ -107,8 +107,11 @@ function TrendsProgress() {
   const topGainer = gains.length > 0 ? gains.reduce((a, b) => (a.gain > b.gain ? a : b)) : null;
   const incompleteHistory = DATA_QUALITY
     .filter((issue) => issue.id === "incomplete-pillars")
-    .flatMap((issue) => issue.detail.observations)
-    .filter((row) => selectedCountries.includes(row.country) || selectedCountries.includes(OIC_AVERAGE_LABEL));
+    .flatMap((issue) => issue.detail.observations);
+  const selectedHistoryGaps = incompleteHistory.filter((row) => selectedCountries.includes(row.country));
+  const oicAverageSelected = selectedCountries.includes(OIC_AVERAGE_LABEL);
+  const showHistoricalCoverage = selectedHistoryGaps.length > 0
+    || (oicAverageSelected && incompleteHistory.length > 0);
 
   return (
     <div className="stack">
@@ -142,14 +145,23 @@ function TrendsProgress() {
         </div>
       </Card>
 
-      {incompleteHistory.length > 0 && (
-        <InsightBlock title="Historical data coverage">
-          {incompleteHistory.map((row) => `${row.country} ${row.year}`).join(", ")}
-          {" "}has an unavailable pillar score in the source workbook. Its published ADEI is retained.
-          {selectedCountries.includes(OIC_AVERAGE_LABEL) && (
-            <> The selected OIC average includes that published score, so this coverage note also applies to the average.</>
+      {showHistoricalCoverage && (
+        <InsightBlock title={selectedHistoryGaps.length > 0 ? "Historical data coverage" : "OIC average historical data coverage"}>
+          {selectedHistoryGaps.length > 0 && (
+            <>
+              The source workbook has incomplete pillar coverage for{" "}
+              {selectedHistoryGaps.map((row) => `${row.country} ${row.year}`).join(", ")}.
+              {" "}The published ADEI for each affected record is retained.{" "}
+            </>
           )}
-          {" "}Interpret comparisons involving that year with this gap in mind.
+          {oicAverageSelected && (
+            <>
+              The selected OIC average includes the published ADEI for{" "}
+              {incompleteHistory.map((row) => `${row.country} ${row.year}`).join(", ")},
+              {" "}whose source records have incomplete pillar coverage. This limitation applies to the OIC average for the affected years.{" "}
+            </>
+          )}
+          Interpret comparisons involving these records and years with this gap in mind.
         </InsightBlock>
       )}
 

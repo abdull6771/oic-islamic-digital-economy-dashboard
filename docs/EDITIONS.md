@@ -17,8 +17,10 @@ The two editions were deployed as separate production projects on 13 November
 | Full internal | https://oic-dei-internal.vercel.app | Custom sign-in; all sixteen tools |
 
 Both deployments were updated on 16 November 2026 from commit
-`05d4f233306f873d5f135ce951c41e8631eabdc0` on
-`feature/public-internal-landing`. The deployed dataset SHA-256 is
+`d39e02cd60f0bd28f7894c449e0e468cd46a10d4` on
+`feature/kinan-user-admin`. The full deployment explicitly keeps
+`INTERNAL_AUTH_MODE=shared`, so the existing login remains in use and individual
+account administration is not active. The deployed dataset SHA-256 is
 `3e1a8e5c81ba532fd8b7254253a2798464b7c73d414f6ce1442ba08cf4c3fb16`.
 Their shared landing header reads **Digital Economy Index: OIC Countries 2025**,
 with **Digital Economy Policy Toolkit** directly underneath.
@@ -31,8 +33,8 @@ The Acknowledgements footer omits the Methodology, Data Sources and Contact link
 Its project description and disclaimer use the supplied MOF/IERIF/IsDB wording;
 Research Team includes IsDB Technical Contributor Mr Syed Faiq Najeeb, and the
 separate Authors section is removed. About INCEIF University is unchanged.
-Live verification passed nineteen checks covering anonymous public access,
-internal login, secure cookies, protected assets, logout and matching data.
+Earlier production verification passed nineteen checks covering anonymous public
+access, internal login, secure cookies, protected assets, logout and matching data.
 Both production module graphs passed the edition checks.
 
 The internal production username is `inceif`. Its owner-chosen password and
@@ -45,9 +47,11 @@ application code or dataset.
 
 These first releases were deployed through the authenticated Vercel CLI from
 isolated source directories. For future changes, publish both projects from
-this same branch and dataset, keeping each project's existing production
-environment variables. Updating one project does not automatically deploy the
-other. Do not deploy from the original checkout or replace the original
+the same reviewed `feature/kinan-user-admin` source and dataset, keeping each
+project's existing production environment variables and the full site's shared
+mode until account activation is ready. Updating one project does not
+automatically deploy the other. Do not deploy from the original checkout or
+replace the original
 production project when updating these two editions.
 
 ## Run and build each edition
@@ -80,10 +84,31 @@ whose marker disagrees with the selected edition.
 
 ### Individual accounts and Kinan's admin dashboard
 
-The account-management implementation is prepared on
-`feature/kinan-user-admin`. It has not been activated on either live project.
-The current live full site still uses the shared login described below until
-the separate Supabase project and production email delivery are connected.
+The account-management code is deployed on both projects from `d39e02c`, with
+the internal deployment explicitly set to `INTERNAL_AUTH_MODE=shared`. The
+existing full-site login continues to work; individual accounts and **Manage
+users** remain inactive until email setup is complete.
+
+The separate Supabase project **oic-dei-accounts** is connected at
+`https://nodyweltrmxatgiivfrl.supabase.co`. Migration `202611160001` is applied
+and recorded in migration history. Live read-only checks verified four tables
+with row-level security and sixteen server-only functions, with no table or
+function privileges for the anonymous or authenticated browser roles. The
+internal Vercel project has its server URL and privileged server key configured;
+the key remains in Vercel's private environment.
+
+The Site URL and exact `/auth/confirm` redirect are applied, public signup is
+disabled, and email confirmation is required. Kinan's identity is bound to a
+pending administrator profile: email is not yet confirmed, password setup and
+activation are pending, and no invitation email has been sent.
+
+**Remaining setup:** INCEIF IT must provide the approved production SMTP
+settings. On this project's Free plan with the default email provider, Supabase
+rejected the custom invite/recovery templates with HTTP 400
+`entitlement_required`; custom SMTP must be configured before those templates
+can be applied. The required token-hash templates are already versioned below.
+Keep shared mode active until SMTP, both templates and the email/password-setup
+flow have been verified. No plan upgrade has been made.
 
 With `INTERNAL_AUTH_MODE=supabase`, Kinan signs in with
 `kinan@inceif.edu.my` and a password he sets himself. **Manage users** opens
@@ -144,9 +169,9 @@ when its database or configuration is unavailable.
 
 The narrow, non-secret `supabase/config.toml` and the two HTML files in
 `supabase/templates/` version the Auth settings and invitation/reset links above.
-They declare no SMTP or unrelated service settings. After authenticating the CLI,
-run these commands from this branch's checkout root to review and apply only the
-declared settings to the existing `oic-dei-accounts` project:
+They declare no SMTP or unrelated service settings. Once INCEIF SMTP is
+configured, run these commands from this branch's checkout root to review and
+apply the declared settings and templates to `oic-dei-accounts`:
 
 ```sh
 supabase config diff --remote=nodyweltrmxatgiivfrl
@@ -177,8 +202,9 @@ passwords, email tokens or raw session cookies are recorded there.
 Run `npm run validate:accounts` for HTTP, role, revocation, CSRF, invitation and
 REST-adapter checks with synthetic accounts and fake delivery. These tests do
 not contact Supabase or send messages. The migration has also been exercised
-in isolated PostgreSQL-compatible engines. Production credentials, SMTP and
-Kinan's actual onboarding must still be verified after connection.
+in isolated PostgreSQL-compatible engines. The production connection, schema
+and pending administrator binding are verified. SMTP delivery and Kinan's actual
+onboarding remain to be verified before switching to account mode.
 
 ### Existing shared login
 

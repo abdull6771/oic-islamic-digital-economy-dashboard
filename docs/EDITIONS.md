@@ -17,11 +17,12 @@ The two editions were deployed as separate production projects on 13 November
 | Full internal | https://oic-dei-internal.vercel.app | Custom sign-in; all sixteen tools |
 
 Both deployments were updated on 16 November 2026 from commit
-`4239d290becf0ca1a0675bde999f8db567d93c1e` on
+`c2d03569d44632e4e23c1a5074e433cd8aac602f` on
 `feature/public-internal-landing`. The deployed dataset SHA-256 is
 `3e1a8e5c81ba532fd8b7254253a2798464b7c73d414f6ce1442ba08cf4c3fb16`.
 Their shared landing header reads **Digital Economy Index: OIC Countries 2025**.
 The report citation has been removed from both landing and dashboard footers.
+The Acknowledgements footer omits the Methodology, Data Sources and Contact links.
 Live verification passed nineteen checks covering anonymous public access,
 internal login, secure cookies, protected assets, logout and matching data.
 The deployed public JavaScript also matches the locally validated artifact.

@@ -1,0 +1,138 @@
+﻿/*
+ * Original dashboard palette: slate surfaces, forest-green pillars and gold
+ * highlights. The dashboard and generated reports share a fixed light theme.
+ */
+
+:root,
+[data-report="light"] {
+  color-scheme: light;
+
+  /* Neutrals */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #cbd5e1;
+  --border-strong: #94a3b8;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --text-subtle: #64748b;
+
+  /* Brand ramp */
+  --brand-950: #123024;
+  --brand-900: #1b4332;
+  --brand-800: #1f4e38;
+  --brand-700: #2d6a4f;
+  --brand-600: #40916c;
+  --brand-500: #52b788;
+  --brand-400: #74c69d;
+  --brand-300: #95d5b2;
+  --brand-100: #d8f3dc;
+  --accent: #b8922a;
+  --accent-soft: #fff9e6;
+
+  /* Interactive roles */
+  --tint: #e8f5e9;
+  --tint-line: #95d5b2;
+  --interactive: #2d6a4f;
+  --interactive-hover: #1b4332;
+  --interactive-strong: #1b4332;
+  --on-brand: #ffffff;
+  --focus-ring: #007da8;
+  --accent-ink: #80651a;
+  --accent-line: #d4b45e;
+  --map-nodata: #e2e8f0;
+
+  /* Original pillar colours, in index order */
+  --p1: #1b4332;
+  --p2: #2d6a4f;
+  --p3: #40916c;
+  --p4: #52b788;
+  --p5: #74c69d;
+  --p6: #95d5b2;
+  --p7: #2d6a4f;
+  --p8: #388e7f;
+  --p9: #1f4e38;
+
+  /* Sequential score ramp, low to high */
+  --seq-1: #e8f5e9;
+  --seq-1-ink: #1e293b;
+  --seq-2: #d8f3dc;
+  --seq-2-ink: #1e293b;
+  --seq-3: #95d5b2;
+  --seq-3-ink: #1e293b;
+  --seq-4: #74c69d;
+  --seq-4-ink: #1e293b;
+  --seq-5: #40916c;
+  --seq-5-ink: #0b1c13;
+  --seq-6: #2d6a4f;
+  --seq-6-ink: #ffffff;
+  --seq-7: #1b4332;
+  --seq-7-ink: #ffffff;
+
+  /* Semantic fills and readable text counterparts */
+  --positive: #52b788;
+  --positive-bg: #f0fdf4;
+  --positive-line: #95d5b2;
+  --positive-ink: #2d6a4f;
+  --negative: #dc6b6b;
+  --negative-bg: #fff1f2;
+  --negative-line: #f3c4c8;
+  --negative-ink: #b13d49;
+  --warning: #b8922a;
+  --warning-bg: #fff9e6;
+  --warning-line: #e8d690;
+  --warning-ink: #80651a;
+  --info: #007da8;
+  --info-bg: #eef9fd;
+  --info-line: #abddec;
+  --info-ink: #006d93;
+
+  /* Country classifications: green, amber and red, with readable badge text. */
+  --cluster-advanced: #249b63;
+  --cluster-advanced-bg: #e8f5ee;
+  --cluster-advanced-line: #94d3ae;
+  --cluster-advanced-ink: #176540;
+  --cluster-emerging: #d89017;
+  --cluster-emerging-bg: #fff3d8;
+  --cluster-emerging-line: #edc778;
+  --cluster-emerging-ink: #805000;
+  --cluster-foundational: #c83f36;
+  --cluster-foundational-bg: #fff0ee;
+  --cluster-foundational-line: #e8aba5;
+  --cluster-foundational-ink: #9d2b25;
+
+  /* Space */
+  --s-4: 4px;
+  --s-8: 8px;
+  --s-12: 12px;
+  --s-16: 16px;
+  --s-20: 20px;
+  --s-24: 24px;
+  --s-32: 32px;
+  --s-40: 40px;
+  --s-56: 56px;
+  --s-72: 72px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 14px;
+  --r-full: 999px;
+
+  /* Elevation */
+  --e1: 0 2px 8px rgb(0 0 0 / 0.08), 0 1px 3px rgb(0 0 0 / 0.04);
+  --e2: 0 8px 24px rgb(0 0 0 / 0.15), 0 2px 4px rgb(0 0 0 / 0.1);
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur: 180ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Type */
+  --font-ui: Georgia, "Times New Roman", serif;
+  --font-display: Georgia, "Times New Roman", serif;
+  --font-mono: Georgia, "Times New Roman", serif;
+
+  /* Kept for compatibility with shared components. */
+  --sidebar-w: 240px;
+}

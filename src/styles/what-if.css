@@ -1,0 +1,185 @@
+.what-if-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--s-16);
+  margin-block: var(--s-24) var(--s-16);
+}
+
+.what-if-controls .field {
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.what-if-controls .badge {
+  align-self: center;
+}
+
+.what-if-results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-16);
+}
+
+.what-if-results .stat-support {
+  white-space: normal;
+}
+
+.what-if-clusters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-8) var(--s-12);
+  margin-block: var(--s-20) var(--s-16);
+}
+
+.what-if-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-24);
+}
+
+.what-if-pillar {
+  min-width: 0;
+  margin: 0;
+  padding: var(--s-16);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.what-if-pillar legend {
+  display: flex;
+  align-items: center;
+  gap: var(--s-8);
+  max-width: 100%;
+  padding-inline: var(--s-4);
+  font-weight: 600;
+}
+
+.what-if-pillar p {
+  margin-block: 0 var(--s-12);
+}
+
+.what-if-pillar-inputs {
+  display: grid;
+  grid-template-columns: minmax(60px, 1fr) minmax(96px, 120px);
+  align-items: center;
+  gap: var(--s-12);
+}
+
+.what-if-pillar-inputs .range {
+  width: 100%;
+  min-width: 0;
+}
+
+.what-if-number {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.what-if-number .input {
+  width: 100%;
+  min-width: 0;
+  padding-inline: var(--s-8);
+}
+
+.what-if-number .input[aria-invalid="true"] {
+  border-color: var(--negative-line);
+}
+
+.what-if-pillar .what-if-error {
+  color: var(--negative-ink);
+  margin-top: var(--s-8);
+}
+
+.what-if-pillar-effect {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-12);
+  margin-top: var(--s-16);
+  color: var(--text-muted);
+}
+
+.what-if-pillar-effect strong {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.what-if-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--s-24);
+}
+
+.what-if-contributions {
+  min-width: 490px;
+}
+
+.what-if-contributions th,
+.what-if-neighbors th {
+  text-align: left;
+}
+
+.what-if-contributions tbody th,
+.what-if-neighbors tbody th,
+.what-if-contributions tfoot th,
+.what-if-contributions tfoot td {
+  padding: var(--s-8) var(--s-12);
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.what-if-contributions tbody tr:last-child th,
+.what-if-neighbors tbody tr:last-child th {
+  border-bottom: 0;
+}
+
+.what-if-contributions .numeric,
+.what-if-neighbors .numeric {
+  text-align: right;
+}
+
+.what-if-contributions tfoot {
+  border-top: 1px solid var(--border-strong);
+  font-weight: 600;
+}
+
+.what-if-formula {
+  margin-top: var(--s-16);
+}
+
+.what-if-neighbors tr[data-simulated="true"] {
+  background: var(--tint);
+}
+
+.what-if-simulated-label {
+  display: block;
+  color: var(--interactive-strong);
+}
+
+@media (max-width: 1200px) {
+  .what-if-pillars {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .what-if-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .what-if-results,
+  .what-if-pillars {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .what-if-controls .field {
+    max-width: none;
+  }
+
+  .what-if-controls > .btn {
+    width: 100%;
+  }
+}

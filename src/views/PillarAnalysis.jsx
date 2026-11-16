@@ -50,6 +50,8 @@ function PillarAnalysis() {
   const lowest = sorted[sorted.length - 1];
   const highestScore = sorted[0][pillar.key];
   const lowestScore = lowest[pillar.key];
+  const dividePoints = (highestScore - lowestScore).toFixed(0);
+  const divideArticle = /^(8|11|18|8[0-9])$/.test(dividePoints) ? "an" : "a";
   const highestCountries = sorted.filter((country) => country[pillar.key] === highestScore);
   const lowestCountries = sorted.filter((country) => country[pillar.key] === lowestScore);
   const highestDescription = highestCountries.length === 1
@@ -195,9 +197,9 @@ function PillarAnalysis() {
             {highestDescription}{" "}
             <strong>{fmt.score(highestScore)}</strong>, while{" "}
             {lowestDescription}{" "}
-            <strong>{fmt.score(lowestScore)}</strong> — a{" "}
+            <strong>{fmt.score(lowestScore)}</strong> — {divideArticle}{" "}
             <strong>
-              {(highestScore - lowestScore).toFixed(0)}
+              {dividePoints}
               -point divide
             </strong>
             . <strong>{atOrAbove} of {COUNTRIES.length}</strong> countries score at or above the OIC average

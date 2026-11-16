@@ -130,7 +130,7 @@
 .landing-page .landing-footer-copy { display: flex; flex: 1 1 480px; min-width: 0; flex-direction: column; gap: 10px; }
 .landing-page .landing-footer-copy > strong { color: #fff; font-size: 17px; }
 .landing-page .landing-footer-copy > p { font-size: 14px; line-height: 1.6; }
-.landing-page .landing-footer-copy > .landing-citation, .landing-page .landing-footer-copy > .landing-source-date { color: #94a3b8; font-size: 13px; }
+.landing-page .landing-footer-copy > .landing-source-date { color: #94a3b8; font-size: 13px; }
 .landing-page .landing-footer nav { display: flex; flex: 0 1 auto; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 20px; max-width: 420px; font-size: 14px; }
 .landing-page .landing-footer a { color: #bae6fd; }
 .landing-page .landing-footer a:hover { color: #fff; }

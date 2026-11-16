@@ -167,10 +167,6 @@ export default function App() {
       </main>
 
       <footer className="dashboard-footer">
-        <p className="dashboard-citation">
-          Salim, K., Abdul Hamid, B., Disli, M., Lutfi, K. I., &amp; Cahyono, K. N.
-          (2026). Digital Economy Index: OIC Countries 2025 — Policy Report. INCEIF University.
-        </p>
         <p>© 2026 INCEIF University — The Global University of Islamic Finance</p>
         <div className="dashboard-footer-tools">
           <span>{META.countryCount} member states · {REFERENCE_YEAR} assessment

@@ -166,12 +166,6 @@
   font-size: 13px;
 }
 
-.dashboard-citation {
-  max-width: 1000px;
-  margin: 0 auto 16px;
-  font-size: 12px;
-}
-
 .dashboard-footer-tools {
   display: flex;
   justify-content: center;

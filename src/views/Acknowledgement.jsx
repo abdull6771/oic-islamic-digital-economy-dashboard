@@ -155,7 +155,7 @@ function Acknowledgement() {
           <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
             {[
               "Assoc. Prof. Dr. Kinan Salim",
-              "Prof. Dr. Baharom Abd Hamid",
+              "Prof. Dr. Baharom Abdul Hamid",
               "Prof. Dr. Ahmet Faruk Aysan",
               "Prof. Dr. Nafis Alam",
               "Assoc. Prof. Dr. Mustafa Disli",

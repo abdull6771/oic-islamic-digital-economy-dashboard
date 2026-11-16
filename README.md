@@ -22,7 +22,7 @@ See [the edition and access instructions](docs/EDITIONS.md). Run
 
 An interactive dashboard presenting the **OIC Digital Economy Index (ADEI)** — a composite index that scores the **57 member states of the Organisation of Islamic Cooperation (OIC)** on their digital-economy readiness (2025 assessment).
 
-It is an academic and policy project from **INCEIF University**, based on the *Digital Economy Index: OIC Countries 2025 — Policy Report* (Salim, Abdul Hamid, Disli, Lutfi & Cahyono, 2026).
+It is an academic and policy project from **INCEIF University**, based on the *Digital Economy Index: OIC Countries 2025 — Policy Report*.
 
 ## What it shows
 

@@ -14,7 +14,7 @@ export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, root, "");
   const edition = ["public", "full"].includes(mode) ? mode : env.SITE_EDITION || "public";
   if (!["public", "full"].includes(edition)) throw new Error("SITE_EDITION must be public or full.");
-  const contactEmail = env.CONTACT_EMAIL || "devbabura@gmail.com";
+  const contactEmail = env.CONTACT_EMAIL || "kinan@inceif.edu.my";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) throw new Error("CONTACT_EMAIL must be an email address.");
   const guard = () => createInternalAuthMiddleware({ edition, env });
   let writesBuild = false;

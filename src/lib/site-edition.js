@@ -3,7 +3,7 @@ import { TOOL_CATALOG } from "./tool-catalog.js";
 /** Replaced at build time; visitors cannot switch editions through a URL. */
 export const EDITION = typeof __SITE_EDITION__ === "undefined" ? "public" : __SITE_EDITION__;
 export const IS_PUBLIC = EDITION === "public";
-export const CONTACT_EMAIL = typeof __CONTACT_EMAIL__ === "undefined" ? "devbabura@gmail.com" : __CONTACT_EMAIL__;
+export const CONTACT_EMAIL = typeof __CONTACT_EMAIL__ === "undefined" ? "kinan@inceif.edu.my" : __CONTACT_EMAIL__;
 
 const editions = new Set(["public", "full"]);
 export function allowedViewIds(edition = EDITION) {

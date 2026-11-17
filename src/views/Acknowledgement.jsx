@@ -118,6 +118,13 @@ function Acknowledgement() {
             data-driven insights for policymakers, researchers, and industry
             stakeholders.
           </p>
+          <p style={bodyStyle}>
+            We extend our appreciation to the research assistants, Khairunnisa
+            Ismah Lutfi, Kurniagung Nur Cahyono, Afief El Ashfahany, Nimotallahi
+            Durojaiye, Dr Faaza Fakhrunnas, Dr Annisa Fithria, and Hassan Olakunle,
+            for their dedicated support. Special thanks to Amnan Hanani for her
+            professionalism and dedication in managing the project.
+          </p>
         </div>
 
         {/* INCEIF */}

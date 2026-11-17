@@ -116,11 +116,11 @@ function Acknowledgement() {
             their valuable contributions and support throughout the project.
           </p>
           <p style={bodyStyle}>
-            We extend our appreciation to the research assistants, Afief El
-            Ashfahany, Nimotallahi Durojaiye, Dr Faaza Fakhrunnas, Dr Annisa
-            Fithria, and Hassan Olakunle, for their dedicated support. Special
-            thanks to Amnan Hanani for her professionalism and dedication in
-            managing the project.
+            We extend our appreciation to the research assistants, Khairunnisa
+            Ismah Lutfi, Kurniagung Nur Cahyono, Afief El Ashfahany, Nimotallahi
+            Durojaiye, Dr Faaza Fakhrunnas, Dr Annisa Fithria, and Hassan Olakunle,
+            for their dedicated support. Special thanks to Amnan Hanani for her
+            professionalism and dedication in managing the project.
           </p>
         </div>
 

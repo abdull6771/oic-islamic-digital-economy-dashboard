@@ -1,230 +1,146 @@
+import "../styles/acknowledgements.css";
 
+const researchTeam = [
+  "Assoc. Prof. Dr. Kinan Salim",
+  "Prof. Dr. Baharom Abdul Hamid",
+  "Prof. Dr. Ahmet Faruk Aysan",
+  "Prof. Dr. Nafis Alam",
+  "Assoc. Prof. Dr. Mustafa Disli",
+  "Dr. Nur Huda Othman",
+  "Ruslena Ramli",
+  "Haitham Alnaeb",
+];
+
+const developmentTeam = [
+  { name: "Haitham Alnaeb" },
+  { name: "Abdullahi Ahmad Babura", url: "https://abdullahiahmad.vercel.app/" },
+  { name: "Amnan Hanani" },
+];
+
+function SectionHeading({ id, eyebrow, children }) {
+  return (
+    <header className="ack-section-heading">
+      <span className="ack-eyebrow">{eyebrow}</span>
+      <h3 id={id}>{children}</h3>
+    </header>
+  );
+}
 
 function Acknowledgement() {
-  const cardStyle = {
-    background: "var(--surface)",
-    border: "1px solid var(--border)",
-    borderRadius: "var(--r-md)",
-    padding: "var(--s-24)",
-    marginBottom: "24px",
-  };
-  const headingStyle = {
-    fontSize: "16px",
-    fontWeight: 600,
-    color: "var(--text)",
-    letterSpacing: "0.05em",
-    marginBottom: "16px",
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-  };
-  const bodyStyle = {
-    color: "var(--text)",
-    fontSize: "14px",
-    lineHeight: 1.8,
-  };
-  const nameStyle = {
-    display: "inline-block",
-    background: "var(--accent-soft)",
-    border: "1px solid var(--accent-soft)",
-    borderRadius: "6px",
-    padding: "6px 14px",
-    margin: "4px 6px",
-    fontSize: "13px",
-    color: "var(--text)",
-    fontWeight: 500,
-  };
   return (
-    <div className="view-prose">
-      <div>
-        {/* Hero Banner */}
-        <div
-          style={{
-            background: "var(--seq-7)",
-            borderRadius: "14px",
-            padding: "48px 40px",
-            marginBottom: "32px",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "300px",
-              height: "300px",
-              background:
-                "radial-gradient(circle, rgba(0,168,232,0.1) 0%, transparent 70%)",
-              borderRadius: "50%",
-              transform: "translate(60px,-60px)",
-            }}
-          />
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <h2
-              style={{
-                color: "var(--on-brand)",
-                fontSize: "28px",
-                fontWeight: 700,
-                margin: "0 0 8px",
-                letterSpacing: "0.02em",
-              }}
-            >
-              Acknowledgements
-            </h2>
-            <p
-              style={{
-                color: "var(--info-bg)",
-                fontSize: "14px",
-                margin: 0,
-                fontStyle: "italic",
-                letterSpacing: "0.03em",
-                fontWeight: 500,
-              }}
-            >
-              OIC Digital Economy Index (OIC DEI) · 2025 Assessment · Policy
-              Report
+    <div className="acknowledgements-page">
+      <header className="ack-hero">
+        <p className="ack-eyebrow">OIC Digital Economy Index</p>
+        <h2>Acknowledgements</h2>
+        <span className="ack-hero-rule" aria-hidden="true" />
+        <p className="ack-hero-subtitle">
+          OIC Digital Economy Index (OIC DEI) · 2025 Assessment · Policy Report
+        </p>
+      </header>
+
+      <div className="ack-intro-grid">
+        <section className="ack-card" aria-labelledby="ack-project-title">
+          <SectionHeading id="ack-project-title" eyebrow="Our purpose">
+            About the Project
+          </SectionHeading>
+          <div className="ack-prose">
+            <p>
+              This digital economy index and policy toolkit were prepared as part
+              of the <strong>Islamic Digital Economy Project</strong>, supported
+              by a grant from the <strong>Islamic Economics Research &amp;
+              Innovation Fund (IERIF)</strong> under the Ministry of Finance
+              Malaysia (MOF), and undertaken in strategic partnership with the
+              Islamic Development Bank (IsDB). The project aims to advance
+              research and policy dialogue on the development of the Islamic
+              digital economy and provide data-driven insights for policymakers,
+              researchers, and industry stakeholders.
+            </p>
+            <p>
+              We gratefully acknowledge the IsDB Center of Excellence Kuala Lumpur
+              and the IsDB Global Practices and Partnerships (GPP) Directorate for
+              their valuable contributions and support throughout the project.
             </p>
           </div>
-        </div>
+        </section>
 
-        {/* About the Project */}
-        <div style={cardStyle}>
-          <div style={headingStyle}>
-            <span style={{ fontSize: "20px" }}>📋</span> About the Project
+        <section className="ack-card ack-university" aria-labelledby="ack-university-title">
+          <SectionHeading id="ack-university-title" eyebrow="Our institution">
+            About INCEIF University
+          </SectionHeading>
+          <div className="ack-prose">
+            <p>
+              <strong>INCEIF University — The Global University of Islamic Finance</strong>{" "}
+              is a world-class institution dedicated to advancing knowledge and
+              expertise in Islamic finance and economics. Established by Bank
+              Negara Malaysia, INCEIF provides postgraduate education and
+              spearheads cutting-edge research that bridges Islamic principles
+              with contemporary financial and digital economy challenges. Through
+              its academic programmes and research initiatives, INCEIF contributes
+              to shaping evidence-based policy and building human capital for the
+              global Islamic economy.
+            </p>
           </div>
-          <p style={bodyStyle}>
-            This digital economy index and policy toolkit were prepared as part
-            of the{" "}
-            <strong style={{ color: "var(--text)" }}>
-              Islamic Digital Economy Project
-            </strong>
-            , supported by a grant from the{" "}
-            <strong style={{ color: "var(--text)" }}>
-              Islamic Economics Research &amp; Innovation Fund (IERIF)
-            </strong>
-            {" "}under the Ministry of Finance Malaysia (MOF), and undertaken in
-            strategic partnership with the Islamic Development Bank (IsDB). The
-            project aims to advance research and policy dialogue on the
-            development of the Islamic digital economy and provide data-driven
-            insights for policymakers, researchers, and industry stakeholders.
-          </p>
-          <p style={bodyStyle}>
-            We gratefully acknowledge the IsDB Center of Excellence Kuala Lumpur
-            and the IsDB Global Practices and Partnerships (GPP) Directorate for
-            their valuable contributions and support throughout the project.
-          </p>
-          <p style={bodyStyle}>
-            We extend our appreciation to the research assistants, Khairunnisa
-            Ismah Lutfi, Kurniagung Nur Cahyono, Afief El Ashfahany, Nimotallahi
-            Durojaiye, Dr Faaza Fakhrunnas, Dr Annisa Fithria, and Hassan Olakunle,
-            for their dedicated support. Special thanks to Amnan Hanani for her
-            professionalism and dedication in managing the project.
-          </p>
-        </div>
+        </section>
+      </div>
 
-        {/* INCEIF */}
-        <div style={cardStyle}>
-          <div style={headingStyle}>
-            <span style={{ fontSize: "20px" }}>🏛</span> About INCEIF University
-          </div>
-          <p style={bodyStyle}>
-            <strong style={{ color: "var(--text)" }}>
-              INCEIF University — The Global University of Islamic Finance
-            </strong>{" "}
-            is a world-class institution dedicated to advancing knowledge and
-            expertise in Islamic finance and economics. Established by Bank
-            Negara Malaysia, INCEIF provides postgraduate education and
-            spearheads cutting-edge research that bridges Islamic principles
-            with contemporary financial and digital economy challenges. Through
-            its academic programmes and research initiatives, INCEIF contributes
-            to shaping evidence-based policy and building human capital for the
-            global Islamic economy.
-          </p>
-        </div>
+      <section className="ack-appreciation" aria-labelledby="ack-support-title">
+        <SectionHeading id="ack-support-title" eyebrow="With appreciation">
+          Research support
+        </SectionHeading>
+        <p>
+          We extend our appreciation to the research assistants, Khairunnisa
+          Ismah Lutfi, Kurniagung Nur Cahyono, Afief El Ashfahany, Nimotallahi
+          Durojaiye, Dr Faaza Fakhrunnas, Dr Annisa Fithria, and Hassan Olakunle,
+          for their dedicated support. Special thanks to Amnan Hanani for her
+          professionalism and dedication in managing the project.
+        </p>
+      </section>
 
-        {/* Research Team */}
-        <div style={cardStyle}>
-          <div style={headingStyle}>
-            <span style={{ fontSize: "20px" }}>🔬</span> Research Team
+      <div className="ack-people-grid">
+        <section className="ack-card ack-team" aria-labelledby="ack-research-title">
+          <SectionHeading id="ack-research-title" eyebrow="Research & expertise">
+            Research Team
+          </SectionHeading>
+          <p className="ack-team-intro">The research team for this project includes:</p>
+          <ul className="ack-name-list ack-research-names">
+            {researchTeam.map((name) => <li key={name}>{name}</li>)}
+          </ul>
+          <div className="ack-technical-contributor">
+            <span>IsDB Technical Contributor</span>
+            <strong>Mr Syed Faiq Najeeb</strong>
           </div>
-          <p style={{ ...bodyStyle, marginBottom: "20px" }}>
-            The research team for this project includes:
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
-            {[
-              "Assoc. Prof. Dr. Kinan Salim",
-              "Prof. Dr. Baharom Abdul Hamid",
-              "Prof. Dr. Ahmet Faruk Aysan",
-              "Prof. Dr. Nafis Alam",
-              "Assoc. Prof. Dr. Mustafa Disli",
-              "Dr. Nur Huda Othman",
-              "Ruslena Ramli",
-              "Haitham Alnaeb",
-            ].map((name) => (
-              <span key={name} style={nameStyle}>
-                {name}
-              </span>
-            ))}
-          </div>
-          <p style={{ ...bodyStyle, marginTop: "20px" }}>
-            <strong>IsDB Technical Contributor:</strong> Mr Syed Faiq Najeeb
-          </p>
-        </div>
+        </section>
 
-        {/* Dashboard Development Team */}
-        <div style={cardStyle}>
-          <div style={headingStyle}>
-            <span style={{ fontSize: "20px" }}>💻</span> Dashboard Development
-            Team
-          </div>
-          <p style={{ ...bodyStyle, marginBottom: "20px" }}>
+        <section className="ack-card ack-team" aria-labelledby="ack-development-title">
+          <SectionHeading id="ack-development-title" eyebrow="Design & development">
+            Dashboard Development Team
+          </SectionHeading>
+          <p className="ack-team-intro">
             The authors acknowledge the valuable contribution of the dashboard
             development team, whose work in designing and developing the
             interactive dashboard significantly enhanced the accessibility and
             usability of the project's data and findings.
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
-            {[
-              { name: "Haitham Alnaeb", url: null },
-              {
-                name: "Abdullahi Ahmad Babura",
-                url: "https://abdullahiahmad.vercel.app/",
-              },
-              { name: "Amnan Hanani", url: null },
-            ].map((person) => (
-              <span key={person.name} style={nameStyle}>
+          <ul className="ack-name-list ack-development-names">
+            {developmentTeam.map((person) => (
+              <li key={person.name}>
                 {person.url ? (
-                  <a
-                    className="person-link"
-                    href={person.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {person.name}
+                  <a href={person.url} target="_blank" rel="noopener noreferrer">
+                    {person.name}<span className="ack-external-link" aria-hidden="true"> ↗</span>
                   </a>
-                ) : (
-                  person.name
-                )}
-              </span>
+                ) : person.name}
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
+      </div>
 
-        {/* Disclaimer */}
-        <div
-          style={{
-            ...cardStyle,
-            background: "var(--accent-soft)",
-            border: "1px solid var(--accent-soft)",
-            borderLeft: "4px solid var(--accent-line)",
-          }}
-        >
-          <div style={headingStyle}>
-            <span style={{ fontSize: "20px" }}>⚖️</span> Disclaimer
-          </div>
-          <p style={{ ...bodyStyle, color: "var(--text)", fontSize: "13px" }}>
+      <section className="ack-disclaimer" aria-labelledby="ack-disclaimer-title">
+        <SectionHeading id="ack-disclaimer-title" eyebrow="Please note">
+          Disclaimer
+        </SectionHeading>
+        <div className="ack-prose ack-disclaimer-copy">
+          <p>
             The findings, interpretations, and conclusions expressed in these
             policy toolkit and dashboard are solely those of the authors and do
             not necessarily reflect the views of INCEIF University or the
@@ -232,7 +148,7 @@ function Acknowledgement() {
             Management, Board of Executive Directors, or member state
             shareholders.
           </p>
-          <p style={{ ...bodyStyle, color: "var(--text)", fontSize: "13px" }}>
+          <p>
             While reasonable efforts have been made to ensure the accuracy of
             the information presented, INCEIF University does not accept
             responsibility for the completeness of the content and shall not be
@@ -241,71 +157,23 @@ function Acknowledgement() {
             the expression of any opinion concerning the legal status or
             boundaries.
           </p>
-          <p style={{ ...bodyStyle, color: "var(--text)", fontSize: "13px" }}>
+          <p>
             Nothing herein shall constitute or be considered a limitation or
             waiver of the privileges and immunities of INCEIF University, all of
             which are expressly reserved.
           </p>
         </div>
+      </section>
 
-        {/* Footer Attribution */}
-        <div
-          style={{
-            background: "var(--surface-2)",
-            borderTop: "2px solid var(--border)",
-            borderRadius: "8px",
-            marginTop: "40px",
-            padding: "32px 40px",
-            maxWidth: "100%",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "16px",
-              marginBottom: "16px",
-              flexWrap: "wrap",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "13px",
-                color: "var(--text)",
-                letterSpacing: "0.02em",
-              }}
-            >
-              <strong style={{ color: "var(--text)" }}>
-                OIC Digital Economy Index (OIC DEI)
-              </strong>{" "}
-              · Developed by INCEIF University
-            </div>
-          </div>
-          <div
-            style={{
-              borderTop: "1px solid var(--border)",
-              paddingTop: "16px",
-              fontSize: "12px",
-              color: "var(--text)",
-              letterSpacing: "0.01em",
-              lineHeight: "1.6",
-              textAlign: "center",
-            }}
-          >
-            <p style={{ margin: "0 0 8px 0" }}>
-              © 2026{" "}
-              <strong style={{ color: "var(--text)" }}>INCEIF University</strong> —
-              The Global University of Islamic Finance
-            </p>
-            <p style={{ margin: 0, fontSize: "11px", color: "var(--text-muted)" }}>
-              This dashboard is for informational purposes only. Data presented
-              reflects the 2025 OIC Digital Economy Assessment. The findings do
-              not necessarily reflect the views of INCEIF University.
-            </p>
-          </div>
-        </div>
-      </div>
+      <footer className="ack-attribution">
+        <p><strong>OIC Digital Economy Index (OIC DEI)</strong> · Developed by INCEIF University</p>
+        <p>© 2026 <strong>INCEIF University</strong> — The Global University of Islamic Finance</p>
+        <p className="ack-attribution-note">
+          This dashboard is for informational purposes only. Data presented
+          reflects the 2025 OIC Digital Economy Assessment. The findings do
+          not necessarily reflect the views of INCEIF University.
+        </p>
+      </footer>
     </div>
   );
 }

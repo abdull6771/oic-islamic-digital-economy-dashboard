@@ -28,7 +28,7 @@ The public "Register your interest" button opens an email to
 `kinan@inceif.edu.my`, configured through the `CONTACT_EMAIL` build setting.
 The login page's "Contact the toolkit administrator" link also opens
 `mailto:kinan@inceif.edu.my`.
-The report citation has been removed from both landing and dashboard footers.
+Both landing and dashboard footers use the supplied 2026 ISRA Institute report citation.
 The Acknowledgements footer omits the Methodology, Data Sources and Contact links.
 Its project description and disclaimer use the supplied MOF/IERIF/IsDB wording;
 Research Team includes IsDB Technical Contributor Mr Syed Faiq Najeeb, and the

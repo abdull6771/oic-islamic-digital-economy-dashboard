@@ -1,4 +1,4 @@
-import { COUNTRIES, INDICATOR_COUNTS, META, PILLARS, REFERENCE_YEAR, YEARS } from "../data/index.js";
+import { COUNTRIES, INDICATOR_COUNTS, META, PILLARS, REFERENCE_YEAR, REPORT_CITATION, YEARS } from "../data/index.js";
 import { TOOL_CATALOG, TOOL_GROUPS } from "../lib/tool-catalog.js";
 import ToolIcon from "../components/ToolIcon.jsx";
 import SignOutButton from "../components/SignOutButton.jsx";
@@ -151,7 +151,7 @@ export default function LandingPage({ edition = "public", onNavigate, contactEma
     </main>
 
     <footer className="landing-footer"><div className="landing-container landing-footer-inner">
-      <div className="landing-footer-copy"><strong>Digital Economy Index: OIC Countries {REFERENCE_YEAR}</strong><p>Developed by INCEIF University under the Islamic Digital Economy Project, supported by the Islamic Economics Research &amp; Innovation Fund (IERIF).</p><p className="landing-source-date">{META.countryCount} member states · {REFERENCE_YEAR} assessment{META.sourceUpdated && ` · Data updated ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${META.sourceUpdated}T00:00:00Z`))}`}</p></div>
+      <div className="landing-footer-copy"><strong>Digital Economy Index: OIC Countries {REFERENCE_YEAR}</strong><p>Developed by INCEIF University under the Islamic Digital Economy Project, supported by the Islamic Economics Research &amp; Innovation Fund (IERIF).</p><p className="landing-citation">{REPORT_CITATION}</p><p className="landing-source-date">{META.countryCount} member states · {REFERENCE_YEAR} assessment{META.sourceUpdated && ` · Data updated ${new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${META.sourceUpdated}T00:00:00Z`))}`}</p></div>
       <nav aria-label="Footer">{isPublic ? <><a href="#explore">Explore ({publicToolCount} tools)</a><a href="#coming">Coming soon</a></> : <><ToolLink id="reports" onNavigate={onNavigate}>Download country reports</ToolLink><ToolLink id="methodology" onNavigate={onNavigate}>Methodology</ToolLink><ToolLink id="history" onNavigate={onNavigate}>Update history</ToolLink></>}<ToolLink id="acknowledgement" onNavigate={onNavigate}>Acknowledgements</ToolLink></nav>
     </div></footer>
   </div>;

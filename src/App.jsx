@@ -4,7 +4,7 @@ import "./styles/tokens.css";
 import "./styles/global.css";
 import "./styles/components.css";
 
-import { META, OIC_AVERAGE, REFERENCE_YEAR } from "./data/index.js";
+import { META, OIC_AVERAGE, REFERENCE_YEAR, REPORT_CITATION } from "./data/index.js";
 import { DEFAULT_VIEW, VIEWS, viewById } from "./lib/nav.js";
 import { EDITION, IS_PUBLIC, CONTACT_EMAIL, canAccessView, resolveView } from "./lib/site-edition.js";
 import { hashParam, navigate, onHashChange, openCountry } from "./lib/routing.js";
@@ -167,6 +167,7 @@ export default function App() {
       </main>
 
       <footer className="dashboard-footer">
+        <p className="dashboard-citation">{REPORT_CITATION}</p>
         <p>© 2026 INCEIF University — The Global University of Islamic Finance</p>
         <div className="dashboard-footer-tools">
           <span>{META.countryCount} member states · {REFERENCE_YEAR} assessment

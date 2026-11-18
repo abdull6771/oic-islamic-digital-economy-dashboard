@@ -17,6 +17,7 @@ export const META = dataset.meta;
 export const DATA_QUALITY = dataset.dataQuality;
 export const YEARS = dataset.meta.years;
 export const REFERENCE_YEAR = dataset.meta.referenceYear;
+export const REPORT_CITATION = "Salim, K., Abdul Hamid, B., Aysan, A.F., Alam, N., Disli, M., Othman, N.H., Ramli, R. & Alnaeb, H. (2026), 'Digital economy index: OIC countries 2025', ISRA Institute, Kuala Lumpur.";
 /** "2021–2025" — for chart titles and copy, so labels track the data. */
 export const YEAR_RANGE = `${YEARS[0]}–${YEARS[YEARS.length - 1]}`;
 export const INDICATOR_COUNTS = dataset.meta.counts;
